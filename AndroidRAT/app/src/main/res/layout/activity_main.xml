@@ -12,6 +12,15 @@
         android:orientation="vertical">
 
         <Button
+            android:id="@+id/socket_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:onClick="ioConnection"
+            android:text="Socket Connection" />
+
+        <Button
             android:id="@+id/send_sms_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
