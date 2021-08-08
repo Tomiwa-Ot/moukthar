@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void writeContact(View view){
-        
+
     }
 
     public void recordMic(View view) {
