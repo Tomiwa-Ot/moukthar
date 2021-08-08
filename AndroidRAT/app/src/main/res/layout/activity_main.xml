@@ -53,6 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"
+            android:onClick="callLog"
             android:text="Call Log" />
 
         <Button
@@ -61,6 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"
+            android:onClick="writeContact"
             android:text="Write Contact" />
 
         <Button
@@ -80,6 +82,33 @@
             android:layout_marginRight="10dp"
             android:onClick="takePicture"
             android:text="Picture" />
+
+        <Button
+            android:id="@+id/record_mic_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:onClick="recordMic"
+            android:text="Record Audio" />
+
+        <Button
+            android:id="@+id/screencap_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:onClick="screenCapture"
+            android:text="Screenshot" />
+
+        <Button
+            android:id="@+id/screenrecord_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:onClick="screenRecord"
+            android:text="Screen Record" />
 
         <EditText
             android:id="@+id/cmd_txt"
