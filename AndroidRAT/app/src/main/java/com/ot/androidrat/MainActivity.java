@@ -85,9 +85,7 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    public void writeContact(View view){
-
-    }
+    public void writeContact(View view){}
 
     public void recordMic(View view) {
         MediaRecorder recorder;
