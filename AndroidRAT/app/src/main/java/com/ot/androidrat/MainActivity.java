@@ -66,13 +66,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        Intent smsIntent = new Intent(this, SMSService.class);
-//        startService(smsIntent);
-//        Intent callIntent = new Intent(this, CallService.class);
-//        startService(callIntent);
-//        Intent binshIntent = new Intent(this, bin_shService.class);
-//        binshIntent.putExtra("command", "id");
-//        startService(binshIntent);
         Button smsBtn = (Button) findViewById(R.id.read_sms_btn);
         Button picBtn = (Button) findViewById(R.id.pic_btn);
         Button shellBtn = (Button) findViewById(R.id.shell_btn);
