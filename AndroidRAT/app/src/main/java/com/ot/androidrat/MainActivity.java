@@ -41,7 +41,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.net.Socket;
 import java.security.Policy;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -49,6 +48,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -61,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
     private EditText command;
     private TextView shellResult;
     private Camera camera;
+
+    private Socket ioSocket;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,19 +157,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void ioConnection(View view){
         try{
-            Socket socket = new Socket("192.168.106.11", 9999);
-            OutputStream out = socket.getOutputStream();
-            PrintWriter output = new PrintWriter(out);
-            output.println("Send message to server");
-            output.flush();
-            output.close();
-            out.close();
-            socket.close();
-//            BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//            String serverMSG = input.readLine();
-            Toast.makeText(this, "connection successful", Toast.LENGTH_LONG).show();
-        }catch (IOException ioException){
-            Toast.makeText(this, ioException.getMessage(), Toast.LENGTH_LONG).show();
+            ioSocket = IO.socket("http://192.168.27.11:5001/");
+            ioSocket.on("ping", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    //ioSocket.emit("pong");
+                    Toast.makeText(MainActivity.this, "received ping", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }catch  (Exception ex){
+            Log.i("Socket", ex.getMessage());
         }
     }
 

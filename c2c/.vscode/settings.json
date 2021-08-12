@@ -1,0 +1,4 @@
+{
+    "python.autoComplete.addBrackets": true,
+    "python.terminal.activateEnvInCurrentTerminal": true
+}

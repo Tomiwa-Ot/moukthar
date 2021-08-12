@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Dashboard | Dashboard</title>
+    <link href="assets/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet">
+    <link href="assets/vendor/fontawesome/css/solid.min.css" rel="stylesheet">
+    <link href="assets/vendor/fontawesome/css/brands.min.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/master.css" rel="stylesheet">
+    <link href="assets/vendor/flagiconcss/css/flag-icon.min.css" rel="stylesheet">
+</head>
+
+
+<body>
+    <div class="wrapper">
+        <nav id="sidebar" class="active">
+            <ul class="list-unstyled components text-secondary">
+                <li>
+                    <a id="nav-dashboard"><i class="fas fa-home"></i> Dashboard</a>
+                </li>
+                <li>
+                    <a id="nav-files"><i class="fas fa-file"></i> User Files</a>
+                </li>
+                <li>
+                    <a id="nav-settings"><i class="fas fa-cog"></i>Settings</a>
+                </li>
+                <li>
+                    <a id="nav-help"><i class="fas fa-info-circle"></i>Help</a>
+                </li>
+                <li>
+                    <a id="nav-about"><i class="fas fa-copy"></i>About</a>
+                </li>
+            </ul>
+        </nav>
+        <div id="body" class="active">
+            <!-- navbar navigation component -->
+            <nav class="navbar navbar-expand-lg navbar-white bg-white">
+                <button type="button" id="sidebarCollapse" class="btn btn-light">
+                    <i class="fas fa-bars"></i><span></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="nav navbar-nav ms-auto">
+                     
+                        <li class="nav-item dropdown">
+                            <div class="nav-dropdown">
+                                <a href="#" id="nav2" class="nav-item nav-link dropdown-toggle text-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user"></i> <span>Admin</span> <i style="font-size: .8em;" class="fas fa-caret-down"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end nav-link-menu">
+                                    <ul class="nav-list">
+                                        <li><a href="" class="dropdown-item"><i class="fas fa-address-card"></i> Profile</a></li>
+                                        <li><a href="" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <!-- End of navbar navigation -->
+            <div class="content">
+                
+            </div>
+        </div>
+    </div>
+    <script src="assets/vendor/jquery/jquery.min.js"></script>
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/vendor/chartsjs/chart.min.js"></script>
+    <script src="assets/js/dashboard-charts.js"></script>
+    <script src="assets/js/script.js"></script>
+    
+    <script>
+        $(document).ready(function (){
+            $('.content').load("dashboard.html");
+
+            $('#nav-dashboard').click(function (){
+                $('.content').load("dashboard.html");
+            });
+            $('#nav-files').click(function (){
+                $('.content').load("files.html");
+            });
+            $('#nav-settings').click(function (){
+                $('.content').load("settings.html");
+            });
+            $('#nav-help').click(function (){
+                $('.content').load("help.html");
+            });
+            $('#nav-about').click(function (){
+                $('.content').load("about.html");
+            });
+        });
+    </script>
+</body>
+
+</html>
