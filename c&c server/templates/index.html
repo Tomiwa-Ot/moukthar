@@ -7,12 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Dashboard | Dashboard</title>
-    <link href="assets/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet">
-    <link href="assets/vendor/fontawesome/css/solid.min.css" rel="stylesheet">
-    <link href="assets/vendor/fontawesome/css/brands.min.css" rel="stylesheet">
-    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/css/master.css" rel="stylesheet">
-    <link href="assets/vendor/flagiconcss/css/flag-icon.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/fontawesome/css/fontawesome.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/fontawesome/css/solid.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/fontawesome/css/brands.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/css/master.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/flagiconcss/css/flag-icon.min.css') }}" rel="stylesheet">
 </head>
 
 
@@ -38,7 +38,7 @@
             </ul>
         </nav>
         <div id="body" class="active">
-            <!-- navbar navigation component -->
+            <!-- Navbar -->
             <nav class="navbar navbar-expand-lg navbar-white bg-white">
                 <button type="button" id="sidebarCollapse" class="btn btn-light">
                     <i class="fas fa-bars"></i><span></span>
@@ -62,36 +62,79 @@
                     </ul>
                 </div>
             </nav>
-            <!-- End of navbar navigation -->
+            <!-- End of Navbar -->
             <div class="content">
                 
             </div>
         </div>
     </div>
-    <script src="assets/vendor/jquery/jquery.min.js"></script>
-    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/vendor/chartsjs/chart.min.js"></script>
-    <script src="assets/js/dashboard-charts.js"></script>
-    <script src="assets/js/script.js"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/chartsjs/chart.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/dashboard-charts.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/script.js') }}"></script>
     
     <script>
         $(document).ready(function (){
-            $('.content').load("dashboard.html");
+            $.ajax({
+               url: '/dashboard' ,
+               type: 'get',
+               success: function(data){
+                   $('.content').html(data);
+                   $('.content').append(data.htmlresponse);
+               }
+            });
+            // $('.content').load("dashboard.html");
 
             $('#nav-dashboard').click(function (){
-                $('.content').load("dashboard.html");
+                $.ajax({
+                    url: '/dashboard' ,
+                    type: 'get',
+                    success: function(data){
+                        $('.content').html(data);
+                        $('.content').append(data.htmlresponse);
+                    }
+                });
             });
             $('#nav-files').click(function (){
-                $('.content').load("files.html");
+                $.ajax({
+                    url: '/files' ,
+                    type: 'get',
+                    success: function(data){
+                        $('.content').html(data);
+                        $('.content').append(data.htmlresponse);
+                    }
+                });
             });
             $('#nav-settings').click(function (){
-                $('.content').load("settings.html");
+                $.ajax({
+                    url: '/settings' ,
+                    type: 'get',
+                    success: function(data){
+                        $('.content').html(data);
+                        $('.content').append(data.htmlresponse);
+                    }
+                });
             });
             $('#nav-help').click(function (){
-                $('.content').load("help.html");
+                $.ajax({
+                    url: '/help' ,
+                    type: 'get',
+                    success: function(data){
+                        $('.content').html(data);
+                        $('.content').append(data.htmlresponse);
+                    }
+                });
             });
             $('#nav-about').click(function (){
-                $('.content').load("about.html");
+                $.ajax({
+                    url: '/about' ,
+                    type: 'get',
+                    success: function(data){
+                        $('.content').html(data);
+                        $('.content').append(data.htmlresponse);
+                    }
+                });
             });
         });
     </script>

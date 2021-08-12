@@ -1,0 +1,5 @@
+{
+    "python.autoComplete.addBrackets": true,
+    "python.terminal.activateEnvInCurrentTerminal": true,
+    "python.analysis.completeFunctionParens": true
+}
