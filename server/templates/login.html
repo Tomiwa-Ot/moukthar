@@ -11,6 +11,12 @@
 </head>
 
 <body>
+    {% if error %}
+    <div class="alert alert-danger" id="error-alert" role="alert">
+        <strong> {{ error }} </strong>
+    </div>
+    {% endif %}
+
     <div class="wrapper">
         <div class="auth-content">
             <div class="card">
@@ -42,6 +48,16 @@
     </div>
     <script src="{{ url_for('static', filename='assets/vendor/jquery/jquery.min.js' )}}"></script>
     <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.min.js')}}"></script>
+
+    <script>
+        $(document).ready(function (){
+            if($('#error-alert').length != 0){
+                $('#error-alert').fadeTo(2000, 500).slideUp(500, function (){
+                    $('#error-alert').slideUp(500);
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>

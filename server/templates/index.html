@@ -72,6 +72,7 @@
         </div>
     </div>
     <script src="{{ url_for('static', filename='assets/vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/socketio.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
     <script src="{{ url_for('static', filename='assets/vendor/chartsjs/chart.min.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/js/dashboard-charts.js') }}"></script>
@@ -79,6 +80,10 @@
     
     <script>
         $(document).ready(function (){
+            var socket = io("http://localhost:5001");
+            socket.on('response', function() {
+                console.log("got response back");
+            });
             $.ajax({
                url: '/dashboard',
                type: 'get',
@@ -89,14 +94,15 @@
             });
 
             $('#nav-dashboard').click(function (){
-                $.ajax({
-                    url: '/dashboard',
-                    type: 'get',
-                    success: function(data){
-                        $('.content').html(data);
-                        $('.content').append(data.htmlresponse);
-                    }
-                });
+                // $.ajax({
+                //     url: '/dashboard',
+                //     type: 'get',
+                //     success: function(data){
+                //         $('.content').html(data);
+                //         $('.content').append(data.htmlresponse);
+                //     }
+                // });
+                socket.emit("pong", "message");
             });
             $('#nav-files').click(function (){
                 $.ajax({

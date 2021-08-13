@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, render_template, url_for, request, redirect, session
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, emit
 
 
 app = Flask(__name__)
@@ -9,7 +9,8 @@ socketio = SocketIO(app)
 
 @socketio.on("pong")
 def reply(msg):
-    print("received pong")
+    print(msg)
+    emit("response", msg)
 
 
 @app.route("/", methods=['GET'])
@@ -35,7 +36,7 @@ def login():
             # terminal logs below dashboard pass data from nav link ro confirm original request logout sqlite
             return redirect("/", code=302)
         else:
-            return jsonify({'htmlresponse': render_template("error_modal.html", error="Invald Username/Password")}), 401
+            return render_template("login.html", error="Login Failed. Incorrect username/password"), 401
     else:
         return render_template("error_page.html", code= ["400", "Bad Request"]), 400
 
