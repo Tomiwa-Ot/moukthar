@@ -2,14 +2,15 @@
     <div class="page-title">
         <h3>Dashboard</h3>
     </div>
-    <div class="box box-primary">
+    <div class="box box-primary" style="overflow: auto;">
         <div class="box-body">
-            <table width="100%" class="table table-hover" id="dataTables-example">
+            <table width="100%" height="300vh" class="table table-hover" id="dataTables-example">
                 <thead>
                     <tr>
                         <th>Device-ID</th>
                         <th>IP Address</th>
                         <th>Location</th>
+                        <th>IMEI</th>
                         <th>Type</th>
                         <th>Status</th>
                         <th></th>
@@ -18,7 +19,8 @@
                 <tbody>
                     <tr>
                         <td>Philip Chaney</td>
-                        <td>philip.chaney@gmail.com</td>
+                        <td>192.168.12.1</td>
+                        <td>Manager</td>
                         <td>Manager</td>
                         <td>Admin</td>
                         <td>Active</td>
@@ -31,8 +33,9 @@
                     </tr>
                     <tr>
                         <td>Doris Greene</td>
-                        <td>ms.greene@outlook.com</td>
+                        <td>24.2.3.12</td>
                         <td>Writer</td>
+                        <td>Manager</td>
                         <td>Staff</td>
                         <td>Active</td>
                         <td class="text-end">
@@ -44,8 +47,9 @@
                     </tr>
                     <tr>
                         <td>Mason Porter</td>
-                        <td>mason_porter@gmail.com</td>
+                        <td>9.2.121.32</td>
                         <td>Contributor</td>
+                        <td>Manager</td>
                         <td>Staff</td>
                         <td>Active</td>
                         <td class="text-end">
@@ -57,8 +61,9 @@
                     </tr>
                     <tr>
                         <td>Minerva Hooper</td>
-                        <td>minerva.hooper@gmail.com</td>
+                        <td>21.32.12.4</td>
                         <td>Administrator</td>
+                        <td>Manager</td>
                         <td>Admin</td>
                         <td>Disabled</td>
                         <td class="text-end">
@@ -72,4 +77,62 @@
             </table>
         </div>
     </div>
+    <div class="fixed-bottom">
+        <div class="container">
+          <table width="100%" height="220vh" class="table table-dark table-borderless table-sm table-responsive" style="overflow: auto;">
+              <tbody style="font-family: 'Courier Prime', monospace;">
+                <tr>
+                    <div class="row">
+                        <div class="col-3">
+                            <td>10:09:44 AM</td>
+                        </div>
+                        <div class="col-9">
+                            <td>Getting camera list ...</td>
+                        </div>
+                    </div>
+                </tr>
+                <tr>
+                    <div class="row">
+                        <div class="col-3">
+                            <td>10:09:44 AM</td>
+                        </div>
+                        <div class="col-9">
+                            <td class="text-success">Retrieved camera list</td>
+                        </div>
+                    </div>
+                </tr>
+                <tr>
+                    <div class="row">
+                        <div class="col-3">
+                            <td>10:09:44 AM</td>
+                        </div>
+                        <div class="col-9">
+                            <td>Downloading files ...</td>
+                        </div>
+                    </div>              
+                </tr>
+                <tr>
+                    <div class="row">
+                        <div class="col-3">
+                            <td>10:09:44 AM</td>
+                        </div>
+                        <div class="col-9">
+                            <td class="text-danger">21.21.215.3 Disconnected</td>
+                        </div>
+                    </div>
+                </tr>
+                <tr>
+                    <div class="row">
+                        <div class="col-3">
+                            <td>10:09:44 AM</td>
+                        </div>
+                        <div class="col-9">
+                            <td>21.21.215.3 connected</td>
+                        </div>
+                    </div>                  
+                </tr>
+              </tbody>
+          </table>     
+        </div>          
+  </div>
 </div>

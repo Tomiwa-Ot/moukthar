@@ -13,6 +13,9 @@
     <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='assets/css/master.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='assets/vendor/flagiconcss/css/flag-icon.min.css') }}" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet"> 
 </head>
 
 
@@ -54,7 +57,7 @@
                                 <div class="dropdown-menu dropdown-menu-end nav-link-menu">
                                     <ul class="nav-list">
                                         <li><a href="" class="dropdown-item"><i class="fas fa-address-card"></i> Profile</a></li>
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                                        <li><a href="/logout" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -77,18 +80,17 @@
     <script>
         $(document).ready(function (){
             $.ajax({
-               url: '/dashboard' ,
+               url: '/dashboard',
                type: 'get',
                success: function(data){
                    $('.content').html(data);
                    $('.content').append(data.htmlresponse);
                }
             });
-            // $('.content').load("dashboard.html");
 
             $('#nav-dashboard').click(function (){
                 $.ajax({
-                    url: '/dashboard' ,
+                    url: '/dashboard',
                     type: 'get',
                     success: function(data){
                         $('.content').html(data);
@@ -98,7 +100,7 @@
             });
             $('#nav-files').click(function (){
                 $.ajax({
-                    url: '/files' ,
+                    url: '/files',
                     type: 'get',
                     success: function(data){
                         $('.content').html(data);
@@ -108,7 +110,7 @@
             });
             $('#nav-settings').click(function (){
                 $.ajax({
-                    url: '/settings' ,
+                    url: '/settings',
                     type: 'get',
                     success: function(data){
                         $('.content').html(data);
@@ -118,7 +120,7 @@
             });
             $('#nav-help').click(function (){
                 $.ajax({
-                    url: '/help' ,
+                    url: '/help',
                     type: 'get',
                     success: function(data){
                         $('.content').html(data);
@@ -128,7 +130,7 @@
             });
             $('#nav-about').click(function (){
                 $.ajax({
-                    url: '/about' ,
+                    url: '/about',
                     type: 'get',
                     success: function(data){
                         $('.content').html(data);
