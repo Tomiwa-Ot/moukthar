@@ -6,8 +6,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.OperationApplicationException;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -18,6 +20,7 @@ import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.RemoteException;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.telephony.SmsManager;
@@ -90,7 +93,27 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    public void writeContact(View view){}
+    public void writeContact(View view){
+        ArrayList contentProviderOperations = new ArrayList();
+        //insert raw contact using RawContacts.CONTENT_URI
+        contentProviderOperations.add(ContentProviderOperation.newInsert(ContactsContract.RawContacts.CONTENT_URI)
+                .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, null).withValue(ContactsContract.RawContacts.ACCOUNT_NAME, null).build());
+        //insert contact display name using Data.CONTENT_URI
+        contentProviderOperations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0).withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
+                .withValue(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, "Contact from app").build());
+        //insert mobile number using Data.CONTENT_URI
+        contentProviderOperations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0).withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
+                .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, "012345678").withValue(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE).build());
+        try {
+            getApplicationContext().getContentResolver().applyBatch(ContactsContract.AUTHORITY, contentProviderOperations);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        } catch (OperationApplicationException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void recordMic(View view) {
         MediaRecorder recorder;
@@ -164,7 +187,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void ioConnection(View view){
         try{
+            IO.Options opts = new IO.Options();
+            opts.reconnection = true;
+            opts.reconnectionDelay = 5000;
+            opts.reconnectionDelayMax = 999999999;
             ioSocket = IO.socket("http://192.168.156.11:5001/");
+            ioSocket.connect();
             ioSocket.emit("pong", "pong reponse");
             ioSocket.on("ping", new Emitter.Listener() {
                 @Override
@@ -242,28 +270,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void readContacts(View view) {
-        try {
-            JSONObject contacts = new JSONObject();
-            JSONArray list = new JSONArray();
-            Cursor cur = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                    new String[] { ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER}, null, null,  ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
 
-
-            while (cur.moveToNext()) {
-                JSONObject contact = new JSONObject();
-                String name = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));// for  number
-                String num = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));// for name
-
-                contact.put("phoneNo", num);
-                contact.put("name", name);
-                list.put(contact);
-
-            }
-            contacts.put("contactsList", list);
-            shellResult.setText(contacts.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 
     public void takePicture(View view){

