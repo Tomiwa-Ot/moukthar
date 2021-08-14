@@ -32,12 +32,6 @@
                 <li>
                     <a id="nav-settings"><i class="fas fa-cog"></i>Settings</a>
                 </li>
-                <li>
-                    <a id="nav-help"><i class="fas fa-info-circle"></i>Help</a>
-                </li>
-                <li>
-                    <a id="nav-about"><i class="fas fa-copy"></i>About</a>
-                </li>
             </ul>
         </nav>
         <div id="body" class="active">
@@ -56,7 +50,6 @@
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end nav-link-menu">
                                     <ul class="nav-list">
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-address-card"></i> Profile</a></li>
                                         <li><a href="/logout" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                                     </ul>
                                 </div>
@@ -94,15 +87,15 @@
             });
 
             $('#nav-dashboard').click(function (){
-                // $.ajax({
-                //     url: '/dashboard',
-                //     type: 'get',
-                //     success: function(data){
-                //         $('.content').html(data);
-                //         $('.content').append(data.htmlresponse);
-                //     }
-                // });
-                socket.emit("pong", "message");
+                $.ajax({
+                    url: '/dashboard',
+                    type: 'get',
+                    success: function(data){
+                        $('.content').html(data);
+                        $('.content').append(data.htmlresponse);
+                    }
+                });
+                // socket.emit("pong", "message");
             });
             $('#nav-files').click(function (){
                 $.ajax({
@@ -124,26 +117,7 @@
                     }
                 });
             });
-            $('#nav-help').click(function (){
-                $.ajax({
-                    url: '/help',
-                    type: 'get',
-                    success: function(data){
-                        $('.content').html(data);
-                        $('.content').append(data.htmlresponse);
-                    }
-                });
-            });
-            $('#nav-about').click(function (){
-                $.ajax({
-                    url: '/about',
-                    type: 'get',
-                    success: function(data){
-                        $('.content').html(data);
-                        $('.content').append(data.htmlresponse);
-                    }
-                });
-            });
+            
         });
     </script>
 </body>

@@ -33,7 +33,7 @@ def login():
         password = request.form.get('password')
         if username == "admin" and password == "password":
             session['username'] = username
-            # terminal logs below dashboard pass data from nav link ro confirm original request logout sqlite
+            # below dashboard pass data from nav link ro confirm original request logout sqlite
             return redirect("/", code=302)
         else:
             return render_template("login.html", error="Login Failed. Incorrect username/password"), 401
@@ -50,7 +50,10 @@ def logout():
 @app.route("/dashboard", methods=['GET'])
 def dashboard():
     if request.method == 'GET':
-        return jsonify({'htmlresponse': render_template("dashboard.html")}), 200
+        if 'username' in session:
+            return jsonify({'htmlresponse': render_template("dashboard.html")}), 200
+        else:
+            return redirect("/login", code=302)
     else:
         return render_template("error_page.html", code= ["400", "Bad Request"]), 400
 
@@ -58,7 +61,10 @@ def dashboard():
 @app.route("/files", methods=['GET'])
 def files():
     if request.method == 'GET':
-        return jsonify({'htmlresponse': render_template("files.html")}), 200
+        if 'username' in session:
+            return jsonify({'htmlresponse': render_template("files.html")}), 200
+        else:
+            return redirect("/login", code=302)
     else:
         return render_template("error_page.html", code= ["400", "Bad Request"]), 400
 
@@ -66,23 +72,10 @@ def files():
 @app.route("/settings", methods=['GET'])
 def settings():
     if request.method == 'GET':
-        return jsonify({'htmlresponse': render_template("settings.html")}), 200
-    else:
-        return render_template("error_page.html", code= ["400", "Bad Request"]), 400
-
-
-@app.route("/help", methods=['GET'])
-def help():
-    if request.method == 'GET':
-        return jsonify({'htmlresponse': render_template("help.html")}), 200
-    else:
-        return render_template("error_page.html", code= ["400", "Bad Request"]), 400
-
-
-@app.route("/about", methods=['GET'])
-def about():
-    if request.method == 'GET':
-        return jsonify({'htmlresponse': render_template("about.html")}), 200
+        if 'username' in session:
+            return jsonify({'htmlresponse': render_template("settings.html")}), 200
+        else:
+            return redirect("/login", code=302)
     else:
         return render_template("error_page.html", code= ["400", "Bad Request"]), 400
 
