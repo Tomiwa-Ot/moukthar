@@ -43,8 +43,14 @@ def login():
 
 @app.route("/logout", methods=['GET'])
 def logout():
-    session.pop('username', None)
-    return redirect("/login", code=302)
+    if request.method == 'GET':
+        if 'username' in session:
+            session.pop('username', None)
+            return redirect("/login", code=302)
+        else:
+            return redirect("/login", code=302)
+    else:
+        return render_template("error_page.html", code= ["400", "Bad Request"]), 400
 
 
 @app.route("/dashboard", methods=['GET'])
