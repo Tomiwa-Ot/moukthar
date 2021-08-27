@@ -13,8 +13,19 @@ socketio = SocketIO(app)
 @socketio.on("pong")
 def reply(msg):
     print(msg)
-    emit("response", msg)
+    socketio.emit("response", "mesaage ")
 
+def get_ccid():
+    ccid = ""
+    with open("ccid.txt", "r") as id:
+        ccid = id.read()
+    return ccid
+
+@socketio.on("connect")
+def connection_established(ccid):
+    with open("ccid.txt", "w+") as id_manager:
+        id_manager.write(ccid)
+    socketio.emit("connection_status", "connected")
 
 @app.route("/", methods=['GET'])
 def index():
