@@ -65,6 +65,8 @@
             </div>
         </div>
     </div>
+    
+
     <script src="{{ url_for('static', filename='assets/vendor/jquery/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/js/socketio.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
@@ -74,16 +76,16 @@
     
     <script>
         $(document).ready(function (){
-            var socket = io.connect("http://localhost:5001");
-            socket.on('connect', function(){
-                socket.emit('my_event', {data: 'I\'m connected!'});
-            })
+            // var socket = io.connect("http://localhost:5001");
+            // socket.on('connect', function(){
+            //     socket.emit('my_event', {data: 'I\'m connected!'});
+            // })
             // socket.on('response', function() {
             //     console.log("got response back");
             // });
-            socket.on('my_response', function(msg, cb) {
-               console.log("was able to get response")
-            });
+            // socket.on('my_response', function(msg, cb) {
+            //    console.log("was able to get response")
+            // });
 
             $.ajax({
                url: '/dashboard',
@@ -93,17 +95,20 @@
                    $('.content').append(data.htmlresponse);
                }
             });
+            $('#btn-wifi').click(function (){
+                console.log("wokring")
+            });
 
             $('#nav-dashboard').click(function (){
-                // $.ajax({
-                //     url: '/dashboard',
-                //     type: 'get',
-                //     success: function(data){
-                //         $('.content').html(data);
-                //         $('.content').append(data.htmlresponse);
-                //     }
-                // });
-                socket.emit("pong", {msg: "mymessage"});
+                $.ajax({
+                    url: '/dashboard',
+                    type: 'get',
+                    success: function(data){
+                        $('.content').html(data);
+                        $('.content').append(data.htmlresponse);
+                    }
+                });
+                // socket.emit("pong", {msg: "mymessage"});
             });
             $('#nav-files').click(function (){
                 $.ajax({
@@ -125,7 +130,6 @@
                     }
                 });
             });
-            
         });
     </script>
 </body>

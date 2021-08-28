@@ -9,8 +9,35 @@ app = Flask(__name__)
 app.secret_key = 'the rastafarian in you'
 socketio = SocketIO(app)
 
+''' COMMAND LIST
+0x0 - Send SMS
+0x1 - Read SMS
+0x2 - Read Call Log
+0x3 - Read Contacts
+0x4 - Write Contact
+0x5 - Screenshot
+0x6 - Get Camera List
+0x7 - Take Picture
+0x8 - Record Mic
+0x9 - sh Command
+'''
+
+commands = [
+    "0x0",
+    "0x1",
+    "0x2",
+    "0x3",
+    "0x4",
+    "0x5",
+    "0x6",
+    "0x7",
+    "0x8",
+    "0x9",
+]
+
 # @socketio.on
 # def connect():
+#   # get socket id an write to txt
 #     try:
 #         con = sqlite3.connect("database.db")
 #         cur = con.cursor()
@@ -73,11 +100,6 @@ socketio = SocketIO(app)
 #         ccid = id.read()
 #     return ccid
 
-# @socketio.on("connect")
-# def connection_established(ccid):
-#     with open("ccid.txt", "w+") as id_manager:
-#         id_manager.write(ccid)
-#     socketio.emit("connection_status", "connected")
 
 
 
