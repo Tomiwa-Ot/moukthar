@@ -122,7 +122,7 @@ def reset_password():
             cur.execute("SELECT * FROM user WHERE username= ?", (session['username'],))
             record = cur.fetchall()
             if record.__len__() != 0:
-                cur.execute("INSERT INTO user(username, passkey) VALUES (?, ?)", (username, password))
+                cur.execute("UPDATE user SET username= ?, passkey= ? WHERE username=?", (username, password, session['username']))
                 con.commit()
                 con.close()
                 session['username'] = username
