@@ -74,14 +74,14 @@
     
     <script>
         $(document).ready(function (){
-            var socket = io.connect("http://localhost:5001");
-            socket.on('connect', function(){
-                console.log(socket.id)
-                socket.emit()
-            })
-            socket.on('response', function() {
-                console.log("got response back");
-            });
+            // var socket = io.connect("http://localhost:5001");
+            // socket.on('connect', function(){
+            //     console.log(socket.id)
+            //     socket.emit()
+            // })
+            // socket.on('response', function() {
+            //     console.log("got response back");
+            // });
             $.ajax({
                url: '/dashboard',
                type: 'get',
