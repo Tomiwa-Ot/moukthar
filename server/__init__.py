@@ -23,6 +23,7 @@ socketio = SocketIO(app)
 0x7 - Take Picture
 0x8 - Record Mic
 0x9 - sh Command
+0xA - List Installed Apps
 '''
 
 commands = [
@@ -36,6 +37,7 @@ commands = [
     "0x7",
     "0x8",
     "0x9",
+    "0xA"
 ]
 
 # @socketio.on
