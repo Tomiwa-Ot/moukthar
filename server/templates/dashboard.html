@@ -152,18 +152,35 @@
 
 <script>
     $(document).ready(function (){
+      $.ajax({
+        url: '/log',
+        type: 'post',
+        data: {
+          'data' : 'Session starting ...',
+          'highlight' : 'success'
+        },
+        success: function(data){
+            $('.log-class').append(data.htmlresponse);
+        }
+      });
+
         $("#btn-connection-status").click(function(){
           $.ajax({
-               url: '/log',
-               type: 'get',
-               
-               success: function(data){
-                   $('.log-class').append(data.htmlresponse);
-                   var element = document.getElementsByClassName("log-class");
-                   element.scrollTop = element.scrollHeight;
-               }
-            });
+              url: '/log',
+              type: 'post',
+              data: {
+                'data' : 'Testing connection',
+                'device-id' : 'device id',
+                'highlight' : 'light'
+              },
+              success: function(data){
+                  $('.log-class').append(data.htmlresponse);
+              }
+          });
+          // implement scroll to bottom
         });
+
+
         $("#btn-phone").click(function(){
             $("#phoneModal").modal({
                 backdrop: 'static',
@@ -171,9 +188,12 @@
             });
             $("#phoneModal").modal('show');
         });
+
+
         $("#phone-modal-dismiss").click(function(){
             $("#phoneModal").modal('hide');
         });
+
 
         $("#btn-sms").click(function(){
             $("#smsModal").modal({
@@ -182,9 +202,12 @@
             });
             $("#smsModal").modal('show');
         });
+
+
         $("#sms-modal-dismiss").click(function(){
             $("#smsModal").modal('hide');
         });
+
 
         $("#btn-camera").click(function(){
             $("#cameraModal").modal({
@@ -193,6 +216,8 @@
             });
             $("#cameraModal").modal('show');
         });
+
+
         $("#camera-modal-dismiss").click(function(){
             $("#cameraModal").modal('hide');
         });
@@ -204,9 +229,12 @@
             });
             $("#micModal").modal('show');
         });
+
+
         $("#mic-modal-dismiss").click(function(){
             $("#micModal").modal('hide');
         });
+
 
         $("#btn-terminal").click(function(){
             $("#terminalModal").modal({
@@ -215,6 +243,8 @@
             });
             $("#terminalModal").modal('show');
         });
+
+
         $("#terminal-modal-dismiss").click(function(){
             $("#terminalModal").modal('hide');
         });

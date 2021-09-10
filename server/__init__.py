@@ -205,11 +205,11 @@ def dashboard():
         return render_template("error_page.html", code= ["400", "Bad Request"]), 400
 
 
-@app.route("/log", methods=['GET'])
+@app.route("/log", methods=['POST'])
 def log():
-    if request.method == 'GET':
+    if request.method == 'POST':
         if 'username' in session:
-            return jsonify({'htmlresponse': render_template("log.html", log= [str(datetime.datetime.now().strftime('%d/%b/%Y %I:%M:%S %p')), "light", "Testing conection"])}), 200
+            return jsonify({'htmlresponse': render_template("log.html", log= [str(datetime.datetime.now().strftime('%d/%b/%Y %I:%M:%S %p')), request.form['highlight'], request.form['data']])}), 200
         else:
             return redirect("/login", code=302)
     else:
