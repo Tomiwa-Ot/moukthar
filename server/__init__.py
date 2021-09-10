@@ -1,6 +1,6 @@
 import re
 from sqlite3.dbapi2 import Error
-from flask import Flask, jsonify, render_template, url_for, request, redirect, session, make_response
+from flask import Flask, json, jsonify, render_template, url_for, request, redirect, session, make_response
 from flask_socketio import SocketIO, emit
 from passlib.hash import pbkdf2_sha256
 import sqlite3
@@ -204,6 +204,16 @@ def dashboard():
     else:
         return render_template("error_page.html", code= ["400", "Bad Request"]), 400
 
+
+@app.route("/log", methods=['GET'])
+def log():
+    if request.method == 'GET':
+        if 'username' in session:
+            return jsonify({'htmlresponse': render_template("log.html", log= [str(datetime.datetime.now().strftime('%d/%b/%Y %I:%M:%S %p')), "light", "Testing conection"])}), 200
+        else:
+            return redirect("/login", code=302)
+    else:
+        return render_template("error_page.html", log= ["400", "Bad Request"]), 400
 
 @app.route("/files", methods=['GET'])
 def files():

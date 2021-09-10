@@ -43,71 +43,12 @@
     </div>
 </div>
 
-<div style="overflow:auto;width:100%;white-space: nowrap;" class="container dark-box">
-    <div class="box-body" style="font-family: 'Courier Prime', monospace;">
-        <div class="row log-body">
-            <div class="col-2 text-light">
-              10:09:44 AM
-            </div>
-            <div class="col-10 text-light">
-                Getting camera list Lorem ipsum dolor sit amet consectetur, adipisicing elit. Blanditiis, voluptatibus? ...
-            </div>
-        </div>
-        <div class="row log-body">
-            <div class="col-2 text-light">
-              10:09:44 AM
-            </div>
-            <div class="col-10 text-danger">
-                Lorem ipsum dolor sit amet, consectetur adipisicing.
-            </div>
-        </div>
+<div style="overflow-x:auto;width:100%;white-space: normal;height: 150px;" class="container dark-box">
+    <div class="box-body log-class" style="font-family: 'Courier Prime', monospace;">
         
-        <div class="row">
-            <div class="col-2 text-light">
-                10:09:44 AM
-            </div>
-            <div class="col-10 text-success">
-                Getting camera list Lorem ipsum dolor sit amet consectetur, adipisicing elit. Blanditiis, voluptatibus? ...
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-2 text-light">
-                10:09:44 AM
-            </div>
-            <div class="col-10 text-danger">
-                Getting camera list Lorem ipsum dolor sit amet consectetur, adipisicing elit. Blanditiis, voluptatibus? ...
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-2 text-light">
-                10:09:44 AM
-            </div>
-            <div class="col-10 text-danger">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo voluptatem facere, libero sit impedit ducimus tempora non?
-            </div>
-        </div>
     </div>
 </div>
 
-<!-- Test Connection -->
-<div class="modal fade" id="testConnectionModal" tabindex="-1" role="dialog" aria-labelledby="testConnectionModal" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="test-connection-modal-title" id="testConnectionModalLabel">Test Connection</h5>
-          <button type="button" id="test-connection-modal-dismiss" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          ...
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" id="modal-save">Save changes</button>
-        </div>
-      </div>
-    </div>
-</div>
 
 <!-- Phone -->
 <div class="modal fade" id="phoneModal" tabindex="-1" role="dialog" aria-labelledby="phoneModal" aria-hidden="true">
@@ -212,16 +153,17 @@
 <script>
     $(document).ready(function (){
         $("#btn-connection-status").click(function(){
-            $("#testConnectionModal").modal({
-                backdrop: 'static',
-                keyboard: false
+          $.ajax({
+               url: '/log',
+               type: 'get',
+               
+               success: function(data){
+                   $('.log-class').append(data.htmlresponse);
+                   var element = document.getElementsByClassName("log-class");
+                   element.scrollTop = element.scrollHeight;
+               }
             });
-            $("#testConnectionModal").modal('show');
         });
-        $("#test-connection-modal-dismiss").click(function(){
-            $("#testConnectionModal").modal('hide');
-        });
-
         $("#btn-phone").click(function(){
             $("#phoneModal").modal({
                 backdrop: 'static',
