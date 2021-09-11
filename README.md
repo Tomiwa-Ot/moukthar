@@ -26,9 +26,25 @@ resp.set_cookie(key="", value="", expires="", domain="your ip/domain")
 to enable Remember Me functionality in the Login page.
 
 ## Production Environment Setup
-On linux, run ```server/setup.sh``` with a privileged user to make moukthar a service.
+For linux envitonments, run ```server/setup.sh``` with a privileged user to make moukthar a service.
 ```console
+user@pc1:~/moukthar$ chmod +x ./server/setup.sh
 user@pc1:~/moukthar$ sudo ./server/setup.sh
+```
+### Nginx
+```/etc/nginx/sites-available/moukthar```
+```nginx
+server{
+    listen 80;
+    server_name moukthar;
+    access_log /var/log/nginx/moukthar.access.log;
+    error_log /var/log/nginx/moukthar.error.log;
+
+    location / {
+       include proxy_params;
+       proxy_pass https://127.0.0.1:5001;
+    }
+}
 ```
 
 ## Warning
