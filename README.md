@@ -8,7 +8,7 @@ Android Remote Administration Tool with C2 Server
 - Take Picture (Front/Back camera)
 - Take Screenshot
 - Make Phone Call
-- List Installed Appps
+- List Installed Apps
 
 ![Android](https://img.shields.io/badge/Android-00FF00?style=for-the-badge&logo=android&logoColor=white)
 ![Flask](https://img.shields.io/badge/Flask-FFFFFF?style=for-the-badge&logo=flask&logoColor=black)
