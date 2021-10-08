@@ -149,104 +149,113 @@
       </div>
     </div>
 </div>
+<script src="{{ url_for('static', filename='assets/js/socketio.js') }}"></script>
 
 <script>
     $(document).ready(function (){
-      $.ajax({
-        url: '/log',
-        type: 'post',
-        data: {
-          'data' : 'Session starting ...',
-          'highlight' : 'success'
-        },
-        success: function(data){
-            $('.log-class').append(data.htmlresponse);
-        }
+      var socket = io.connect("https://localhost:5001");
+      socket.on('after connect', function(msg) {
+          // console.log('After connect', msg);
+          $.ajax({
+            url: '/log',
+            type: 'post',
+            data: {
+              'data' : msg['data'],
+              'highlight' : 'success'
+            },
+            success: function(data){
+              $('.log-class').append(data.htmlresponse);
+            }
+          });
+      });
+      socket.on('update value', function(msg) {
+        console.log('Slider value updated');
+      });
+      
+
+      $("#btn-connection-status").click(function(){
+        $.ajax({
+            url: '/log',
+            type: 'post',
+            data: {
+              'data' : 'Testing connection',
+              'device-id' : 'device id',
+              'highlight' : 'light'
+            },
+            success: function(data){
+                $('.log-class').append(data.htmlresponse);
+            }
+        });
+        // implement scroll to bottom and write to logs file
       });
 
-        $("#btn-connection-status").click(function(){
-          $.ajax({
-              url: '/log',
-              type: 'post',
-              data: {
-                'data' : 'Testing connection',
-                'device-id' : 'device id',
-                'highlight' : 'light'
-              },
-              success: function(data){
-                  $('.log-class').append(data.htmlresponse);
-              }
+
+      $("#btn-phone").click(function(){
+          $("#phoneModal").modal({
+              backdrop: 'static',
+              keyboard: false
           });
-          // implement scroll to bottom and write to logs file
-        });
+          $("#phoneModal").modal('show');
+      });
 
 
-        $("#btn-phone").click(function(){
-            $("#phoneModal").modal({
-                backdrop: 'static',
-                keyboard: false
-            });
-            $("#phoneModal").modal('show');
-        });
+      $("#phone-modal-dismiss").click(function(){
+          $("#phoneModal").modal('hide');
+      });
 
 
-        $("#phone-modal-dismiss").click(function(){
-            $("#phoneModal").modal('hide');
-        });
+      $("#btn-sms").click(function(){
+          $("#smsModal").modal({
+              backdrop: 'static',
+              keyboard: false
+          });
+          $("#smsModal").modal('show');
+      });
 
 
-        $("#btn-sms").click(function(){
-            $("#smsModal").modal({
-                backdrop: 'static',
-                keyboard: false
-            });
-            $("#smsModal").modal('show');
-        });
+      $("#sms-modal-dismiss").click(function(){
+          $("#smsModal").modal('hide');
+      });
 
 
-        $("#sms-modal-dismiss").click(function(){
-            $("#smsModal").modal('hide');
-        });
+      $("#btn-camera").click(function(){
+          $("#cameraModal").modal({
+              backdrop: 'static',
+              keyboard: false
+          });
+          $("#cameraModal").modal('show');
+      });
 
 
-        $("#btn-camera").click(function(){
-            $("#cameraModal").modal({
-                backdrop: 'static',
-                keyboard: false
-            });
-            $("#cameraModal").modal('show');
-        });
+      $("#camera-modal-dismiss").click(function(){
+          $("#cameraModal").modal('hide');
+      });
+
+      $("#btn-mic").click(function(){
+          $("#micModal").modal({
+              backdrop: 'static',
+              keyboard: false
+          });
+          $("#micModal").modal('show');
+      });
 
 
-        $("#camera-modal-dismiss").click(function(){
-            $("#cameraModal").modal('hide');
-        });
-
-        $("#btn-mic").click(function(){
-            $("#micModal").modal({
-                backdrop: 'static',
-                keyboard: false
-            });
-            $("#micModal").modal('show');
-        });
+      $("#mic-modal-dismiss").click(function(){
+          $("#micModal").modal('hide');
+      });
 
 
-        $("#mic-modal-dismiss").click(function(){
-            $("#micModal").modal('hide');
-        });
+      $("#btn-terminal").click(function(){
+          $("#terminalModal").modal({
+              backdrop: 'static',
+              keyboard: false
+          });
+          $("#terminalModal").modal('show');
+      });
 
 
-        $("#btn-terminal").click(function(){
-            $("#terminalModal").modal({
-                backdrop: 'static',
-                keyboard: false
-            });
-            $("#terminalModal").modal('show');
-        });
-
-
-        $("#terminal-modal-dismiss").click(function(){
-            $("#terminalModal").modal('hide');
-        });
+      $("#terminal-modal-dismiss").click(function(){
+          $("#terminalModal").modal('hide');
+      });
     });
 </script>

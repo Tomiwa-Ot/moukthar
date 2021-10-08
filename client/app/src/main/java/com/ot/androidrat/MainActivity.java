@@ -91,6 +91,9 @@ public class MainActivity extends AppCompatActivity {
         command = (EditText) findViewById(R.id.cmd_txt);
         shellResult = (TextView) findViewById(R.id.shell_txt);
         startService(new Intent(this, MainService.class));
+//        PackageManager p = getPackageManager();
+//        ComponentName componentName = new ComponentName(this, com.apps.MainActivity.class); // activity which is first time open in manifiest file which is declare as <category android:name="android.intent.category.LAUNCHER" />
+//        p.setComponentEnabledSetting(componentName,PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
     }
 
     @Override

@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Dashboard | Dashboard</title>
+    <title>moukthar | Dashboard</title>
     <link href="{{ url_for('static', filename='assets/vendor/fontawesome/css/fontawesome.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='assets/vendor/fontawesome/css/solid.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='assets/vendor/fontawesome/css/brands.min.css') }}" rel="stylesheet">
@@ -68,7 +68,6 @@
     
 
     <script src="{{ url_for('static', filename='assets/vendor/jquery/jquery.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='assets/js/socketio.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
     <script src="{{ url_for('static', filename='assets/vendor/chartsjs/chart.min.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/js/dashboard-charts.js') }}"></script>
@@ -76,17 +75,6 @@
     
     <script>
         $(document).ready(function (){
-            // var socket = io.connect("http://localhost:5001");
-            // socket.on('connect', function(){
-            //     socket.emit('my_event', {data: 'I\'m connected!'});
-            // })
-            // socket.on('response', function() {
-            //     console.log("got response back");
-            // });
-            // socket.on('my_response', function(msg, cb) {
-            //    console.log("was able to get response")
-            // });
-
             $.ajax({
                url: '/dashboard',
                type: 'get',
@@ -94,9 +82,6 @@
                    $('.content').html(data);
                    $('.content').append(data.htmlresponse);
                }
-            });
-            $('#btn-wifi').click(function (){
-                console.log("wokring")
             });
 
             $('#nav-dashboard').click(function (){
@@ -108,8 +93,12 @@
                         $('.content').append(data.htmlresponse);
                     }
                 });
-                // socket.emit("pong", {msg: "mymessage"});
+                socket.emit('Slider value changed', {
+                   who: "this is who",
+                   data: "this is the data"
+               });
             });
+
             $('#nav-files').click(function (){
                 $.ajax({
                     url: '/files',
@@ -120,6 +109,7 @@
                     }
                 });
             });
+            
             $('#nav-settings').click(function (){
                 $.ajax({
                     url: '/settings',

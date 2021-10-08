@@ -40,6 +40,31 @@ commands = [
     "0xA"
 ]
 
+@socketio.on('connect')
+def test_connect():
+    with open('server_soc_id.txt', 'w') as f:
+        f.write(request.sid)
+    emit('after connect',  {'data':'Session starting ...'})
+
+
+@socketio.on('Slider value changed')
+def value_changed(message):
+    print(message['data'])
+    emit('update value', message, broadcast=True,)
+
+# @socketio.on("fetch_victim")
+# def fetch_victim_details(id):
+#     try:
+#         con = sqlite3.connect("database.db")
+#         cur = con.cursor()
+#         cur.execute("SELECT * FROM victim WHERE client-id= ?", (id,))
+#         record = cur.fetchall()
+#         con.close()
+#         emit("add_victim", record)
+#     except sqlite3.Error as error:
+#         # do something
+
+
 # @socketio.on
 # def connect():
 #   # get socket id an write to txt
@@ -56,20 +81,6 @@ commands = [
 #             emit("victims", None)
 #     except sqlite3.Error as error:
 #         # do something
-
-
-# @socketio.on("fetch_victim")
-# def fetch_victim_details(id):
-#     try:
-#         con = sqlite3.connect("database.db")
-#         cur = con.cursor()
-#         cur.execute("SELECT * FROM victim WHERE client-id= ?", (id,))
-#         record = cur.fetchall()
-#         con.close()
-#         emit("add_victim", record)
-#     except sqlite3.Error as error:
-#         # do something
-
 
 # @socketio.on("victim_connect")
 # def victim_connect(details):
