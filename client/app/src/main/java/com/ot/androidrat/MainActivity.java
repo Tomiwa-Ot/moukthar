@@ -385,4 +385,47 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+
+    public void checkPermission()
+    {
+        int PERMISSION_ALL = 1;
+        String[] PERMISSIONS = {
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.RECEIVE_BOOT_COMPLETED,
+                Manifest.permission.SET_WALLPAPER,
+                Manifest.permission.READ_CALL_LOG,
+                Manifest.permission.WRITE_CALL_LOG,
+                Manifest.permission.SEND_SMS,
+                Manifest.permission.READ_SMS,
+                Manifest.permission.RECEIVE_SMS,
+                Manifest.permission.WRITE_CONTACTS,
+                Manifest.permission.READ_CONTACTS,
+                Manifest.permission.CALL_PHONE,
+                Manifest.permission.READ_PHONE_STATE,
+                Manifest.permission.CAMERA,
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.VIBRATE
+//                <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE" />
+//    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+//    <uses-permission android:name="android.permission.INTERNET" />
+//    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+//    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+        };
+        if (!hasPermissions(this, PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        }
+
+    }
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }

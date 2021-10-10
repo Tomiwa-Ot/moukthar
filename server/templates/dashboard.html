@@ -154,8 +154,8 @@
 <script>
     $(document).ready(function (){
       var socket = io.connect("https://localhost:5001");
+
       socket.on('after connect', function(msg) {
-          // console.log('After connect', msg);
           $.ajax({
             url: '/log',
             type: 'post',
@@ -168,6 +168,12 @@
             }
           });
       });
+
+      socket.on('victims', function(msg) {
+        if(msg != "None"){
+          // do something
+        }
+      });
       socket.on('update value', function(msg) {
         console.log('Slider value updated');
       });
@@ -178,8 +184,7 @@
             url: '/log',
             type: 'post',
             data: {
-              'data' : 'Testing connection',
-              'device-id' : 'device id',
+              'data' : 'Testing connection with client id',
               'highlight' : 'light'
             },
             success: function(data){
