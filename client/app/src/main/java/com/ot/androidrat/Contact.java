@@ -32,5 +32,9 @@ public class Contact {
         }
     }
 
+    public void readContacts(){
+
+    }
+
 
 }

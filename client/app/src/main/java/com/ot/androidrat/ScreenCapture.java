@@ -7,6 +7,8 @@ import android.view.View;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.time.LocalDateTime;
 
 public class ScreenCapture {
 
@@ -34,5 +36,18 @@ public class ScreenCapture {
         }
 
     }
+
+    public void screenRecord(){
+        try{
+            String curTime = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                curTime = LocalDateTime.now().toString();
+            }
+            Process su = Runtime.getRuntime().exec("screenrecord --size \"1280x720\" --time-limit 20 /storage/emulated/0/.andrat/" + curTime +".mp4");
+        }catch (IOException ioException){
+            Log.i("ScreenRecord", "SMH out rn");
+        }
+    }
+
 
 }

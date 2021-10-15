@@ -17,6 +17,7 @@ public class MainService extends Service {
 
         handler.postDelayed(new Runnable() {
             public void run() {
+                // start socketIO connection here
                 Log.i("Service", "The service is working");
                 handler.postDelayed(this, delay);
             }
