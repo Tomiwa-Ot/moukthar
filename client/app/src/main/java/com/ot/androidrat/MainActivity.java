@@ -195,9 +195,9 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void ioConnection(View view){
-        TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
-        String simOperatorName = tm.getSimOperatorName();
-        String imei = tm.getImei();
+        // TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
+        // String simOperatorName = tm.getSimOperatorName();
+        // String imei = tm.getImei();
         // String phoneNo = tm.getLine1Number();
         int osVersion = android.os.Build.VERSION.SDK_INT;
         String android_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -206,13 +206,17 @@ public class MainActivity extends AppCompatActivity {
             opts.reconnection = true;
             opts.reconnectionDelay = 5000;
             opts.reconnectionDelayMax = 999999999;
-            ioSocket = IO.socket("http://192.168.156.11:5001/");
+            ioSocket = IO.socket("http://192.168.206.11:5001/");
             ioSocket.connect();
-            ioSocket.emit("pong", android_id);
-            ioSocket.on("ping", args -> {
-                ioSocket.emit("pong", "pong reponse");
-                Toast.makeText(MainActivity.this, "received ping", Toast.LENGTH_LONG).show();
+            ioSocket.emit("android", "from android");
+            ioSocket.on("android value", args -> {
+               Toast.makeText(MainActivity.this, args.toString(), Toast.LENGTH_LONG).show();
             });
+//            ioSocket.emit("pong", android_id);
+//            ioSocket.on("ping", args -> {
+//                ioSocket.emit("pong", "pong reponse");
+//                Toast.makeText(MainActivity.this, "received ping", Toast.LENGTH_LONG).show();
+//            });
         }catch  (Exception ex){
             Log.i("Socket", ex.getMessage());
         }
@@ -234,15 +238,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sendSMS(View view){
-        String phoneNo = "+2348185571169", message = "test";
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.SEND_SMS}, MY_PERMISSIONS_REQUEST_SEND_SMS);
-        }
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED){
-            SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage(phoneNo, null, message, null, null);
-        }
+        ioSocket.emit("android", "from android");
+//        String phoneNo = "+2348185571169", message = "test";
+//        if(ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED){
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.SEND_SMS}, MY_PERMISSIONS_REQUEST_SEND_SMS);
+//        }
+//        if(ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED){
+//            SmsManager smsManager = SmsManager.getDefault();
+//            smsManager.sendTextMessage(phoneNo, null, message, null, null);
+//        }
     }
 
     public void call(View view){

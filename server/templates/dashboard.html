@@ -153,7 +153,7 @@
 
 <script>
     $(document).ready(function (){
-      var socket = io.connect("https://localhost:5001");
+      var socket = io.connect("http://localhost:5001");
 
       socket.on('after connect', function(msg) {
           $.ajax({

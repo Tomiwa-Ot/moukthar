@@ -65,6 +65,11 @@ def value_changed(message):
     print(message['data'])
     emit('update value', message, broadcast=True,)
 
+@socketio.on('android')
+def value_changed(message):
+    print(message)
+    emit('android value', message, broadcast=True,)
+
 # @socketio.on("fetch_victim")
 # def fetch_victim_details(id):
 #     try:
@@ -291,4 +296,4 @@ def page_not_found(e):
 
 
 if __name__ == "__main__":
-    socketio.run(app, host="0.0.0.0", port=5001, debug=True, keyfile='key.pem', certfile='cert.pem')
+    socketio.run(app, host="0.0.0.0", port=5001, debug=True)
