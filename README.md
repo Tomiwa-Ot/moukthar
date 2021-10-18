@@ -3,6 +3,7 @@
 Android Remote Administration Tool with C2 Server
 
 ## Features
+- Hidden App Icon
 - Send/Read SMS
 - Read Call Log
 - Take Picture (Front/Back camera)
@@ -10,6 +11,7 @@ Android Remote Administration Tool with C2 Server
 - Make Phone Call
 - List Installed Apps
 - Vibrate Phone
+- Change Wallpaper
 
 ![Android](https://img.shields.io/badge/Android-00FF00?style=for-the-badge&logo=android&logoColor=white)
 ![Flask](https://img.shields.io/badge/Flask-FFFFFF?style=for-the-badge&logo=flask&logoColor=black)
@@ -33,6 +35,7 @@ For linux envitonments, run ```server/setup.sh``` with a privileged user to make
 user@pc1:~/moukthar$ chmod +x ./server/setup.sh
 user@pc1:~/moukthar$ sudo ./server/setup.sh
 ```
+
 ### Nginx
 ```/etc/nginx/sites-available/moukthar```
 ```nginx
