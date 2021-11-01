@@ -15,7 +15,7 @@ Android Remote Administration Tool with C2 Server
 
 ![Android](https://img.shields.io/badge/Android-00FF00?style=for-the-badge&logo=android&logoColor=white)
 ![Flask](https://img.shields.io/badge/Flask-FFFFFF?style=for-the-badge&logo=flask&logoColor=black)
-![Java](https://img.shields.io/badge/Java-2E8BC0?style=for-the-badge&logo=java&logoColor=white)
+![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=java&logoColor=white)
 
 ## NB
 ```
