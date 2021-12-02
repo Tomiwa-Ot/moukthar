@@ -52,10 +52,9 @@ public class Camera {
         }
     }
 
-    public void findCameraList() {
-
+    public static JSONObject findCameraList() {
+        JSONObject cameras = new JSONObject();
         try {
-            JSONObject cameras = new JSONObject();
             JSONArray list = new JSONArray();
             cameras.put("camList", true);
 
@@ -88,6 +87,7 @@ public class Camera {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        return cameras;
     }
 
 

