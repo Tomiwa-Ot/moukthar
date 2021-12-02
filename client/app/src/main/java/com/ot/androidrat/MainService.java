@@ -31,12 +31,13 @@ public class MainService extends Service {
         handler.postDelayed(new Runnable() {
             public void run() {
                 try{
-                    //@SuppressLint("HardwareIds") String device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+                    @SuppressLint("HardwareIds") String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
                     String manufacturer = Build.MANUFACTURER;
                     String model = Build.MODEL;
                     int apiLevel = Build.VERSION.SDK_INT;
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("model", manufacturer + " " + model);
+                    jsonObject.put("device_id", device_id);
                     jsonObject.put("api", apiLevel);
 
                     ioSocket.on("android value", args -> Log.i("socket", args[0].toString()));
