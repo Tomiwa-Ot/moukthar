@@ -69,8 +69,6 @@
 
     <script src="{{ url_for('static', filename='assets/vendor/jquery/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
-    <script src="{{ url_for('static', filename='assets/vendor/chartsjs/chart.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='assets/js/dashboard-charts.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/js/script.js') }}"></script>
     
     <script>
@@ -93,10 +91,10 @@
                         $('.content').append(data.htmlresponse);
                     }
                 });
-                socket.emit('Slider value changed', {
-                   who: "this is who",
-                   data: "this is the data"
-               });
+            //     socket.emit('Slider value changed', {
+            //        who: "this is who",
+            //        data: "this is the data"
+            //    });
             });
 
             $('#nav-files').click(function (){
