@@ -70,52 +70,8 @@
     <script src="{{ url_for('static', filename='assets/vendor/jquery/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
     <script src="{{ url_for('static', filename='assets/js/script.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/index.js') }}"></script>
     
-    <script>
-        $(document).ready(function (){
-            $.ajax({
-               url: '/dashboard',
-               type: 'get',
-               success: function(data){
-                   $('.content').html(data);
-                   $('.content').append(data.htmlresponse);
-               }
-            });
-
-            $('#nav-dashboard').click(function (){
-                $.ajax({
-                    url: '/dashboard',
-                    type: 'get',
-                    success: function(data){
-                        $('.content').html(data);
-                        $('.content').append(data.htmlresponse);
-                    }
-                });
-            });
-
-            $('#nav-files').click(function (){
-                $.ajax({
-                    url: '/files',
-                    type: 'get',
-                    success: function(data){
-                        $('.content').html(data);
-                        $('.content').append(data.htmlresponse);
-                    }
-                });
-            });
-            
-            $('#nav-settings').click(function (){
-                $.ajax({
-                    url: '/settings',
-                    type: 'get',
-                    success: function(data){
-                        $('.content').html(data);
-                        $('.content').append(data.htmlresponse);
-                    }
-                });
-            });
-        });
-    </script>
 </body>
 
 </html>
