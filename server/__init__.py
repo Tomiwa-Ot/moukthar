@@ -28,6 +28,7 @@ socketio = SocketIO(app)
 0xC - List Installed Apps
 0xD - Vibrate Phone
 0xE - Change Wallpaper
+0x10 - Factory Reset Device
 '''
 
 commands = [
@@ -46,6 +47,7 @@ commands = [
     "0xC",
     "0xD",
     "0xE",
+    "0x10",
 ]
 
 
