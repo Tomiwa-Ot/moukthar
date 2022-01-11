@@ -5,6 +5,7 @@ Android Remote Administration Tool with C2 Server
 ## Features
 - Hidden App Icon
 - Send/Read SMS
+- Write/Read Contacts
 - Read Call Log
 - Dial USSD code without opening dialer (API 26+)
 - Take Picture (Front/Back camera)
