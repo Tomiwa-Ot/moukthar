@@ -23,8 +23,8 @@ Android Remote Administration Tool with C2 Server
 ```
 USERNAME: android
 PASSWORD: android
-PEM PASS PHRASE: android
 ```
+<!-- PEM PASS PHRASE: android -->
 Replace the domain value with your ip/domain in ```__init__.py``` wherever you see the line
 ```python
 resp.set_cookie(key="", value="", expires="", domain="your ip/domain")
