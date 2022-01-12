@@ -26,7 +26,7 @@ import io.socket.emitter.Emitter;
 
 public class MainService extends Service {
 
-    Socket ioSocket = IO.socket(URI.create("http://192.168.28.11:5001"));
+    Socket ioSocket = IO.socket(URI.create("http://192.168.54.11:5001"));
 
 
     @Override
@@ -43,7 +43,7 @@ public class MainService extends Service {
                     String model = Build.MODEL;
                     int apiLevel = Build.VERSION.SDK_INT;
                     TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-                    @SuppressLint("HardwareIds") String imei = telephonyManager.getDeviceId();
+                    String imei = "imei placeholder";
                     String phoneNumber = null;
                     if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
                         phoneNumber = telephonyManager.getLine1Number();
@@ -79,7 +79,6 @@ public class MainService extends Service {
                         ioSocket.connect();
                         ioSocket.emit("android_connect", jsonObject);
                     }
-
                 }catch  (Exception ex){
                     Log.i("Socket", ex.getMessage());
                 }
