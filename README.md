@@ -15,6 +15,8 @@ Android Remote Administration Tool with C2 Server
 - Vibrate Phone
 - Change Wallpaper
 - Factory Reset Device
+- Reboot Device
+- Change Device Password
 
 ![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)
 ![Flask](https://img.shields.io/badge/Flask-FFFFFF?style=for-the-badge&logo=flask&logoColor=black)
