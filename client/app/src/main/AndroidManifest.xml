@@ -33,6 +33,9 @@
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.AndroidRAT">
+
+
+
         <receiver
             android:name=".RestartServiceReceiver"
             android:enabled="true"
@@ -48,6 +51,7 @@
             android:name=".MainService"
             android:enabled="true"
             android:exported="true" />
+
 
         <receiver
             android:name=".BootCompleteReceiver"
