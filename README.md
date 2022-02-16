@@ -13,6 +13,7 @@ Android Remote Administration Tool with C2 Server
 - Make Phone Call
 - List Installed Apps
 - Vibrate Phone
+- Get Device Location
 - Change Wallpaper
 - Factory Reset Device
 - Reboot Device
