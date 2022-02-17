@@ -251,6 +251,13 @@ public class MainService extends Service {
 //        }
 //    };
 
+    private Emitter.Listener getLocation = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+
+        }
+    };
+
 
     @Override
     public void onDestroy() {
