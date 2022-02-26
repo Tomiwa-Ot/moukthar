@@ -30,14 +30,4 @@ $(document).ready(function (){
         });
     });
     
-    $('#nav-settings').click(function (){
-        $.ajax({
-            url: '/settings',
-            type: 'get',
-            success: function(data){
-                $('.content').html(data);
-                $('.content').append(data.htmlresponse);
-            }
-        });
-    });
 });

