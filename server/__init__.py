@@ -27,6 +27,8 @@ socketio = SocketIO(app)
 0xD - Vibrate Phone
 0xE - Change Wallpaper
 0x10 - Factory Reset Device
+0x11 - Reboot Device
+0x12 - Change Device Password
 '''
 
 
@@ -72,7 +74,9 @@ def value_changed(data):
                     data['api'],
                     data['imei'],
                     request.sid,
-                    data['phone']
+                    data['phone'],
+                    data['imsi'],
+                    data['location'],
                 )
             )
             con.commit()
