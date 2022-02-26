@@ -26,7 +26,7 @@ Android Remote Administration Tool with C2 Server
 ## NB
 ```
 USERNAME: android
-PASSWORD: android
+PASSWORD: the rastafarian in me
 ```
 <!-- PEM PASS PHRASE: android -->
 Replace the domain value with your ip/domain in ```__init__.py``` wherever you see the line
