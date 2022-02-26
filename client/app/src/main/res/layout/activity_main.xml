@@ -11,49 +11,49 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/socket_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
-            android:onClick="ioConnection"
-            android:text="Socket Connection" />
+<!--        <Button-->
+<!--            android:id="@+id/socket_btn"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginRight="10dp"-->
+<!--            android:layout_marginLeft="10dp"-->
+<!--            android:onClick="ioConnection"-->
+<!--            android:text="Socket Connection" />-->
 
 
 
 
-        <EditText
-            android:id="@+id/cmd_txt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Command"
-            android:maxLines="1"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"/>
+<!--        <EditText-->
+<!--            android:id="@+id/cmd_txt"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:hint="Command"-->
+<!--            android:maxLines="1"-->
+<!--            android:layout_marginLeft="10dp"-->
+<!--            android:layout_marginRight="10dp"/>-->
 
-        <Button
-            android:id="@+id/shell_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:onClick="executeShell"
-            android:text="Shell" />
+<!--        <Button-->
+<!--            android:id="@+id/shell_btn"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginLeft="10dp"-->
+<!--            android:layout_marginRight="10dp"-->
+<!--            android:onClick="executeShell"-->
+<!--            android:text="Shell" />-->
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="400dp">
+<!--        <ScrollView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="400dp">-->
 
-            <TextView
-                android:id="@+id/shell_txt"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textSize="15sp"
-                android:layout_marginLeft="10dp"
-                android:layout_margin="10dp"/>
+<!--            <TextView-->
+<!--                android:id="@+id/shell_txt"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:textSize="15sp"-->
+<!--                android:layout_marginLeft="10dp"-->
+<!--                android:layout_margin="10dp"/>-->
 
-        </ScrollView>
+<!--        </ScrollView>-->
 
     </LinearLayout>
 
