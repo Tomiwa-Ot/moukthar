@@ -59,6 +59,7 @@ server{
 ```
 ## Screenshots
 ![Login Page](screenshots/login.png)
+![Dashboard](screenshots/dashbaord.png)
 ![Reset Password](screenshots/reset%20password.png)
 
 ## Warning
