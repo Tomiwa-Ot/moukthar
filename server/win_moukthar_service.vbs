@@ -1,1 +1,1 @@
-CreateObject("Wscript.Shell").Run ".\setup.bat"
+CreateObject("Wscript.Shell").Run ".\run.bat"
