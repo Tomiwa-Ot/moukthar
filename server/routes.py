@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, redirect, session, request, jsonify, url_for, make_response
 from flask_socketio import emit
 from sqlite3.dbapi2 import Error
+import os.path
 import uuid
 import datetime
 import sqlite3
@@ -168,6 +169,23 @@ def files():
     else:
         return render_template("error_page.html", code= ["400", "Bad Request"]), 400
 
+@views.route("/get-file", methods=['POST'])
+def get_file():
+    if request.method == 'POST':
+        if 'username' in session:
+            path = f"files{request.form.get('path')}"
+            if path == "files/":
+                files = os.listdir(path)
+                return jsonify({'htmlresponse' : render_template("directory-listing.html", files=files)}), 200
+            if os.path.isfile(path):
+                return jsonify({'status' : True}), 200
+            if os.path.isdir(path):
+                files = os.listdir(path)
+                return jsonify({'htmlresponse' : render_template("directory-listing.html", files=files)}), 200
+        else:
+            return redirect("/login", code=302)
+    else:
+        return render_template("error_page.html", code= ["400", "Bad Request"]), 400
 
 @views.route("/settings", methods=['GET'])
 def settings():
