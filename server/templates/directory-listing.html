@@ -1,4 +1,13 @@
-<tr>
-    <td><a href="#">{{ details[0] }} <i class="fas fa-link blue"></i></a></td>
-    <td class="text-end">{{ details[1] }}</td>
-</tr>
+{% if len(files) != 0 %}
+    {% for index, file in enumerate(files) %}
+    <tr>
+        <td><a class="file-link"> {{ file }} <i class="fas fa-link blue"></i></a></td>
+        <td class="text-end">size</td>
+    </tr>
+    {% endfor %}
+{% else %}
+    <tr>
+        <td><a href="#">No files<i class="fas fa-link blue"></i></a></td>
+        <td class="text-end">0</td>
+    </tr>
+{% endif %}
