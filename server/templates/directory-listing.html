@@ -1,9 +1,9 @@
-{% if len(files) != 0 %}
-    {% for index, file in enumerate(files) %}
-    <tr>
-        <td><a class="file-link"> {{ file }} <i class="fas fa-link blue"></i></a></td>
-        <td class="text-end">size</td>
-    </tr>
+{% if files %}
+    {% for file in files %}
+        <tr>
+            <td><a class="file-link"> {{ file }} <i class="fas fa-link blue"></i></a></td>
+            <td class="text-end">size</td>
+        </tr>
     {% endfor %}
 {% else %}
     <tr>
