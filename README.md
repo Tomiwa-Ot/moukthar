@@ -1,6 +1,6 @@
 # Moukthar
 
-Android Remote Administration Tool with C2 Server
+Codebase foundation for an Android Remote Administration Tool with C2 Server
 
 ## Features
 - Persistent reconnection with C2 regardless if the client application is closed or placed in background or the device is restarted or current connection is interrupted
