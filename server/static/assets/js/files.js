@@ -9,7 +9,7 @@ $(document).ready(function (){
         type: 'post',
         data: {
             'path' : '/'
-        }
+        },
         success: function(data) {
             $('.files-class').append(data.htmlresponse);
         }
@@ -22,7 +22,7 @@ $(document).ready(function (){
             type: 'post',
             data: {
                 'path' : `${path}`
-            }
+            },
             success: function(data) {
                 currentPage++
                 $('.files-class').html(data.htmlresponse);
@@ -37,7 +37,7 @@ $(document).ready(function (){
                 type: 'post',
                 data: {
                     'path' : history[--currentPage]
-                }
+                },
                 success: function(data) {
                     currentPage++
                     $('.files-class').html(data.htmlresponse);
@@ -53,7 +53,7 @@ $(document).ready(function (){
                 type: 'post',
                 data: {
                     'path' : history[++currentPage]
-                }
+                },
                 success: function(data) {
                     $('.files-class').html(data.htmlresponse);
                 }

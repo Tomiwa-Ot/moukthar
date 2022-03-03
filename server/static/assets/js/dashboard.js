@@ -223,6 +223,18 @@ $(document).ready(function (){
           $("#smsModal").modal('hide');
       });
 
+      $("#btn-settings").click(function(){
+          $("#smsModal").modal({
+              backdrop: 'static',
+              keyboard: false
+          });
+          $("#settingsModal").modal('show');
+      });
+
+
+      $("#settings-modal-dismiss").click(function(){
+          $("#settingsModal").modal('hide');
+      });
 
       $("#btn-camera").click(function(){
           $("#cameraModal").modal({

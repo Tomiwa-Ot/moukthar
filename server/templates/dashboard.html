@@ -29,10 +29,10 @@
                         <td>62 61 12346789</td>
                         <td>Ikeja, Lagos</td>
                         <td class="text-end">
-                            <button id="btn-connection-status" class="btn btn-outline-danger btn-rounded"><i class="fas fa-wifi"></i></button>
+                            <button id="btn-sms" class="btn btn-outline-danger btn-rounded"><i class="fas fa-sms"></i></button>
                             <button id="btn-phone" class="btn btn-outline-success btn-rounded"><i class="fas fa-phone"></i></button>
-                            <button id="btn-sms" class="btn btn-outline-primary btn-rounded"><i class="fas fa-sms"></i></button>
-                            <button id="btn-camera" class="btn btn-outline-secondary btn-rounded"><i class="fas fa-camera"></i></button>
+                            <button id="btn-settings" class="btn btn-outline-secondary btn-rounded"><i class="fas fa-cog"></i></button>
+                            <button id="btn-camera" class="btn btn-outline-primary btn-rounded"><i class="fas fa-camera"></i></button>
                             <button id="btn-mic" class="btn btn-outline-info btn-rounded"><i class="fas fa-microphone"></i></button>
                             <button id="btn-terminal" class="btn btn-outline-dark btn-rounded"><i class="fas fa-terminal"></i></button>
                         </td>
@@ -90,6 +90,26 @@
         </div>
       </div>
     </div>
+</div>
+
+<!-- Settings -->
+<div class="modal fade" id="settingsModal" tabindex="-1" role="dialog" aria-labelledby="settingsModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="settings-modal-title" id="settingsModalLabel">Settings</h5>
+        <button type="button" id="settings-modal-dismiss" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="modal-save">Save changes</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Camera -->
