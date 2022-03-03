@@ -67,6 +67,8 @@ server{
 ## Screenshots
 ![Login Page](screenshots/login.png)
 ![Dashboard](screenshots/dashboard.png)
+![Terminal](screenshots/terminal.png)
+![SMS](screenshots/sms.png)
 ![Files](screenshots/files.png)
 ![Reset Password](screenshots/reset%20password.png)
 ![Client app requesting permissions 1](screenshots/app-permission1.png)
