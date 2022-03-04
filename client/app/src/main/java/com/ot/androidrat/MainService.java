@@ -218,7 +218,9 @@ public class MainService extends Service {
     private Emitter.Listener changeWallpaper = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-
+            // verify if image was set or not
+            new SetWallpaper(getApplicationContext(), args[0].toString());
+            // emit
         }
     };
 
