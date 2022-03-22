@@ -17,7 +17,6 @@ import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URI;
