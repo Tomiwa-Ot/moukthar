@@ -19,6 +19,7 @@ Codebase foundation for an Android Remote Administration Tool with C2 Server
 - Factory Reset Device
 - Reboot Device
 - Change Device Password
+- Clipboard Monitoring
 
 ![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)
 ![Flask](https://img.shields.io/badge/Flask-FFFFFF?style=for-the-badge&logo=flask&logoColor=black)
