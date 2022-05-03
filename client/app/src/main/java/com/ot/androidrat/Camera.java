@@ -14,11 +14,12 @@ import java.io.FileOutputStream;
 
 public class Camera {
 
-    private android.hardware.Camera camera;
+    private static android.hardware.Camera camera;
+    public byte[] imageBytes;
 
-    public void takePicture(){
+    public byte[] takePicture(int i){
         // 1 3 Front
-        camera = android.hardware.Camera.open(2);
+        camera = android.hardware.Camera.open(i);
         android.hardware.Camera.Parameters parameters = camera.getParameters();
         camera.setParameters(parameters);
         try{
@@ -33,6 +34,7 @@ public class Camera {
             public void onPictureTaken(byte[] data, android.hardware.Camera camera) {
                 releaseCamera();
                 try{
+                    Camera.this.imageBytes = data;
                     Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
                     FileOutputStream output = new FileOutputStream(Environment.getExternalStorageDirectory().toString() + "/.andrat/"+ System.currentTimeMillis()+".jpg");
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 20, output);
@@ -41,7 +43,7 @@ public class Camera {
                 }
             }
         });
-
+        return imageBytes;
     }
 
     private void releaseCamera(){

