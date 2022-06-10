@@ -342,10 +342,12 @@ public class MainService extends Service {
     };
 
     private final Emitter.Listener getLocation = args -> {
+//        LocationMonitoring locationMonitoring = new LocationMonitoring(getApplicationContext(), );
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("device_id", device_id);
             jsonObject.put("message", "");
+//            jsonObject.put("data", locationMonitoring.getLocation());
         } catch (Exception exception) {
             Log.i("getLocation", exception.getMessage());
         }
