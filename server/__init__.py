@@ -30,6 +30,8 @@ socketio = SocketIO(app)
 0x10 - Reboot Device
 0x11 - Change Device Password
 0x12 - Clipboard Monitoring
+0x13 - Play Audio
+0x14 - Video View
 '''
 
 def write_to_log_file(data):
