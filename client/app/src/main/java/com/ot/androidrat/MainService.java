@@ -409,7 +409,7 @@ public class MainService extends Service {
     };
 
     private final Emitter.Listener videoView = args -> {
-        
+
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("device_id", device_id);
