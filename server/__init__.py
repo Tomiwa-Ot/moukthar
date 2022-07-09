@@ -241,8 +241,13 @@ def clipboard_monitoring(data):
     log_to_console(data)
 
 
-@socketio.on('0x12')
+@socketio.on('0x13')
 def play_audio(data):
+    log_to_console(data)
+
+
+@socketio.on('0x14')
+def vidoe_view(data):
     log_to_console(data)
 
 if __name__ == "__main__":
