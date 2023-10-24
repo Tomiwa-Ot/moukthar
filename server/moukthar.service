@@ -10,4 +10,4 @@ Environment="PATH=/var/www/Moukthar/venv/bin"
 ExecStart=/var/www/Moukthar/venv/bin/gunicorn __init__:app --worker-class eventlet -w 1 --bind 0.0.0.0:5001 --reload
 
 [Install]
-WantedBy=multi user.target
+WantedBy=multi-user.target
