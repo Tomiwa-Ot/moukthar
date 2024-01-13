@@ -13,6 +13,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (!getPermissions())
+            finishAffinity();
+
         hideApplicationIcon();
     }
 
@@ -28,5 +31,13 @@ public class MainActivity extends AppCompatActivity {
         if (state == PackageManager.COMPONENT_ENABLED_STATE_DISABLED) {
             packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
         }
+    }
+
+    /**
+     * Get necessary permissions
+     * @return <c>true</c> if all are granted; false otherwise
+     */
+    private boolean getPermissions() {
+        return false;
     }
 }

@@ -6,9 +6,18 @@
         android:name="android.hardware.telephony"
         android:required="true" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"
+        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" />
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+    <uses-permission android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
+        tools:ignore="ProtectedPermissions" />
 
     <application
         android:allowBackup="true"
@@ -33,7 +42,7 @@
         <receiver android:name=".receivers.BootCompleted"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.D" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
@@ -57,6 +66,24 @@
                 <action android:name="com.ot.grhq.receiver.restartservice" />
             </intent-filter>
         </receiver>
+
+        <receiver android:name=".receivers.DownloadComplete"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.ot.grhq.receiver.downloaded" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".receivers.NotificationListener"
+            android:label="NotificationListener"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
 
     </application>
 
