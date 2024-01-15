@@ -17,9 +17,9 @@ import java.util.List;
 
 public class FileManager {
 
-    public static boolean downloadFile(Context context, String url) {
+    public static void downloadFile(Context context, String url, String filenameWithExtension) {
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, null);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filenameWithExtension);
         // Hide download notification
         request.setVisibleInDownloadsUi(false);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
@@ -28,7 +28,6 @@ public class FileManager {
         long id = downloadManager.enqueue(request);
 
         // polling for download complete?
-        return false;
     }
 
     public static void uploadFile(String path, String uploadUrl) {
@@ -36,7 +35,13 @@ public class FileManager {
     }
 
     public static List<String> listFiles(String path) {
-        List<String> files = new ArrayList<String>();
+        List<String> files = new ArrayList<>();
+
+        String absolutePath = Environment.getExternalStorageDirectory().toString() + path;
+        File directory = new File(absolutePath);
+        String[] constituents = directory.list();
+        for (String file : constituents)
+            files.add(file);
 
         return files;
     }
