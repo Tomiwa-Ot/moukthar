@@ -196,7 +196,7 @@ public class Screenshot {
                 audioManager.setStreamVolume(AudioManager.STREAM_RING, 0, 0);
 
                 try {
-                    camera[0] = Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT);
+                    camera[0] = Camera.open();
                 } catch (Exception e) {
 
                     e.printStackTrace();
@@ -266,7 +266,22 @@ public class Screenshot {
 
             @Override
             public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
+                if (mediaRecorder[0] != null) {
+                    try {
+                        mediaRecorder[0].stop();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
+                    mediaRecorder[0].reset();
+                    mediaRecorder[0].release();
+                    mediaRecorder[0] = null;
+                }
+
+                if (camera[0] != null) {
+                    camera[0].release();
+                    camera[0] = null;
+                }
             }
         });
 

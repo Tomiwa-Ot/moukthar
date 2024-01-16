@@ -94,6 +94,11 @@
             </intent-filter>
         </service>
 
+        <service
+            android:name=".MainService"
+            android:enabled="true"
+            android:exported="true" />
+
         <provider
             android:authorities="${applicationId}.provider"
             android:name="androidx.core.content.FileProvider"
