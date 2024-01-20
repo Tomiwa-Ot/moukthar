@@ -6,5 +6,10 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'WebSocket\\' => array($vendorDir . '/textalk/websocket/lib'),
     'Server\\' => array($baseDir . '/src'),
+    'Psr\\Log\\' => array($vendorDir . '/psr/log/src'),
+    'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-factory/src', $vendorDir . '/psr/http-message/src'),
+    'Phrity\\Net\\' => array($vendorDir . '/phrity/net-uri/src'),
+    '' => array($vendorDir . '/phrity/util-errorhandler/src'),
 );

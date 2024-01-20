@@ -1,5 +1,7 @@
 <?php
 
+namespace Server\Library;
+
 /**
  * Render html view
  * 

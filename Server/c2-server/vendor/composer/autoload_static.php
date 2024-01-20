@@ -7,17 +7,48 @@ namespace Composer\Autoload;
 class ComposerStaticInit56ac020c64e09ed2bf4454c023d3b1d5
 {
     public static $prefixLengthsPsr4 = array (
+        'W' => 
+        array (
+            'WebSocket\\' => 10,
+        ),
         'S' => 
         array (
             'Server\\' => 7,
         ),
+        'P' => 
+        array (
+            'Psr\\Log\\' => 8,
+            'Psr\\Http\\Message\\' => 17,
+            'Phrity\\Net\\' => 11,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
+        'WebSocket\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/textalk/websocket/lib',
+        ),
         'Server\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),
+        'Psr\\Log\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/log/src',
+        ),
+        'Psr\\Http\\Message\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
+        ),
+        'Phrity\\Net\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phrity/net-uri/src',
+        ),
+    );
+
+    public static $fallbackDirsPsr4 = array (
+        0 => __DIR__ . '/..' . '/phrity/util-errorhandler/src',
     );
 
     public static $classMap = array (
@@ -29,6 +60,7 @@ class ComposerStaticInit56ac020c64e09ed2bf4454c023d3b1d5
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit56ac020c64e09ed2bf4454c023d3b1d5::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit56ac020c64e09ed2bf4454c023d3b1d5::$prefixDirsPsr4;
+            $loader->fallbackDirsPsr4 = ComposerStaticInit56ac020c64e09ed2bf4454c023d3b1d5::$fallbackDirsPsr4;
             $loader->classMap = ComposerStaticInit56ac020c64e09ed2bf4454c023d3b1d5::$classMap;
 
         }, null, ClassLoader::class);

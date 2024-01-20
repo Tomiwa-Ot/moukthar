@@ -3,5 +3,8 @@
         "psr-4": {
             "Server\\": "src/"
         }
+    },
+    "require": {
+        "textalk/websocket": "^1.6"
     }
 }

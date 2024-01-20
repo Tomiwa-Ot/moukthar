@@ -2,7 +2,6 @@
 
 namespace Server\Library;
 
-require_once __DIR__ . '/Response.php';
 
 class Router
 {
