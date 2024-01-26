@@ -32,9 +32,10 @@ class ControlPanel extends Base
      */
     public function home(): void
     {
-        $clients = $this->getClients();
+        // $clients = $this->getClients();
 
-        render('home.php', ['clients' => $clients]);
+        // render('home.php', ['clients' => $clients]);
+        render('home.php', []);
     }
 
     /**

