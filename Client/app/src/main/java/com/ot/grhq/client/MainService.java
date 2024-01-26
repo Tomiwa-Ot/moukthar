@@ -14,7 +14,10 @@ import java.net.URISyntaxException;
 public class MainService extends Service {
 
     private final String SERVICE_RESTART_INTENT = "com.ot.grhq.receiver.restartservice";
-    private final String SERVER_URI = "ws://";
+    private static final String SERVER_URI = "ws://";
+
+    private static WebSocketClient client;
+
 
     @Nullable
     @Override
@@ -25,10 +28,13 @@ public class MainService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         try {
-            WebSocketClient client = new WebSocketClient(new URI(SERVER_URI));
-            client.connect();
+            client = new WebSocketClient(getApplicationContext(), new URI(SERVER_URI));
 
-        } catch (URISyntaxException e) {}
+            if (!client.isOpen())
+                client.connect();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
 
         Log.d("eeee", "First");
         final Handler handler = new Handler();
