@@ -1,0 +1,129 @@
+/*------------------------------------------------------------------
+* Bootstrap Simple Admin Template
+* Version: 3.0
+* Author: Alexis Luna
+* Website: https://github.com/alexis-luna/bootstrap-simple-admin-template
+-------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------
+[Table of contents]
+
+1. Body / .wrapper
+2. Contents / .page
+3. Miscellaneous
+4. Adjustments to dafault behaviors
+5. Responsive properties
+-------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------
+[1. Body / .wrapper]
+*/
+@font-face {
+    font-family: "Lato";
+    font-style: normal;
+    font-weight: 400;
+    font-display: auto;
+    src: url("../font/Lato-Regular.eot");
+    src: url("../font/Lato-Regular.eot?#iefix") format("embedded-opentype"), url("../font/Lato-Regular.woff") format("woff"), url("../font/Lato-Regular.ttf") format("truetype");
+}
+
+h1,
+.h1,
+h2,
+.h2,
+h3,
+.h3,
+h4,
+.h4,
+h5,
+.h5,
+h6,
+.h6,
+p,
+a,
+td,
+body {
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+}
+
+body,
+html {
+    width: 100%;
+    height: 100%;
+    background: #f1f1f1;
+    font-family: "Lato", "Helvetica Neue", Arial, Helvetica, sans-serif;
+}
+
+.wrapper {
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    overflow: hidden;
+    min-width: 100%;
+    min-height: 100vh;
+}
+
+/*------------------------------------------------------------------
+[2. Contents / .page]
+*/
+.page {
+    height: 100%;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0;
+    position: relative;
+    min-height: calc(100% - 44px);
+}
+
+.page header h1 {
+    font-size: 10em;
+    font-weight: 400;
+}
+
+.page header p {
+    margin-bottom: 30px;
+    font-size: 30px;
+    text-transform: uppercase;
+}
+
+.page .error-advise {
+    margin-bottom: 25px;
+    color: #a9afb5;
+}
+
+/*------------------------------------------------------------------
+[3. Miscellaneous]
+*/
+.page-copyright {
+    color: #37474f;
+    font-size: .858rem;
+    letter-spacing: 1px;
+}
+
+/*------------------------------------------------------------------
+[4. Adjustments to dafault behaviors]
+*/
+.btn-round {
+    border-radius: 1000px;
+}
+
+/*------------------------------------------------------------------
+[5. Responsive Properties]
+*/
+@media (max-width: 480px) {
+    .page header h1 {
+        font-size: 8em;
+    }
+
+    .page header p {
+        font-size: 2rem;
+    }
+}
