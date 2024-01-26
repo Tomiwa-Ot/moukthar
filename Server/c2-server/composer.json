@@ -2,7 +2,10 @@
     "autoload": {
         "psr-4": {
             "Server\\": "src/"
-        }
+        },
+        "files": [
+            "src/Library/Response.php"
+        ]
     },
     "require": {
         "textalk/websocket": "^1.6"

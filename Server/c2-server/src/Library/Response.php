@@ -11,5 +11,5 @@ namespace Server\Library;
 function render(string $view, array $data = array()): void
 {
     if (count($data)) extract($data);
-    require __DIR__ . '/../View/layout/' . $view;
+    require __DIR__ . '/../View/' . $view;
 }

@@ -15,7 +15,7 @@ class WebSocketClient
     
     public function __construct()
     {
-        $this->client = new Client(Env::load("WS_SERVER"));
+        $this->client = new Client($_ENV["WS_SERVER"]);
     }
 
     /**

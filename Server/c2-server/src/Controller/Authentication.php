@@ -18,7 +18,7 @@ class Authentication extends Base
             return;
         }   
 
-        if (!isset($_POST['username'])) {
+        if (!isset($_POST['username']) && !isset($_POST['password'])) {
             header("/login");
             return;
         }
@@ -32,6 +32,8 @@ class Authentication extends Base
                 header("Location: /");
             }
         }
+
+        render("login.php", ["error" => "Username/password incorrect"]);
 
     }
 

@@ -3,6 +3,7 @@
 namespace Server\Controller;
 
 use Server\Library;
+use Server\Library\render;
 use Server\Library\Database;
 
 /**

@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
+use Server\Controller\Authentication;
 use Server\Library\Env;
 use Server\Library\Router;
 use Server\Controller\ControlPanel;
@@ -17,3 +18,6 @@ $socketClient = new WebSocketClient();
 
 /** @var ControlPanel $controlPanel */
 $controlPanel = new ControlPanel($socketClient);
+
+/** @var Authentication $authentication */
+$authentication = new Authentication();
