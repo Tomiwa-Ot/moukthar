@@ -1,4 +1,4 @@
-<?php require_once __DIR__ . "/header.php"; ?>
+<?php require_once __DIR__ . "/../header.php"; ?>
 
 <div class="container">
     <div class="row">
@@ -16,13 +16,23 @@
                                 <tr>
                                     <th>Sender</th>
                                     <th>Message</th>
+                                    <th>Timestamp</th>
                                 </tr>
                             </thead>
                             <tbody class="files-class">
-                                <tr>
-                                    <td><a href="#">RF165433C/ </a></td>
-                                    <td class="text-end">12K</td>
-                                </tr>                
+                                <?php if (count($messages) > 0): ?>
+                                    <?php foreach ($messages as $message): ?>
+                                        <tr>
+                                            <td><?= $message->getSender(); ?></td>
+                                            <td><?= $message->getContent(); ?></td>
+                                            <td class="text-end"><?= $message->getTimestamp(); ?></td>
+                                        </tr>
+                                    <?php endforeach ?>
+                                <?php else: ?>
+                                    <tr class="text-center">
+                                        No messages
+                                    </tr>
+                                <?php endif ?>              
                             </tbody>
                         </table>
                     </div>
@@ -32,4 +42,4 @@
     </div>
 </div>
 
-<?php require_once __DIR__ . "/footer.php"; ?>
+<?php require_once __DIR__ . "/../footer.php"; ?>

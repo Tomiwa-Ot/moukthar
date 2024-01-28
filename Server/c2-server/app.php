@@ -19,6 +19,6 @@ $route->get('/messages', fn() => $controlPanel->messages());
 $route->get('/notifications', fn() => $controlPanel->notifications());
 $route->get('/recordings', fn() => $controlPanel->recordings());
 $route->get('/screenshots', fn() => $controlPanel->screenshots());
-$route->get('/videos', fn() => $controlPanel->vidoes());
+$route->get('/videos', fn() => $controlPanel->videos());
 
 $route->submit();

@@ -7,6 +7,9 @@ namespace Server\Model;
  */
 class Client
 {
+    /** @var int $id Client's ID */
+    private int $id;
+
     /** @var string $model Android device model */
     private string $model;
 
@@ -26,6 +29,7 @@ class Client
     private string $websocketId;
 
     public function __construct(
+        int $id,
         string $model,
         string $deviceId,
         string $ipAddress,
@@ -33,12 +37,23 @@ class Client
         string $phone,
         string $websocketId)
     {
+        $this->id = $id;
         $this->model = $model;
         $this->deviceId = $deviceId;
         $this->ipAddress = $ipAddress;
         $this->deviceAPI = $deviceAPI;
         $this->phone = $phone;
         $this->websocketId = $websocketId;
+    }
+
+    /**
+     * Get client's ID
+     * 
+     * @return int
+     */
+    public function getID(): int
+    {
+        return $this->id;
     }
 
     /**
@@ -103,7 +118,8 @@ class Client
 
     public static function parse(array $data): Client
     {
-        if (isset($data['model'])
+        if ($data['id']
+         && isset($data['model'])
          && isset($data['device_id'])
          && isset($data['ip_address'])
          && isset($data['device_api'])
@@ -111,6 +127,7 @@ class Client
          && isset($data['web_socket_id'])) 
         {
             return new Client(
+                $data['id'],
                 $data['model'],
                 $data['device_id'],
                 $data['ip_address'],

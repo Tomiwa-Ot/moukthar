@@ -1,4 +1,4 @@
-<?php require_once __DIR__ . "/header.php"; ?>
+<?php require_once __DIR__ . "/../header.php"; ?>
 
 <div class="container">
     <div class="row">
@@ -14,14 +14,23 @@
                         <table class="table table-striped">
                             <thead class="success">
                                 <tr>
-                                    <th></th>
+                                    <th>Application Name</th>
+                                    <th>Package Name</th>
                                 </tr>
                             </thead>
                             <tbody class="files-class">
-                                <tr>
-                                    <td><a href="#">RF165433C/ </a></td>
-                                    <td class="text-end">12K</td>
-                                </tr>                
+                                <?php if (count($installedApps) > 0): ?>
+                                    <?php foreach ($installedApps as $app): ?>
+                                        <tr>
+                                            <td><?= $app->getAppName(); ?></td>
+                                            <td><?= $app->getPackageName(); ?></td>
+                                        </tr>
+                                    <?php endforeach ?>
+                                <?php else: ?>
+                                    <tr class="text-center">
+                                        No apps
+                                    </tr>
+                                <?php endif ?>
                             </tbody>
                         </table>
                     </div>
@@ -31,4 +40,4 @@
     </div>
 </div>
 
-<?php require_once __DIR__ . "/footer.php"; ?>
+<?php require_once __DIR__ . "/../footer.php"; ?>

