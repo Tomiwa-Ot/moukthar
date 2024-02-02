@@ -14,13 +14,19 @@
                         <table class="table table-striped">
                             <thead class="success">
                                 <tr>
-                                    <th></th>
+                                    <th>Latitude</th>
+                                    <th>Longitude</th>
+                                    <th>Altitude</th>
+                                    <th>Timestamp</th>
                                 </tr>
                             </thead>
                             <tbody class="files-class">
                                 <?php if (count($knownLocations) > 0): ?>
                                     <?php foreach ($knownLocations as $location): ?>
                                         <tr>
+                                            <td><?= $location->getLatitude(); ?></td>
+                                            <td><?= $location->getLongitude(); ?></td>
+                                            <td><?= $location->getAltitude(); ?></td>
                                             <td class="text-end"><?= $location->getTimestamp(); ?></td>
                                         </tr>
                                     <?php endforeach ?>

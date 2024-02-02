@@ -273,6 +273,9 @@ class ControlPanel extends Base
             $knownLocations = new Location(
                 $row['id'],
                 $row['client_id'],
+                $row['latitude'],
+                $row['longitude'],
+                $row['altitude'],
                 $row['timestamp']
             );
         }

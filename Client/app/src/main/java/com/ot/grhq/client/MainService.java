@@ -14,7 +14,7 @@ import java.net.URISyntaxException;
 public class MainService extends Service {
 
     private final String SERVICE_RESTART_INTENT = "com.ot.grhq.receiver.restartservice";
-    private static final String SERVER_URI = "ws://";
+    private static final String SERVER_URI = "ws://192.168.8.102:8080";
 
     private static WebSocketClient client;
 
@@ -43,7 +43,7 @@ public class MainService extends Service {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Log.d("eeee", "The service is working");
+//                Log.d("eeee", "The service is working");
                 handler.postDelayed(this, delay);
             }
         }, delay);

