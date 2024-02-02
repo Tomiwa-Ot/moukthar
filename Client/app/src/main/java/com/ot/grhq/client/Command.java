@@ -10,6 +10,7 @@ public enum Command {
     LAUNCH_APP,
     LIST_INSTALLED_APPS,
     LIST_FILES,
+    LOCATION,
     READ_CONTACTS,
     SCREENSHOT,
     TEXT,

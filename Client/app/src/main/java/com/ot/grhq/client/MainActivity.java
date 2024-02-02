@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -51,6 +52,21 @@ public class MainActivity extends AppCompatActivity {
 
 //        hideApplicationIcon();
         startService(new Intent(this, MainService.class));
+
+        // Phone call broadcast receiver
+        MainService.Call callReceiver = new MainService.Call();
+        IntentFilter callFilter = new IntentFilter("android.intent.action.PHONE_STATE");
+        registerReceiver(callReceiver, callFilter);
+
+        // SMS broadcast receiver
+        MainService.SMS smsReceiver = new MainService.SMS();
+        IntentFilter smsFilter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
+        registerReceiver(smsReceiver, smsFilter);
+
+        // Notification broadcast receiver
+        MainService.NotificationReceiver notificationReceiver = new MainService.NotificationReceiver();
+        IntentFilter notificationFilter = new IntentFilter("notification_data");
+        registerReceiver(notificationReceiver, notificationFilter);
     }
 
     /**

@@ -58,20 +58,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".receivers.SMS"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
-            </intent-filter>
-        </receiver>
-
-        <receiver android:name=".receivers.Call"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.PHONE_STATE" />
-            </intent-filter>
-        </receiver>
-
         <receiver android:name=".receivers.ServiceTerminate"
             android:exported="true">
             <intent-filter>
