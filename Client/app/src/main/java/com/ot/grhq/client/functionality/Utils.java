@@ -3,6 +3,7 @@ package com.ot.grhq.client.functionality;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 
@@ -29,6 +30,14 @@ public class Utils {
     }
 
     /**
+     * Get device API
+     * @return device API
+     */
+    public static int deviceAPI() {
+        return Build.VERSION.SDK_INT;
+    }
+
+    /**
      * Get device identifier
      * @param context
      * @return device identifier
@@ -41,6 +50,14 @@ public class Utils {
             return deviceId;
 
         return null;
+    }
+
+    /**
+     * Get device manufacturer and model
+     * @return device model
+     */
+    public static String deviceModel() {
+        return Build.MANUFACTURER + " " + Build.MODEL;
     }
 
     /**

