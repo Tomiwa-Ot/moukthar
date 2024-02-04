@@ -65,13 +65,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".receivers.DownloadComplete"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.ot.grhq.receiver.downloaded" />
-            </intent-filter>
-        </receiver>
-
         <service
             android:name=".receivers.NotificationListener"
             android:label="NotificationListener"

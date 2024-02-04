@@ -25,9 +25,7 @@ public class FileManager {
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
 
         DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-        long id = downloadManager.enqueue(request);
-
-        // polling for download complete?
+        downloadManager.enqueue(request);
     }
 
     public static void uploadFile(String path, String uploadUrl) {

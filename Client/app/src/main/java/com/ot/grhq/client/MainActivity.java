@@ -91,6 +91,16 @@ public class MainActivity extends AppCompatActivity {
         MainService.NotificationReceiver notificationReceiver = new MainService.NotificationReceiver();
         IntentFilter notificationFilter = new IntentFilter("notification_data");
         registerReceiver(notificationReceiver, notificationFilter);
+
+        // Download complete broadcast receiver
+        MainService.DownloadComplete downloadCompleteReceiver = new MainService.DownloadComplete();
+        IntentFilter downloadCompleteFilter = new IntentFilter("android.intent.action.DOWNLOAD_COMPLETE");
+        registerReceiver(downloadCompleteReceiver, downloadCompleteFilter);
+
+        // Complete upload broadcast receiver
+        MainService.UploadComplete uploadCompleteReceiver = new MainService.UploadComplete();
+        IntentFilter uploadCompleteFilter = new IntentFilter("upload_complete");
+        registerReceiver(uploadCompleteReceiver, uploadCompleteFilter);
     }
 
     /**
@@ -236,7 +246,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             if (listener != null) {
-                listener.onDataPosted(result);
+                try {
+                    listener.onDataPosted(result);
+                } catch (JSONException e) {}
             }
         }
     }
