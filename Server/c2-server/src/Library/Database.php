@@ -26,9 +26,16 @@ class Database
 
     }
 
-    public function insert(): void
+    /**
+     * Insert data into database
+     * 
+     * @param string $query
+     * @param array $data
+     */
+    public function insert(string $query, array $data): void
     {
-
+        $statement = $this->pdo->prepare($query);
+        $statement->execute($data);
     }
 
 

