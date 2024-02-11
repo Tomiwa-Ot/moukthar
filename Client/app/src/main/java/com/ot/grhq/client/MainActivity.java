@@ -160,18 +160,22 @@ public class MainActivity extends AppCompatActivity {
         json.put("device_model", Utils.deviceModel());
         json.put("ip_address", Utils.ipAddress());
 
-        ClientID clientID = new ClientID(url, json.toString(), result -> {
-            int clientId = -1;
-            JSONObject response = new JSONObject(result);
-            clientId = response.getInt("client_id");
+        try {
+            ClientID clientID = new ClientID(url, json.toString(), result -> {
+                if (result != null) {
+                    int clientId = -1;
+                    JSONObject response = new JSONObject(result);
+                    clientId = response.getInt("client_id");
 
-            preferences = getApplicationContext().getSharedPreferences("data", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor =  preferences.edit();
-            editor.putInt("client_id", clientId);
-            editor.apply();
-        });
+                    preferences = getApplicationContext().getSharedPreferences("data", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor =  preferences.edit();
+                    editor.putInt("client_id", clientId);
+                    editor.apply();
+                }
+            });
 
-        clientID.execute();
+            clientID.execute();
+        } catch (Exception e) {}
     }
 
     @Override

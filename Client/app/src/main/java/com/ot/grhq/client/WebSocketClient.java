@@ -151,13 +151,7 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
                 default:
                     break;
             }
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        } catch (Exception e) {}
     }
 
     @Override
@@ -170,7 +164,7 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
 
     }
 
-    private void sendResponse(String responseType, String data) throws JSONException {
+    private void sendResponse(String responseType, String data) throws Exception {
         JSONObject json = new JSONObject();
         json.put("type", "client");
         json.put("res", responseType);
@@ -186,9 +180,7 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
         for (Map.Entry<String, String> entry : map.entrySet()) {
             try {
                 jsonObject.put(entry.getKey(), entry.getValue());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            } catch (JSONException e) {}
         }
 
         return jsonObject;

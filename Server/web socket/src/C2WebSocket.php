@@ -146,4 +146,9 @@ class C2WebSocket implements MessageComponentInterface {
 
         return false;
     }
+
+    private function updateClientWebSocketIDinDatabase(): void
+    {
+        
+    }
 }
