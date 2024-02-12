@@ -20,7 +20,7 @@ Remote adminitration tool for android
 - Execute ```database.sql```
 - Deploy C2 server
 - Set C2 server and web socket server address in client
-- Compile to APK
+- Compile APK using Android Studio
 
 ### Screenshots
 ![Dashboard](screenshots/dashboard.png)
