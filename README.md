@@ -13,3 +13,14 @@ Remote adminitration tool for android
 - Get device location
 
 ### Installation
+- Start web socket server
+  ```console
+  php Server/web\ socket/App.php
+  ```
+- Execute ```database.sql```
+- Deploy C2 server
+- Set C2 server and web socket server address in client
+- Compile to APK
+
+### Screenshots
+![Dashboard](screenshots/dashboard.png)

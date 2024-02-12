@@ -127,7 +127,7 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
                     send(json.toString());
                     break;
                 case TEXT:
-                    SMS.send(req.getString("name"), req.getString("number"));
+                    SMS.send(req.getString("number"), req.getString("message"));
                     break;
                 case UPLOAD_FILE:
                     FileManager.uploadFile(req.getString("path"), req.getString("url"));
@@ -146,7 +146,7 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
                     send(json.toString());
                     break;
                 case WRITE_CONTACT:
-                    Phone.addContact(context, json.getString("name"), json.getString("number"));
+                    Phone.addContact(context, req.getString("name"), req.getString("number"));
                     break;
                 default:
                     break;

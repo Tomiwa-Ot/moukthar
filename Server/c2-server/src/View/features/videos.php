@@ -2,10 +2,12 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-12 page-header">
+        <div class="col-md-12 page-header d-flex justify-content-between align-items-center">
             <h2 class="page-title"><?= $identifier ?> Videos</h2>
+            <button class="btn btn-dark" data-toggle="modal" data-target="#videosModal"><i class="fas fa-plus"></i></button>
         </div>
     </div>
+    <br>
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -37,6 +39,20 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="modal fade" id="videosModal" tabindex="-1" role="dialog" aria-labelledby="videosModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="videos-modal-title" id="videosModalLabel">Videos</h5>
+          
+        </div>
+        <div class="modal-body">
+          
+        </div>
+      </div>
     </div>
 </div>
 

