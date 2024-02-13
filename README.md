@@ -54,7 +54,7 @@ Remote adminitration tool for android
 - Compile APK using Android Studio and deploy to target
 
 ### Screenshots
-![Dashboard](screenshots/dashboard.png)
+![Dashboard](screenshots/c2.png)
 
 ### TODO
 - Implement modals for issuing commands
