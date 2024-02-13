@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 ExecStart=/usr/bin/env php App.php
-WorkingDirectory=/path/to/your/server/directory
+WorkingDirectory="/var/www/html/web socket/src"
 Restart=always
 
 [Install]
