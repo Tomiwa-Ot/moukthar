@@ -34,3 +34,7 @@ Remote adminitration tool for android
 
 ### Screenshots
 ![Dashboard](screenshots/dashboard.png)
+
+### TODO
+- Implement modals for issuing commands
+- Fix logging capability on dashboard
