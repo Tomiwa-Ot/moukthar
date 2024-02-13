@@ -49,24 +49,48 @@
 </div>
 
 <div style="overflow-x:auto;width:100%;white-space: normal;height: 150px;" class="container dark-box">
-    <div id="logs" class="box-body log-class" style="font-family: 'Courier Prime', monospace;">
+    <div id="logs" class="row box-body log-class" style="font-family: 'Courier Prime', monospace;">
         
     </div>
 </div>
 
 
-<script src="/src/View/assets/js/initiate-datatables.js"></script>
-
 <?php require_once __DIR__ . "/footer.php"; ?>
 
-<script>
+<script defer>
     // Establish WebSocket connection
     const ws = new WebSocket('ws://localhost:8080');
-    ws.send("js server")
+    
+     // Listen for the WebSocket connection to open
+     ws.addEventListener('open', function (event) {
+        console.log('WebSocket connection opened.');
+
+        // Data to send
+        var data = {"type" : "js-server"};
+
+        // Send data when the connection is open
+        ws.send(JSON.stringify(data));
+
+        console.log(event);
+        const logElement = document.getElementById('logs');
+        var message = JSON.parse(event.data)
+        logElement.innerHTML += `<div class="col-12 ${message['color']}">${message['message']}</div>`;
+    });
 
     // Display received messages in the log
-    ws.onmessage = function(event) {
+    ws.addEventListener('message', function(event) {
+        console.log(event);
         const logElement = document.getElementById('logs');
-        logElement.innerHTML += `<p>${event.data}</p>`;
-    };
-  </script>
+        var message = JSON.parse(event.data)
+        logElement.innerHTML += `<div class="col-12 ${message['color']}">${message['message']}</div>`;
+    });
+    
+
+    // Handle errors
+    ws.addEventListener('error', function(event) {
+        console.log(event);
+        const logElement = document.getElementById('logs');
+        var message = JSON.parse(event.data)
+        logElement.innerHTML += `<div class="col-12 ${message['color']}">${message['message']}</div>`;
+    });
+</script>
