@@ -45,7 +45,12 @@ Remote adminitration tool for android
         Require all granted
     </Directory>
   ```
-- Set C2 server and web socket server address in client
+- Set C2 server and web socket server address in client ```functionality/Utils.java```
+  ```java
+  public static final String C2_SERVER = "http://localhost";
+
+  public static final String WEB_SOCKET_SERVER = "ws://localhost:8080";
+  ```
 - Compile APK using Android Studio and deploy to target
 
 ### Screenshots

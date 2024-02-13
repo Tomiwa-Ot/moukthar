@@ -17,6 +17,10 @@ import java.util.Enumeration;
  */
 public class Utils {
 
+    public static final String C2_SERVER = "http://";
+
+    public static final String WEB_SOCKET_SERVER = "ws://";
+
     private static SharedPreferences preferences;
 
     /**

