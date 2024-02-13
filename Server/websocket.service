@@ -6,8 +6,6 @@ After=network.target
 ExecStart=/usr/bin/env php App.php
 WorkingDirectory=/path/to/your/server/directory
 Restart=always
-User=www-data
-Group=www-data
 
 [Install]
 WantedBy=default.target
