@@ -1,2 +1,2 @@
-Server/c2-server/vendor/
-Server/web\ socket/vendor/
+/Server/c2-server/vendor
+/Server/web\ socket/vendor
