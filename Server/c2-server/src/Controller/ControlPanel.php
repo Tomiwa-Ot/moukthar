@@ -489,25 +489,19 @@ class ControlPanel extends Base
             return;
         }
 
-        parse_str(parse_url($_SERVER['HTTP_REFERER'], PHP_URL_QUERY), $queries);
-
-
         $client = new TextTalkWebSocket($this->webSocketURI);
 
         try {
-            // Connect to the WebSocket server
-            $client->connect();
-        
             // Send a message
             $client->send(json_encode($_POST));
         
             // Close the WebSocket connection
             $client->close();
         } catch (\Exception $e) {
-            header("Location: " . $_SERVER['HTTP_REFERRER'] . "?client=" . $queries['client'] . "&alert=0");
+            header("Location: /" . $_POST['referrer'] . "?client=" . $_POST['client']. "&alert=0");
         }
 
-        header("Location: " . $_SERVER['HTTP_REFERRER'] . "?client=" . $queries['client'] . "&alert=1");
+        header("Location: /" . $_POST['referrer'] . "?client=" . $_POST['client']. "&alert=1");
     }
 
     /**

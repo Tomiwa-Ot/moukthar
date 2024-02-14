@@ -19,6 +19,8 @@
                 <input type="hidden" name="web_socket_id" value="<?= $webSocketID ?>">
                 <input type="hidden" name="cmd" value="LIST_INSTALLED_APPS">
                 <input type="hidden" name="type" value="server">
+                <input type="hidden" name="referrer" value="apps">
+                <input type="hidden" name="client" value="<?= $_GET['client'] ?>">
                 <button class="btn btn-dark" type="submit"><i class="fas fa-plus"></i></button>
             </form>
         </div>

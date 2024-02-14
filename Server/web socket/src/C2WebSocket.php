@@ -266,7 +266,7 @@ class C2WebSocket implements MessageComponentInterface {
     private function isClientConnected(int $webSocketConnectionID): bool
     {
         foreach ($this->clients as $client) {
-            if ($client->getId() === $webSocketConnectionID)
+            if ($client->resourceId === $webSocketConnectionID)
                 return true;
         }
 
@@ -281,7 +281,7 @@ class C2WebSocket implements MessageComponentInterface {
     private function getClient(int $webSocketConnectionID)
     {
         foreach ($this->clients as $client) {
-            if ($client->getId() === $webSocketConnectionID)
+            if ($client->resourceId === $webSocketConnectionID)
                 return $client;
         }
 
