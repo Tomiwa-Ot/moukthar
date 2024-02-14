@@ -75,6 +75,7 @@
         const logElement = document.getElementById('logs');
         var message = JSON.parse(event.data)
         logElement.innerHTML += `<div class="col-12 ${message['color']}">${message['message']}</div>`;
+        logElement.scrollTop = logElement.scrollHeight;
     });
 
     // Display received messages in the log
@@ -83,6 +84,7 @@
         const logElement = document.getElementById('logs');
         var message = JSON.parse(event.data)
         logElement.innerHTML += `<div class="col-12 ${message['color']}">${message['message']}</div>`;
+        logElement.scrollTop = logElement.scrollHeight;
     });
     
 
@@ -92,5 +94,6 @@
         const logElement = document.getElementById('logs');
         var message = JSON.parse(event.data)
         logElement.innerHTML += `<div class="col-12 ${message['color']}">${message['message']}</div>`;
+        logElement.scrollTop = logElement.scrollHeight;
     });
 </script>

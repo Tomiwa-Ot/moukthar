@@ -24,9 +24,6 @@
                 <li>
                     <a id="nav-dashboard"><i class="fas fa-home"></i> Dashboard</a>
                 </li>
-                <li>
-                    <a id="nav-files"><i class="fas fa-file"></i> Victim Files</a>
-                </li>
             </ul>
         </nav>
         <div id="body" class="active">

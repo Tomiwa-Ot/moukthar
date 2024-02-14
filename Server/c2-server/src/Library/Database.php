@@ -56,9 +56,16 @@ class Database
         return $rows;
     }
 
-    public function update(): void
+    /**
+     * Update data in database
+     * 
+     * @param string $query
+     * @param array $data
+     */
+    public function update(string $query, array $data): void
     {
-        
+        $statement = $this->pdo->prepare($query);
+        $statement->execute($data);
     }
 
     public function delete(): void

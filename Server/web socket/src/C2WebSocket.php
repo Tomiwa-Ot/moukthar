@@ -27,8 +27,8 @@ class C2WebSocket implements MessageComponentInterface {
         if (isset($this->server)) {
             $currentDateTime = date('Y-m-d H:i:s');
             $response = [
-                "color" => "btn-success",
-                "message" => $currentDateTime . ": Connection estbalished by " . $conn->resourceId
+                "color" => "text-success",
+                "message" => "[" . $currentDateTime . "]: Connection estbalished by " . $conn->resourceId
             ];
             $this->server->send(json_encode($response));
         }
@@ -46,7 +46,7 @@ class C2WebSocket implements MessageComponentInterface {
             $currentDateTime = date('Y-m-d H:i:s');
             $response = [
                 "color" => "text-success",
-                "message" => $currentDateTime . ": Connection established successfully"
+                "message" => "[" .$currentDateTime . "]: Connection established successfully " . $conn->resourceId
             ];
             $conn->send(json_encode($response));
         } elseif ($data->type === 'client')
@@ -58,7 +58,7 @@ class C2WebSocket implements MessageComponentInterface {
             $currentDateTime = date('Y-m-d H:i:s');
             $response = [
                 "color" => "text-light",
-                "message" => $currentDateTime . ": " . json_encode($data)
+                "message" => "[" .$currentDateTime . "]: $conn->resourceId => " . json_encode($data)
             ];
             $this->server->send(json_encode($response));
         }
@@ -71,7 +71,7 @@ class C2WebSocket implements MessageComponentInterface {
             $currentDateTime = date('Y-m-d H:i:s');
             $response = [
                 "color" => "text-danger",
-                "message" => $currentDateTime . ": Connection closed by " . $conn->resourceId
+                "message" => "[" .$currentDateTime . "]: Connection closed by " . $conn->resourceId
             ];
             $this->server->send(json_encode($response));
         }
@@ -91,7 +91,7 @@ class C2WebSocket implements MessageComponentInterface {
     private function clientConnection(ConnectionInterface $conn, $data): void
     {
         $clientID = $data->id;
-        $this->updateClientWebSocketIDinDatabase($clientID, $conn->resourceId); //???????
+        $this->updateClientWebSocketIDinDatabase($clientID, $conn->resourceId);
 
         switch ($data['res']) {
             case "contact":

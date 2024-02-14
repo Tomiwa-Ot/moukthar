@@ -2,9 +2,25 @@
 
 <div class="container">
     <div class="row">
+         <?php if (isset($_GET['alert'])): ?>
+            <?php if ($_GET['alert'] == 1): ?>
+                <div class="alert alert-success" id="error-alert" role="alert">
+                    <strong> Application list request sent </strong>
+                </div>
+            <?php else: ?>
+                <div class="alert alert-danger" id="error-alert" role="alert">
+                    <strong> Application list request failed </strong>
+                </div>
+            <?php endif ?>
+        <?php endif ?>
         <div class="col-md-12 page-header d-flex justify-content-between align-items-center">
-            <h2 class="page-title"><?= $identifier ?> Installed Apps</h2>
-            <button class="btn btn-dark" data-toggle="modal" data-target="#appsModal"><i class="fas fa-plus"></i></button>
+            <h2 class="page-title"><?= $device ?> Installed Apps</h2>
+            <form action="/send" method="post">
+                <input type="hidden" name="web_socket_id" value="<?= $webSocketID ?>">
+                <input type="hidden" name="cmd" value="LIST_INSTALLED_APPS">
+                <input type="hidden" name="type" value="server">
+                <button class="btn btn-dark" type="submit"><i class="fas fa-plus"></i></button>
+            </form>
         </div>
     </div>
     <br>

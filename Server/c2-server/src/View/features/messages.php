@@ -3,7 +3,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12 page-header d-flex justify-content-between align-items-center">
-            <h2 class="page-title"><?= $identifier ?> Messages</h2>
+            <h2 class="page-title"><?= $device ?> Messages</h2>
             <button class="btn btn-dark" data-toggle="modal" data-target="#smsModal"><i class="fas fa-plus"></i></button>
         </div>
     </div>

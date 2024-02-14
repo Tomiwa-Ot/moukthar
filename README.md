@@ -25,6 +25,7 @@ Remote adminitration tool for android
   cd /var/www/html/web\ socket/
   composer install
   ```
+  The default credentials are username: ```android``` and password: ```the rastafarian in you```
 - Set database credentials in ```c2-server/.env``` and ```web socket/.env```
 - Execute ```database.sql```
 - Start web socket server or deploy as service in linux
@@ -58,4 +59,5 @@ Remote adminitration tool for android
 
 ### TODO
 - Implement modals for issuing commands
-- Fix logging capability on dashboard
+- Auto scroll logs on dashboard
+- Pagination for victim properties

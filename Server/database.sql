@@ -28,7 +28,7 @@ CREATE TABLE `CLIENT` (
   `id` int NOT NULL,
   `model` varchar(45) NOT NULL,
   `device_id` varchar(45) NOT NULL,
-  `ip_address` varchar(45) NOT NULL,
+  `ip_address` varchar(database45) NOT NULL,
   `device_api` int NOT NULL,
   `phone` varchar(45) NOT NULL,
   `web_socket_id` varchar(45) DEFAULT NULL,
@@ -275,7 +275,7 @@ DROP TABLE IF EXISTS `USER`;
 CREATE TABLE `USER` (
   `id` int NOT NULL,
   `username` varchar(45) DEFAULT NULL,
-  `password` varchar(45) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -286,6 +286,7 @@ CREATE TABLE `USER` (
 
 LOCK TABLES `USER` WRITE;
 /*!40000 ALTER TABLE `USER` DISABLE KEYS */;
+INSERT INTO `USER` VALUES (1,'android','$2y$10$OrCMxpW3p0MqLJm/rUa2zeHdFVoYyE4oyV.8Y0lKEI0kDkcOOYZW2');
 /*!40000 ALTER TABLE `USER` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -325,4 +326,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-02-12 21:26:27
+-- Dump completed on 2024-02-14 21:21:35

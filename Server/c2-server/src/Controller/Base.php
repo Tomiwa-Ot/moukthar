@@ -27,7 +27,7 @@ class Base
     protected function isLoggedIn(): bool
     {
         $this->initializeSession();
-        return isset($_SESSION['admin']);
+        return isset($_SESSION['username']);
     }
 
 

@@ -23,7 +23,7 @@
                     <h6 class="mb-4 text-muted">Reset Password</h6>
                     <form action="/reset" method="POST">
                         <div class="mb-3 text-start">
-                            <label for="email" class="form-label">Username</label>
+                            <label for="username" class="form-label">Username</label>
                             <input name="username" type="text" class="form-control" placeholder="Username" required value="<?= $_SESSION['username'] ?>">
                         </div>
                         <div class="mb-3 text-start">
