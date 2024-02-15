@@ -2,9 +2,20 @@
 
 <div class="container">
     <div class="row">
+        <?php if (isset($_GET['alert'])): ?>
+            <?php if ($_GET['alert'] == 1): ?>
+                <div class="alert alert-success" id="error-alert" role="alert">
+                    <strong> Image request sent </strong>
+                </div>
+            <?php else: ?>
+                <div class="alert alert-danger" id="error-alert" role="alert">
+                    <strong> Image request failed </strong>
+                </div>
+            <?php endif ?>
+        <?php endif ?>
         <div class="col-md-12 page-header d-flex justify-content-between align-items-center">
             <h2 class="page-title"><?= $device ?> Images</h2>
-            <button class="btn btn-dark" data-toggle="modal" data-target="#imagesModal"><i class="fas fa-plus"></i></button>
+            <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#exampleModal" data-whatever="@getbootstrap"><i class="fas fa-plus"></i></button>
         </div>
     </div>
     <br>
@@ -43,18 +54,41 @@
     </div>
 </div>
 
-<div class="modal fade" id="imagesModal" tabindex="-1" role="dialog" aria-labelledby="imagesModal" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="images-modal-title" id="imagesModalLabel">Images</h5>
-          
-        </div>
-        <div class="modal-body">
-          
-        </div>
-      </div>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <form method="post" action="/send">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Select camera</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="cmd" id="flexRadioDefault1" value="CAMERA_FRONT">
+                    <label class="form-check-label" for="flexRadioDefault1">
+                        Front
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="cmd" id="flexRadioDefault2" value="CAMERA_BACK">
+                    <label class="form-check-label" for="flexRadioDefault2">
+                        Back
+                    </label>
+                </div>
+            </div>
+            <input type="hidden" name="web_socket_id" value="<?= $webSocketID ?>">
+            <input type="hidden" name="type" value="server">
+            <input type="hidden" name="referrer" value="images">
+            <input type="hidden" name="client" value="<?= $_GET['client'] ?>">
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Send message</button>
+            </div>
+      </form>
     </div>
+  </div>
 </div>
 
 <?php require_once __DIR__ . "/../footer.php"; ?>

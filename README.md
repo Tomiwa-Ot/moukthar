@@ -58,6 +58,6 @@ Remote adminitration tool for android
 ![Dashboard](screenshots/c2.png)
 
 ### TODO
-- Implement modals for issuing commands
+- Implement modal for contact page
+- Modals not showing (fix)
 - Auto scroll logs on dashboard
-- Pagination for victim properties
