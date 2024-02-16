@@ -347,7 +347,7 @@ class ControlPanel extends Base
             return;
         }
 
-        $screenshots = $this->getScreenshots($_GET['screenshots']);
+        $screenshots = $this->getScreenshots($_GET['client']);
         $webSocketID = $this->getClientWebSocketID($_GET['client']);
         $device = $this->getDeviceName($_GET['client']);
         render(
@@ -450,11 +450,10 @@ class ControlPanel extends Base
         ];
         $this->database->insert($query, $data);
 
-        $query = "SELECT * FROM CLIENT WHERE model=? AND device_id=? AND phone=?";
+        $query = "SELECT * FROM CLIENT WHERE model=? AND device_id=?";
         $data = [
             $_POST['device_model'],
-            $_POST['device_id'],
-            $_POST['phone']
+            $_POST['device_id']
         ];
         $rows = $this->database->select($query, $data);
         $response = [];
@@ -463,7 +462,7 @@ class ControlPanel extends Base
             break;
         }
 
-        return json_encode($response);
+        echo json_encode($response);
     }
 
     /**
@@ -848,7 +847,7 @@ class ControlPanel extends Base
         $query = "SELECT web_socket_id FROM CLIENT WHERE id=?";
         $rows = $this->database->select($query, [$clientID]);
         
-        if (count($rows) > 0)
+        if (count($rows) > 0 && $rows[0]['web_socket_id'] !== null)
             return $rows[0]['web_socket_id'];
 
         return -1;

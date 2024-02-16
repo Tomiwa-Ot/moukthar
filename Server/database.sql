@@ -136,9 +136,10 @@ DROP TABLE IF EXISTS `LOCATION`;
 CREATE TABLE `LOCATION` (
   `id` int NOT NULL AUTO_INCREMENT,
   `client_id` int NOT NULL,
-  `latitude` float NOT NULL,
-  `longitude` float NOT NULL,
-  `altitude` float NOT NULL,
+  `latitude` varchar(255) NOT NULL,
+  `longitude` varchar(255) NOT NULL,
+  `altitude` varchar(255) NOT NULL,
+  `timestamp` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_LOCATION_1_idx` (`client_id`),
   CONSTRAINT `fk_LOCATION_1` FOREIGN KEY (`client_id`) REFERENCES `CLIENT` (`id`)

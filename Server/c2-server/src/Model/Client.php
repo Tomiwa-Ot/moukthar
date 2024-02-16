@@ -123,9 +123,12 @@ class Client
          && isset($data['device_id'])
          && isset($data['ip_address'])
          && isset($data['device_api'])
-         && isset($data['phone'])
-         && isset($data['web_socket_id'])) 
+         && isset($data['phone'])) 
         {
+            $webSocketId = -1;
+            if (isset($data['web_socket_id']))
+                $webSocketId = $data['web_socket_id'];
+
             return new Client(
                 $data['id'],
                 $data['model'],
@@ -133,7 +136,7 @@ class Client
                 $data['ip_address'],
                 $data['device_api'],
                 $data['phone'],
-                $data['web_socket_id']
+                $webSocketId
             );
         }
 

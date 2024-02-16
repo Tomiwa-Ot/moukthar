@@ -33,7 +33,7 @@
                               <a target="_blank" href="/recordings?client=<?= $client->getID(); ?>" id="btn-mic" class="btn btn-outline-info btn-rounded"><i class="fas fa-microphone"></i></a>
                               <a target="_blank" href="/location?client=<?= $client->getID(); ?>" id="btn-location" class="btn btn-outline-dark btn-rounded"><i class="fas fa-map-marker-alt"></i></a>
                               <a target="_blank" href="/installed-apps?client=<?= $client->getID(); ?>" id="btn-application" class="btn btn-outline-dark btn-rounded"><i class="fab fa-google-play"></i></a>
-                              <a target="_blank" href="/recordings?client=<?= $client->getID(); ?>" id="btn-files" class="btn btn-outline-dark btn-rounded"><i class="fas fa-file"></i></a>
+                              <a target="_blank" href="/?client=<?= $client->getID(); ?>" id="btn-files" class="btn btn-outline-dark btn-rounded"><i class="fas fa-file"></i></a>
                               <a target="_blank" href="/notifications?client=<?= $client->getID(); ?>" id="btn-notification" class="btn btn-outline-dark btn-rounded"><i class="fas fa-bell"></i></a>
                               <a target="_blank" href="/screenshots?client=<?= $client->getID(); ?>" id="btn-screenshot" class="btn btn-outline-dark btn-rounded"><i class="fas fa-desktop"></i></a>
                               <a target="_blank" href="/videos?client=<?= $client->getID(); ?>" id="btn-video" class="btn btn-outline-dark btn-rounded"><i class="fas fa-video"></i></a>

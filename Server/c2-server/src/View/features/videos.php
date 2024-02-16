@@ -16,7 +16,7 @@
         <div class="col-md-12 page-header d-flex justify-content-between align-items-center">
             <h2 class="page-title"><?= $device ?> Videos</h2>
             <!-- <button class="btn btn-dark" data-toggle="modal" data-target="#videosModal"><i class="fas fa-plus"></i></button> -->
-            <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#exampleModal" data-whatever="@getbootstrap"><i class="fas fa-plus"></i></button>
+            <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-plus"></i></button>
         </div>
     </div>
     <br>

