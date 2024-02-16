@@ -299,6 +299,6 @@ class C2WebSocket implements MessageComponentInterface {
     private function updateClientWebSocketIDinDatabase(int $clientID, int $webSocketID): void
     {
         $query = "UPDATE CLIENT SET web_socket_id=? WHERE id=?";
-        $this->database->update($query, [$clientID, $webSocketID]);
+        $this->database->update($query, [$webSocketID, $clientID]);
     }
 }
