@@ -25,10 +25,10 @@ DROP TABLE IF EXISTS `CLIENT`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `CLIENT` (
-  `id` int NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `model` varchar(45) NOT NULL,
   `device_id` varchar(45) NOT NULL,
-  `ip_address` varchar(database45) NOT NULL,
+  `ip_address` varchar(45) NOT NULL,
   `device_api` int NOT NULL,
   `phone` varchar(45) NOT NULL,
   `web_socket_id` varchar(45) DEFAULT NULL,
@@ -53,7 +53,7 @@ DROP TABLE IF EXISTS `CONTACT`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `CONTACT` (
-  `id` int NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `client_id` int NOT NULL,
   `name` varchar(45) NOT NULL,
   `number` varchar(45) NOT NULL,
@@ -80,7 +80,7 @@ DROP TABLE IF EXISTS `IMAGE`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `IMAGE` (
-  `id` int NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `client_id` int NOT NULL,
   `filename` varchar(200) NOT NULL,
   `timestamp` int DEFAULT NULL,
@@ -107,7 +107,7 @@ DROP TABLE IF EXISTS `INSTALLED_APP`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `INSTALLED_APP` (
-  `id` int NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `client_id` int NOT NULL,
   `package_name` varchar(255) NOT NULL,
   `app_name` varchar(255) NOT NULL,
@@ -134,7 +134,7 @@ DROP TABLE IF EXISTS `LOCATION`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `LOCATION` (
-  `id` int NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `client_id` int NOT NULL,
   `latitude` float NOT NULL,
   `longitude` float NOT NULL,
@@ -162,7 +162,7 @@ DROP TABLE IF EXISTS `MESSAGE`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `MESSAGE` (
-  `id` int NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `client_id` int NOT NULL,
   `sender` varchar(45) NOT NULL,
   `content` varchar(2000) NOT NULL,
@@ -190,7 +190,7 @@ DROP TABLE IF EXISTS `NOTIFICATION`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `NOTIFICATION` (
-  `id` int NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `client_id` int NOT NULL,
   `sender` varchar(255) NOT NULL,
   `content` varchar(2000) NOT NULL,
@@ -218,7 +218,7 @@ DROP TABLE IF EXISTS `RECORDING`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `RECORDING` (
-  `id` int NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `client_id` int NOT NULL,
   `filename` varchar(200) NOT NULL,
   `timestamp` int NOT NULL,
@@ -246,7 +246,7 @@ DROP TABLE IF EXISTS `SCREENSHOT`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `SCREENSHOT` (
-  `id` int NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `client_id` int NOT NULL,
   `filename` varchar(200) NOT NULL,
   `timestamp` int NOT NULL,
@@ -273,11 +273,11 @@ DROP TABLE IF EXISTS `USER`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `USER` (
-  `id` int NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(45) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -298,7 +298,7 @@ DROP TABLE IF EXISTS `VIDEO`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `VIDEO` (
-  `id` int NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `client_id` int DEFAULT NULL,
   `filename` varchar(200) NOT NULL,
   `timestamp` int NOT NULL,
@@ -326,4 +326,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-02-14 21:21:35
+-- Dump completed on 2024-02-16 20:55:24
