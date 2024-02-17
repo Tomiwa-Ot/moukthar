@@ -58,5 +58,4 @@ Remote adminitration tool for android
 ![Dashboard](screenshots/c2.png)
 
 ### TODO
-- Implement modal for contact page
 - Auto scroll logs on dashboard
