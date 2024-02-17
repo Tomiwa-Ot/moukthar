@@ -19,7 +19,7 @@
                 <input type="hidden" name="web_socket_id" value="<?= $webSocketID ?>">
                 <input type="hidden" name="cmd" value="LIST_INSTALLED_APPS">
                 <input type="hidden" name="type" value="server">
-                <input type="hidden" name="referrer" value="apps">
+                <input type="hidden" name="referrer" value="installed-apps">
                 <input type="hidden" name="client" value="<?= $_GET['client'] ?>">
                 <button class="btn btn-dark" type="submit"><i class="fas fa-plus"></i></button>
             </form>
@@ -36,6 +36,7 @@
                                 <tr>
                                     <th>Application Name</th>
                                     <th>Package Name</th>
+                                    <th>Timestamp</th>
                                 </tr>
                             </thead>
                             <tbody class="files-class">
@@ -44,6 +45,7 @@
                                         <tr>
                                             <td><?= $app->getAppName(); ?></td>
                                             <td><?= $app->getPackageName(); ?></td>
+                                            <td><?= $app->getTimestamp(); ?></td>
                                         </tr>
                                     <?php endforeach ?>
                                 <?php else: ?>
@@ -58,20 +60,6 @@
                 <?php require __DIR__ . "/../pagination.php"; ?>
             </div>
         </div>
-    </div>
-</div>
-
-<div class="modal fade" id="appsModal" tabindex="-1" role="dialog" aria-labelledby="appsModal" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="apps-modal-title" id="appsModalLabel">Installed Apps</h5>
-          
-        </div>
-        <div class="modal-body">
-          
-        </div>
-      </div>
     </div>
 </div>
 

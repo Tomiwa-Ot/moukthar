@@ -40,7 +40,6 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
 
     @Override
     public void onMessage(String message) {
-        Log.d("eeee", message);
         try {
             JSONObject req = new JSONObject(message);
 

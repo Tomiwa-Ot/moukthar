@@ -616,7 +616,8 @@ class ControlPanel extends Base
                 $row['id'],
                 $row['client_id'],
                 $row['package_name'],
-                $row['app_name']
+                $row['app_name'],
+                $row['timestamp']
             );
         }
 
