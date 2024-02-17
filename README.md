@@ -59,5 +59,4 @@ Remote adminitration tool for android
 
 ### TODO
 - Implement modal for contact page
-- Uploading location closes web socket connection (fix)
 - Auto scroll logs on dashboard
