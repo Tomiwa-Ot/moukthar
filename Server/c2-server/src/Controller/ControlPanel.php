@@ -420,25 +420,23 @@ class ControlPanel extends Base
 
     /**
      * Register a client
-     * 
-     * @return string
      */
-    public function createClient(): string
+    public function createClient(): void
     {
         if (!isset($_POST['phone']))
-            return json_encode([]);
+            echo json_encode([]);
 
         if (!isset($_POST['device_api']))
-            return json_encode([]);
+            echo json_encode([]);
 
         if (!isset($_POST['device_id']))
-            return json_encode([]);
+            echo json_encode([]);
 
         if (!isset($_POST['device_model']))
-            return json_encode([]);
+            echo json_encode([]);
 
         if (!isset($_POST['ip_address']))
-            return json_encode([]);
+            echo json_encode([]);
 
         $query = "INSERT INTO CLIENT(model, device_id, ip_address, device_api, phone) VALUES(?, ?, ?, ?, ?)";
         $data = [

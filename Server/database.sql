@@ -111,6 +111,7 @@ CREATE TABLE `INSTALLED_APP` (
   `client_id` int NOT NULL,
   `package_name` varchar(255) NOT NULL,
   `app_name` varchar(255) NOT NULL,
+  `timestamp` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_INSTALLED_APP_1_idx` (`client_id`),
   CONSTRAINT `fk_INSTALLED_APP_1` FOREIGN KEY (`client_id`) REFERENCES `CLIENT` (`id`)
