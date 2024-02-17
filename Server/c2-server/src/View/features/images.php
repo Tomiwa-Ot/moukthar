@@ -84,7 +84,7 @@
             <input type="hidden" name="client" value="<?= $_GET['client'] ?>">
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Send message</button>
+                <button type="submit" class="btn btn-primary">Send message</button>
             </div>
       </form>
     </div>

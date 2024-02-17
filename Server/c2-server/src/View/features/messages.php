@@ -69,21 +69,21 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label for="recipient-name" class="col-form-label">Recipient:</label>
-                    <input name="sender" type="tel" class="form-control" id="recipient-name">
+                    <input name="number" type="tel" class="form-control" id="recipient-name">
                 </div>
                 <div class="form-group">
                     <label for="message-text" class="col-form-label">Message:</label>
-                    <textarea name="content" class="form-control" id="message-text"></textarea>
+                    <textarea name="message" class="form-control" id="message-text"></textarea>
                 </div>
             </div>
             <input type="hidden" name="web_socket_id" value="<?= $webSocketID ?>">
-            <input type="hidden" name="cmd" value="MESSAGE">
+            <input type="hidden" name="cmd" value="TEXT">
             <input type="hidden" name="type" value="server">
             <input type="hidden" name="referrer" value="messages">
             <input type="hidden" name="client" value="<?= $_GET['client'] ?>">
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Send message</button>
+                <button type="submit" class="btn btn-primary">Send message</button>
             </div>
       </form>
     </div>

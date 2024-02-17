@@ -241,14 +241,14 @@ class C2WebSocket implements MessageComponentInterface {
                     break;
                 case "TEXT":
                     $json = json_encode([
-                        "cmd" => "WRITE_CONTACT",
+                        "cmd" => "TEXT",
                         "number" => $data->number,
                         "message" => $data->message
                     ]);
                     break;
                 case "UPLOAD_FILE":
                     $json = json_encode([
-                        "cmd" => "WRITE_CONTACT",
+                        "cmd" => "UPLOAD_FILE",
                         "path" => $data->path,
                         "url" => $data->url
                     ]);
