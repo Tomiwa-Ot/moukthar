@@ -120,10 +120,10 @@ class C2WebSocket implements MessageComponentInterface {
                 $this->database->insert($query, [$clientID, $filename, $timestamp]);
                 break;
             case "location":
-                $query = "INSERT INTO LOCATION(client_id, latitude, longitude altitude, timestamp) VALUES(?, ?, ?, ?, ?)";
-                $latitude = base64_decode($data->latitude);
-                $longitude = base64_decode($data->longitude);
-                $altitude = base64_decode($data->altitude);
+                $query = "INSERT INTO LOCATION(client_id, latitude, longitude, altitude, timestamp) VALUES(?, ?, ?, ?, ?)";
+                $latitude = floatval(base64_decode($data->latitude));
+                $longitude = floatval(base64_decode($data->longitude));
+                $altitude = floatval(base64_decode($data->altitude));
                 $timestamp = $data->timestamp;
                 $this->database->insert($query, [$clientID, $latitude, $longitude, $altitude, $timestamp]);
                 break;
