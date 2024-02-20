@@ -67,6 +67,28 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".receivers.SMS"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".receivers.NotificationReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="notification_data" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".receivers.Call"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+        </receiver>
+
+
         <service
             android:name=".receivers.NotificationListener"
             android:label="NotificationListener"

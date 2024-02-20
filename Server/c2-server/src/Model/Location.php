@@ -22,8 +22,8 @@ class Location
     /** @var float $altitude Device's altitude */
     private float $altitude;
 
-    /** @var int $timestamp */
-    private int $timestamp;
+    /** @var string $timestamp */
+    private string $timestamp;
 
     public function __construct(
         int $id,
@@ -31,7 +31,7 @@ class Location
         float $latitude,
         float $longitude,
         float $altitude,
-        int $timestamp)
+        string $timestamp)
     {
         $this->id = $id;
         $this->clientID = $clientID;
@@ -94,9 +94,9 @@ class Location
     /**
      * Get location's timestamp
      * 
-     * @return int
+     * @return string
      */
-    public function getTimestamp(): int
+    public function getTimestamp(): string
     {
         return $this->timestamp;
     }

@@ -29,7 +29,7 @@
                                 <tr>
                                     <th>Sender</th>
                                     <th>Message</th>
-                                    <th>Timestamp</th>
+                                    <th class="text-end">Timestamp</th>
                                 </tr>
                             </thead>
                             <tbody class="files-class">

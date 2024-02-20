@@ -19,15 +19,15 @@ class InstalledApp
     /** @var string $appName Application name */
     private string $appName;
 
-    /** @var int $timestamp Timestamp */
-    private int $timestamp;
+    /** @var string $timestamp Timestamp */
+    private string $timestamp;
 
     public function __construct(
         int $id,
         int $clientID,
         string $packageName,
         string $appName,
-        int $timestamp)
+        string $timestamp)
     {
         $this->id = $id;
         $this->clientID = $clientID;
@@ -79,9 +79,9 @@ class InstalledApp
     /**
      * Get timestamp
      * 
-     * @return int
+     * @return string
      */
-    public function getTimestamp(): int
+    public function getTimestamp(): string
     {
         return $this->timestamp;
     }
