@@ -10,6 +10,9 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -57,8 +60,9 @@ public class FileManager {
         @Override
         protected Boolean doInBackground(Void... voids) {
             HttpURLConnection connection = null;
-            DataOutputStream dataOutputStream = null;
-            FileInputStream fileInputStream = null;
+
+            File file = new File(filePath);
+            String boundary = Long.toHexString(System.currentTimeMillis()); // Generate unique boundary
 
             try {
                 // Open a connection to the server
@@ -67,19 +71,30 @@ public class FileManager {
                 connection.setDoInput(true);
                 connection.setDoOutput(true);
                 connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "multipart/form-data");
+                connection.setRequestProperty("Content-Type", "multipart/form-data;  boundary=" + boundary);
 
-                // Create a data output stream to write to the server
-                dataOutputStream = new DataOutputStream(connection.getOutputStream());
+                OutputStream outputStream = connection.getOutputStream();
+                PrintWriter writer = new PrintWriter(new OutputStreamWriter(outputStream, "UTF-8"), true);
 
-                // Read the file and write it to the server
-                File file = new File(filePath);
-                fileInputStream = new FileInputStream(file);
+                // Write file content
+                writer.append("--" + boundary).append("\r\n");
+                writer.append("Content-Disposition: form-data; name=\"file\"; filename=\"" + file.getName() + "\"").append("\r\n");
+                writer.append("Content-Type: text/plain").append("\r\n"); // Adjust content type as needed
+                writer.append("\r\n");
+                writer.flush();
+
+                FileInputStream fileInputStream = new FileInputStream(file);
                 byte[] buffer = new byte[4096];
                 int bytesRead;
                 while ((bytesRead = fileInputStream.read(buffer)) != -1) {
-                    dataOutputStream.write(buffer, 0, bytesRead);
+                    outputStream.write(buffer, 0, bytesRead);
                 }
+                outputStream.flush();
+                fileInputStream.close();
+
+                // End of multipart/form-data
+                writer.append("\r\n").append("--" + boundary + "--").append("\r\n");
+                writer.close();
 
                 // Get the server response code
                 int responseCode = connection.getResponseCode();
@@ -88,20 +103,6 @@ public class FileManager {
                 return responseCode == HttpURLConnection.HTTP_OK;
             } catch (IOException e) {
                 return false;
-            } finally {
-                // Close the streams and connections
-                try {
-                    if (dataOutputStream != null) {
-                        dataOutputStream.close();
-                    }
-                    if (fileInputStream != null) {
-                        fileInputStream.close();
-                    }
-                    if (connection != null) {
-                        connection.disconnect();
-                    }
-                } catch (IOException e) {
-                }
             }
         }
     }

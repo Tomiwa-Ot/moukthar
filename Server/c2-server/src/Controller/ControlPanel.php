@@ -94,7 +94,7 @@ class ControlPanel extends Base
             $rows = $this->database->select($query, [$_GET['client'], $_GET['id']]);
             if (count($rows) > 0) {
                 // Path to your file
-                $file_path = __DIR__ . "/../../../files/images/" . $rows[0]['filename'];
+                $file_path = __DIR__ . "/../Files/recordings/" . $rows[0]['filename'];
 
                 // Create a fileinfo resource
                 $finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -267,7 +267,7 @@ class ControlPanel extends Base
             $rows = $this->database->select($query, [$_GET['client'], $_GET['id']]);
             if (count($rows) > 0) {
                 // Path to your file
-                $file_path = __DIR__ . "/../../../files/recordings/" . $rows[0]['filename'];
+                $file_path = __DIR__ . "/../Files/recordings/" . $rows[0]['filename'];
 
                 // Create a fileinfo resource
                 $finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -324,7 +324,7 @@ class ControlPanel extends Base
             $rows = $this->database->select($query, [$_GET['client'], $_GET['id']]);
             if (count($rows) > 0) {
                 // Path to your file
-                $file_path = __DIR__ . "/../../../files/screenshots/" . $rows[0]['filename'];
+                $file_path = __DIR__ . "/../Files/recordings/" . $rows[0]['filename'];
 
                 // Create a fileinfo resource
                 $finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -381,7 +381,7 @@ class ControlPanel extends Base
             $rows = $this->database->select($query, [$_GET['client'], $_GET['id']]);
             if (count($rows) > 0) {
                 // Path to your file
-                $file_path = __DIR__ . "/../../../files/videos/" . $rows[0]['filename'];
+                $file_path = __DIR__ . "/../Files/recordings/" . $rows[0]['filename'];
 
                 // Create a fileinfo resource
                 $finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -468,7 +468,7 @@ class ControlPanel extends Base
      */
     public function upload(string $type): void
     {
-        $destination = __DIR__ . "/../../../files/" . $type . "/";
+        $destination = __DIR__ . "/../Files/" . $type . "/";
 
         if(isset($_FILES['file'])) {
             $file_name = $_FILES['file']['name'];
@@ -590,18 +590,12 @@ class ControlPanel extends Base
     /**
      * Upload incoming call gotten from call receiver
      */
-    public function uploadCall(): void
+    public function uploadLog(): void
     {
         if (!isset($_POST['type']) || $_POST['type'] !== 'client')
             return;
 
         if (!isset($_POST['id']))
-            return;
-
-        if (!isset($_POST['res']) || $_POST['res'] !== 'incoming_call')
-            return;
-
-        if (!isset($_POST['number']))
             return;
 
         if (!isset($_POST['timestamp']))

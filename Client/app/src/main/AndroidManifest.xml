@@ -88,6 +88,20 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".receivers.DownloadComplete"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".receivers.UploadComplete"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="upload_complete" />
+            </intent-filter>
+        </receiver>
+
 
         <service
             android:name=".receivers.NotificationListener"
