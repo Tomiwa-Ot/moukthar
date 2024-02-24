@@ -104,10 +104,11 @@ class C2WebSocket implements MessageComponentInterface {
                 }
                 break;
             case "contact":
-                $query = "INSERT INTO CONTACT(client_id, name, number) VALUES(?, ?, ?)";
-                $name = base64_decode($data->name);
-                $number = base64_decode($data->number);
-                $this->database->insert($query, [$clientID, $name, $number]);
+                $contacts = json_decode($data->contacts);
+                foreach ($contacts as $name => $number) {
+                    $query = "INSERT INTO CONTACT(client_id, name, number) VALUES(?, ?, ?)";
+                    $this->database->insert($query, [$clientID, $name, $number]);
+                }
                 break;
             case "id":
                 $this->updateClientWebSocketIDinDatabase($clientID, $conn->resourceId);
