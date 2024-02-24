@@ -48,7 +48,7 @@ public class MainService extends Service {
         if (!isConnected) {
             try {
                 connectToWebSocket();
-            } catch (URISyntaxException e) {
+            } catch (Exception e) {
             }
         }
 
@@ -60,7 +60,7 @@ public class MainService extends Service {
             public void run() {
                 try {
                     updateWebSocketID();
-                } catch (JSONException e) {
+                } catch (Exception e) {
                 }
                 handler.postDelayed(this, delay);
             }
@@ -78,13 +78,13 @@ public class MainService extends Service {
         sendBroadcast(restartService);
     }
 
-    private void connectToWebSocket() throws URISyntaxException {
+    private void connectToWebSocket() throws Exception {
         client = new WebSocketClient(getApplicationContext(), new URI(Utils.WEB_SOCKET_SERVER));
         client.connect();
         isConnected = true;
     }
 
-    private void updateWebSocketID() throws JSONException {
+    private void updateWebSocketID() throws Exception {
         if (client.isOpen()) {
             JSONObject json = new JSONObject();
             json.put("id", Utils.clientID(getApplicationContext()));
