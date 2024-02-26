@@ -657,7 +657,7 @@ class ControlPanel extends Base
     private function getClients(): array
     {
         $clients = [];
-        $query = "SELECT * FROM CLIENT";
+        $query = "SELECT * FROM CLIENT ORDER BY id DESC";
         $rows = $this->database->select($query, []);
 
         foreach ($rows as $row) {

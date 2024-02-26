@@ -43,7 +43,7 @@
                                     <?php foreach ($screenshots as $screenshot): ?>
                                         <tr>
                                             <td><a href="/screenshots?client=<?= $screenshot->getClientID(); ?>&id=<?= $screenshot->getID(); ?>"><?= $screenshot->getFilename(); ?></a></td>
-                                            <td class="text-end"><?= $screenshot->getTimestamp(); ?></td>
+                                            <td class="text-end"><?= date("d/m/Y H:i:s", intval($screenshot->getTimestamp()) / 1000); ?></td>
                                         </tr>
                                     <?php endforeach ?>
                                 <?php else: ?>

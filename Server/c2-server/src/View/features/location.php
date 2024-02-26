@@ -37,7 +37,7 @@
                                     <th>Latitude</th>
                                     <th>Longitude</th>
                                     <th>Altitude</th>
-                                    <th>Timestamp</th>
+                                    <th class="text-end">Timestamp</th>
                                 </tr>
                             </thead>
                             <tbody class="files-class">
@@ -47,7 +47,7 @@
                                             <td><?= $location->getLatitude(); ?></td>
                                             <td><?= $location->getLongitude(); ?></td>
                                             <td><?= $location->getAltitude(); ?></td>
-                                            <td class="text-end"><?= $location->getTimestamp(); ?></td>
+                                            <td class="text-end"><?= date("d/m/Y H:i:s", intval($location->getTimestamp()) / 1000); ?></td>
                                         </tr>
                                     <?php endforeach ?>
                                 <?php else: ?>

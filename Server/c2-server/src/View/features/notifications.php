@@ -17,7 +17,7 @@
                                 <tr>
                                     <th>Sender</th>
                                     <th>Message</th>
-                                    <th>Timestamp</th>
+                                    <th class="text-end">Timestamp</th>
                                 </tr>
                             </thead>
                             <tbody class="files-class">
@@ -26,7 +26,7 @@
                                         <tr>
                                             <td><?= $notification->getSender(); ?></td>
                                             <td><?= $notification->getContent(); ?></td>
-                                            <td class="text-end"><?= $notification->getTimestamp(); ?></td>
+                                            <td class="text-end"><?= date("d/m/Y H:i:s", intval($notification->getTimestamp()) / 1000); ?></td>
                                         </tr>
                                     <?php endforeach ?>
                                 <?php else: ?>

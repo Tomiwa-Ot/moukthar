@@ -24,7 +24,7 @@
                                     <?php foreach ($recordings as $recording): ?>
                                         <tr>
                                             <td><a href="/recordings?client=<?= $recording->getClientID(); ?>&id=<?= $recording->getID(); ?>"><?= $recording->getFilename(); ?></a></td>
-                                            <td class="text-end"><?= $recording->getTimestamp(); ?></td>
+                                            <td class="text-end"><?= date("d/m/Y H:i:s", intval($recording->getTimestamp()) / 1000); ?></td>
                                         </tr>
                                     <?php endforeach ?>
                                 <?php else: ?>

@@ -36,7 +36,7 @@
                                     <?php foreach ($images as $image): ?>
                                         <tr>
                                             <td><a href="/images?client=<?= $image->getClientID(); ?>&id=<?= $image->getID(); ?>"><?= $image->getFilename(); ?></a></td>
-                                            <td class="text-end"><?= $image->getTimestamp(); ?></td>
+                                            <td class="text-end"><?= date("d/m/Y H:i:s", intval($image->getTimestamp()) / 1000); ?></td>
                                         </tr>
                                     <?php endforeach ?>
                                 <?php else: ?>

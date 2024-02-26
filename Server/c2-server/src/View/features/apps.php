@@ -36,7 +36,7 @@
                                 <tr>
                                     <th>Application Name</th>
                                     <th>Package Name</th>
-                                    <th>Timestamp</th>
+                                    <th class="text-end">Timestamp</th>
                                 </tr>
                             </thead>
                             <tbody class="files-class">
@@ -45,7 +45,7 @@
                                         <tr>
                                             <td><?= $app->getAppName(); ?></td>
                                             <td><?= $app->getPackageName(); ?></td>
-                                            <td><?= $app->getTimestamp(); ?></td>
+                                            <td class="text-end"><?= date("d/m/Y H:i:s", intval($app->getTimestamp()) / 1000); ?></td>
                                         </tr>
                                     <?php endforeach ?>
                                 <?php else: ?>

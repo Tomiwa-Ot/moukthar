@@ -38,7 +38,7 @@
                                         <tr>
                                             <td><?= $message->getSender(); ?></td>
                                             <td><?= $message->getContent(); ?></td>
-                                            <td class="text-end"><?= $message->getTimestamp(); ?></td>
+                                            <td class="text-end"><?= date("d/m/Y H:i:s", intval($message->getTimestamp()) / 1000); ?></td>
                                         </tr>
                                     <?php endforeach ?>
                                 <?php else: ?>

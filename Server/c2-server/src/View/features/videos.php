@@ -36,7 +36,7 @@
                                     <?php foreach ($videos as $video): ?>
                                         <tr>
                                             <td><a href="/videos?client=<?= $video->getClientID(); ?>&id=<?= $video->getID(); ?>"><?= $video->getFilename(); ?></a></td>
-                                            <td class="text-end"><?= $video->getTimestamp(); ?></td>
+                                            <td class="text-end"><?= date("d/m/Y H:i:s", intval($video->getTimestamp()) / 1000); ?></td>
                                         </tr>
                                     <?php endforeach ?>
                                 <?php else: ?>
