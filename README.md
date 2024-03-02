@@ -25,6 +25,9 @@ Remote adminitration tool for android
   composer install
   cd /var/www/html/web-ocket/
   composer install
+  cd /var/www
+  chown -R www-data:www-data .
+  chmod -R 777 .
   ```
   The default credentials are username: ```android``` and password: ```the rastafarian in you```
 - Create new sql user
