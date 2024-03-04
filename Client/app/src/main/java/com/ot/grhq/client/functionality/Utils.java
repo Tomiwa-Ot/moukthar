@@ -90,15 +90,15 @@ public class Utils {
         return null; // Return null if no suitable IP address is found
     }
 
+    @SuppressLint("MissingPermission")
     public static String phoneNumber(Context context) {
         TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        String phoneNumber = "";
 
         // Get the phone number
-        @SuppressLint("MissingPermission") String phoneNumber = telephonyManager.getLine1Number();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+            phoneNumber = telephonyManager.getLine1Number();
 
-        if (phoneNumber != null && !phoneNumber.isEmpty())
-            return phoneNumber;
-
-        return null;
+        return phoneNumber;
     }
 }
