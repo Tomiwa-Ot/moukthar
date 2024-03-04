@@ -59,3 +59,5 @@ Remote adminitration tool for android
 
 ### TODO
 - Auto scroll logs on dashboard
+- Image, video and screenshot
+- List files
