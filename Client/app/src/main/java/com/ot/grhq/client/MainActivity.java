@@ -43,14 +43,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 200;
     private static String[] PERMISSIONS = {
-        Manifest.permission.ACCESS_COARSE_LOCATION,
-        Manifest.permission.ACCESS_FINE_LOCATION,
         Manifest.permission.CAMERA,
         Manifest.permission.CALL_PHONE,
         Manifest.permission.SEND_SMS,
@@ -59,7 +58,10 @@ public class MainActivity extends AppCompatActivity {
         Manifest.permission.READ_EXTERNAL_STORAGE,
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
         Manifest.permission.RECORD_AUDIO,
-        Manifest.permission.REQUEST_INSTALL_PACKAGES
+        Manifest.permission.REQUEST_INSTALL_PACKAGES,
+        Manifest.permission.READ_PHONE_STATE,
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION
     };
 
     private SharedPreferences preferences;
@@ -94,12 +96,17 @@ public class MainActivity extends AppCompatActivity {
      * @return <c>true</c> if all are granted; false otherwise
      */
     private void checkPermissions() {
+        List<String> permissionsToRequest = new ArrayList<>();
+
         for (String permission : PERMISSIONS) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED)
-                    getPermission(permission);
+                    permissionsToRequest.add(permission);
             }
         }
+
+        if (!permissionsToRequest.isEmpty() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            requestPermissions(permissionsToRequest.toArray(new String[0]), PERMISSION_REQUEST_CODE);
     }
 
     /**
@@ -157,9 +164,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        for (int result : grantResults) {
-            if (result != PackageManager.PERMISSION_GRANTED)
-                finishAffinity();
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            for (int i = 0; i < permissions.length; i++) {
+                String permission = permissions[i];
+                if (grantResults[i] != PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    // Permission denied
+                    requestPermissions(new String[] {permission}, PERMISSION_REQUEST_CODE);
+                }
+            }
         }
     }
 
