@@ -14,6 +14,7 @@ $route->get('/', fn() => $controlPanel->home());
 $route->get('/contacts', fn() => $controlPanel->contacts());
 $route->get('/images', fn() => $controlPanel->images());
 $route->get('/installed-apps', fn() => $controlPanel->installedApps());
+$route->get('/files', fn() => $controlPanel->files());
 $route->get('/location', fn() => $controlPanel->location());
 $route->get('/messages', fn() => $controlPanel->messages());
 $route->get('/notifications', fn() => $controlPanel->notifications());

