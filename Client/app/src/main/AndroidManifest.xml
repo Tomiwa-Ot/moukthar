@@ -41,6 +41,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Client"
         android:usesCleartextTraffic="true"
+        android:requestLegacyExternalStorage="true"
+        android:preserveLegacyExternalStorage="true"
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"

