@@ -464,6 +464,24 @@ class ControlPanel extends Base
         if (!isset($_POST['ip_address']))
             echo json_encode([]);
 
+        $query = "SELECT * FROM CLIENT WHERE model=? AND device_id=?";
+        $data = [
+            $_POST['device_model'],
+            $_POST['device_id']
+        ];
+        $rows = $this->database->select($query, $data);
+        if (count($rows) > 0) {
+            $response = [];
+            foreach ($rows as $row) {
+                $response['client_id'] = $row['id'];
+                break;
+            }
+
+            echo json_encode($response);
+
+            return;
+        }
+
         $query = "INSERT INTO CLIENT(model, device_id, ip_address, device_api, phone) VALUES(?, ?, ?, ?, ?)";
         $data = [
             $_POST['device_model'],
