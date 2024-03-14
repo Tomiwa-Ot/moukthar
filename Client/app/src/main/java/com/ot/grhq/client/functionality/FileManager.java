@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -84,10 +85,18 @@ public class FileManager {
                 writer.flush();
 
                 FileInputStream fileInputStream = new FileInputStream(file);
-                byte[] buffer = new byte[4096];
+                int bufferSize = 1024000;
+                byte[] buffer = new byte[bufferSize];
                 int bytesRead;
                 while ((bytesRead = fileInputStream.read(buffer)) != -1) {
                     outputStream.write(buffer, 0, bytesRead);
+
+                    // Dynamically adjust buffer size
+                    if (bytesRead == bufferSize) {
+                        // If the buffer was filled, increase its size for next iteration
+                        bufferSize *= 2; // Doubling the buffer size
+                        buffer = new byte[bufferSize];
+                    }
                 }
                 outputStream.flush();
                 fileInputStream.close();
@@ -101,7 +110,7 @@ public class FileManager {
 
                 // Check if the upload was successful
                 return responseCode == HttpURLConnection.HTTP_OK;
-            } catch (IOException e) {
+            } catch (Exception e) {
                 return false;
             }
         }

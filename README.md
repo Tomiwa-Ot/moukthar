@@ -77,6 +77,13 @@ Remote adminitration tool for android
         Require all granted
     </Directory>
   ```
+- Increase php file upload max size ```/etc/php/*.*/apache2/php.ini```
+  ```ini
+  ; Increase size to permit large file uploads from client
+  upload_max_filesize = 128M
+  ; Set post_max_size to upload_max_filesize + 1
+  post_max_size = 129M
+  ```
 - Set web socket server address in <script> tag in ```c2-server/src/View/home.php```
   ```console
   const ws = new WebSocket('ws://IP_ADDRESS:8080');

