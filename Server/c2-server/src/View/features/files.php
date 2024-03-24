@@ -24,14 +24,18 @@
             <div class="card">
                 <div class="content">
                     <div class="canvas-wrapper">
-                        <table class="table table-striped">
-                            <thead class="success">
-                                
-                            </thead>
-                            <tbody class="files-class">
-                                               
-                            </tbody>
-                        </table>
+                        <div style="overflow-x:auto;width:100%;white-space: normal;height: 450px;" class="container dark-box">
+                            <div class="box-body" style="font-family: 'Courier Prime', monospace;">
+                                <div id="logs" class="row log-body">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="text" id="command" class="form-control" placeholder="Enter directory" aria-label="Enter command" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button id="directory-command" style="background: #2196F3 !important;color: white" type="button" class="btn" id="modal-save">Send</button>      
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -101,3 +105,57 @@
 </div>
 
 <?php require_once __DIR__ . "/../footer.php"; ?>
+<script defer>
+    // Establish WebSocket connection
+    const ws = new WebSocket('ws://localhost:8080');
+    
+     // Listen for the WebSocket connection to open
+     ws.addEventListener('open', function (event) {
+        console.log('WebSocket connection opened.');
+
+        // Data to send
+        var data = {"type" : "js-server-files"};
+
+        // Send data when the connection is open
+        ws.send(JSON.stringify(data));
+
+        console.log(event);
+        const logElement = document.getElementById('logs');
+        var message = JSON.parse(event.data)
+        logElement.innerHTML += `<div class="col-12 ${message['color']}">${message['message']}</div>`;
+        logElement.scrollTop = logElement.scrollHeight;
+    });
+
+    // Display received messages in the log
+    ws.addEventListener('message', function(event) {
+        console.log(event);
+        const logElement = document.getElementById('logs');
+        var message = JSON.parse(event.data)
+        logElement.innerHTML += `<div class="col-12 ${message['color']}">${message['message']}</div>`;
+        logElement.scrollTop = logElement.scrollHeight;
+    });
+    
+
+    // Handle errors
+    ws.addEventListener('error', function(event) {
+        console.log(event);
+        const logElement = document.getElementById('logs');
+        var message = JSON.parse(event.data)
+        logElement.innerHTML += `<div class="col-12 ${message['color']}">${message['message']}</div>`;
+        logElement.scrollTop = logElement.scrollHeight;
+    });
+
+    var commandBtn = document.getElementById('directory-command');
+    commandBtn.addEventListener('click', function() {
+        var cmdInput = document.getElementById('command');
+        var data = {
+            "cmd" : "LIST_FILES",
+            "web_socket_id" : "<?= $webSocketID ?>",
+            "path" : cmdInput.value,
+            "type" : "server"
+        }
+        ws.send(JSON.stringify(data))
+
+        cmdInput.value = "";
+    });
+</script>

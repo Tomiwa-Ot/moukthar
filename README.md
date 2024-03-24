@@ -84,7 +84,7 @@ Remote adminitration tool for android
   ; Set post_max_size to upload_max_filesize + 1
   post_max_size = 129M
   ```
-- Set web socket server address in <script> tag in ```c2-server/src/View/home.php```
+- Set web socket server address in <script> tag in ```c2-server/src/View/home.php``` and ```c2-server/src/View/features/files.php```
   ```console
   const ws = new WebSocket('ws://IP_ADDRESS:8080');
   ```
@@ -106,4 +106,3 @@ Remote adminitration tool for android
 ### TODO
 - Auto scroll logs on dashboard
 - Video and screenshot
-- List files

