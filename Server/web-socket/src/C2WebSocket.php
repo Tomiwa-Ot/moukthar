@@ -83,7 +83,7 @@ class C2WebSocket implements MessageComponentInterface {
             $this->server->send(json_encode($response));
         }
 
-        if ($conn === $this->directoryCmdServer)
+        if (isset($this->directoryCmdServer) && $conn === $this->directoryCmdServer)
             unset($this->directoryCmdServer);
     }
 
@@ -91,7 +91,7 @@ class C2WebSocket implements MessageComponentInterface {
     {
         $conn->close();
 
-        if ($conn === $this->directoryCmdServer)
+        if (isset($this->directoryCmdServer) && $conn === $this->directoryCmdServer)
             unset($this->directoryCmdServer);
     }
 
