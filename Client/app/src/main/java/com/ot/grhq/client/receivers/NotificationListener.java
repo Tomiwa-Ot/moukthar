@@ -3,6 +3,7 @@ package com.ot.grhq.client.receivers;
 import android.content.Intent;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import android.util.Log;
 
 public class NotificationListener extends NotificationListenerService {
     @Override
@@ -14,7 +15,8 @@ public class NotificationListener extends NotificationListenerService {
         String content = extractNotificationContent(sbn);
 
         // Send notification data to WebSocketService using a broadcast intent
-        Intent intent = new Intent("notification_data");
+        Intent intent = new Intent();
+        intent.setAction("notification_data");
         intent.putExtra("package_name", packageName);
         intent.putExtra("notification_content", content);
         sendBroadcast(intent);

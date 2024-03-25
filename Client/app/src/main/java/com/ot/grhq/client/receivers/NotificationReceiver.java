@@ -12,7 +12,7 @@ import org.json.JSONObject;
 /**
  * Notifications broadcast receiver
  */
-class NotificationReceiver extends BroadcastReceiver {
+public class NotificationReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {

