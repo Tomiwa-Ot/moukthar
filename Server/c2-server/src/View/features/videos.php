@@ -69,7 +69,20 @@
                     <label class="col-form-label">Duration:</label>
                     <input type="number" name="duration" class="form-control">
                 </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="frontCamera" id="flexRadioDefault1" value="1">
+                    <label class="form-check-label" for="flexRadioDefault1">
+                        Front
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="frontCamera" id="flexRadioDefault2" value="0">
+                    <label class="form-check-label" for="flexRadioDefault2">
+                        Back
+                    </label>
+                </div>
             </div>
+            
             <input type="hidden" name="web_socket_id" value="<?= $webSocketID ?>">
             <input type="hidden" name="cmd" value="VIDEO">
             <input type="hidden" name="type" value="server">

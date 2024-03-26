@@ -520,6 +520,16 @@ class ControlPanel extends Base
             
             move_uploaded_file($file_tmp, $destination . $file_name);
         }
+
+        $client = new TextTalkWebSocket($this->webSocketURI);
+
+        try {
+            // Send a message
+            $client->send(json_encode(["status" => "$type uploaded: $file_name"]));
+        
+            // Close the WebSocket connection
+            $client->close();
+        } catch (\Exception $e) {}
     }
 
     /**
