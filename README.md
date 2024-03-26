@@ -23,7 +23,7 @@ Remote adminitration tool for android
   mv moukthar/Server/* /var/www/html/
   cd /var/www/html/c2-server
   composer install
-  cd /var/www/html/web-ocket/
+  cd /var/www/html/web-socket/
   composer install
   cd /var/www
   chown -R www-data:www-data .
@@ -105,4 +105,4 @@ Remote adminitration tool for android
 
 ### TODO
 - Auto scroll logs on dashboard
-- Video and screenshot
+- Screenshot
