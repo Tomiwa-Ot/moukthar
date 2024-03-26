@@ -53,7 +53,7 @@ public class MainService extends Service {
         }
 
         final Handler handler = new Handler();
-        final int delay = 30000;
+        final int delay = 5000;
 
         handler.postDelayed(new Runnable() {
             @Override
