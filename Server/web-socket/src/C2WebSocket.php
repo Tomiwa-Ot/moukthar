@@ -254,7 +254,11 @@ class C2WebSocket implements MessageComponentInterface {
                     ]);
                     break;
                 case "VIDEO":
-                    $json = json_encode(["cmd" => "VIDEO"]);
+                    $json = json_encode([
+                        "cmd" => "VIDEO",
+                        "duration" => $data->duration,
+                        "frontCamera" => boolval($data->frontCamera)
+                    ]);
                     break;
                 case "WRITE_CONTACT":
                     $json = json_encode([
