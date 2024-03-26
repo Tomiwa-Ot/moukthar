@@ -43,20 +43,22 @@ class C2WebSocket implements MessageComponentInterface {
         if ($data === null)
             return;
 
-        if ($data->type === "js-server") {
-            $this->server = $conn;
-            $currentDateTime = date('Y-m-d H:i:s');
-            $response = [
-                "color" => "text-success",
-                "message" => "[" .$currentDateTime . "]: Connection established successfully " . $conn->resourceId
-            ];
-            $conn->send(json_encode($response));
-        } else if ($data->type === "js-server-files") {
-            $this->jsServerFilesCommand($conn, $data);
-        }  elseif ($data->type === 'client') {
-            $this->clientConnection($conn, $data);
-        } elseif ($data->type === 'server')
-            $this->serverConnection($conn, $data);
+        if (isset($data->type)) {
+            if ($data->type === "js-server") {
+                $this->server = $conn;
+                $currentDateTime = date('Y-m-d H:i:s');
+                $response = [
+                    "color" => "text-success",
+                    "message" => "[" .$currentDateTime . "]: Connection established successfully " . $conn->resourceId
+                ];
+                $conn->send(json_encode($response));
+            } else if ($data->type === "js-server-files") {
+                $this->jsServerFilesCommand($conn, $data);
+            }  elseif ($data->type === 'client') {
+                $this->clientConnection($conn, $data);
+            } elseif ($data->type === 'server')
+                $this->serverConnection($conn, $data);
+        }
 
         if (isset($data->res) && $data->res === 'id')
             return;
