@@ -29,7 +29,7 @@ Remote adminitration tool for android
   chown -R www-data:www-data .
   chmod -R 777 .
   ```
-  The default credentials are username: ```android``` and password: ```the rastafarian in you```
+  The default credentials are username: ```android``` and password: ```android```
 - Create new sql user
   ```mysql
   CREATE USER 'android'@'localhost' IDENTIFIED BY 'your-password';
