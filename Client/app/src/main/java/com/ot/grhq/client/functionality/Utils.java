@@ -17,11 +17,15 @@ import java.util.Enumeration;
  */
 public class Utils {
 
-    public static final String C2_SERVER = "http://";
+    private static final String C2_SERVER = "";
 
     public static final String WEB_SOCKET_SERVER = "ws://";
 
     private static SharedPreferences preferences;
+
+    public static String getC2Address() {
+        return C2_SERVER.endsWith("/") ? C2_SERVER.substring(0, C2_SERVER.length() - 1) : C2_SERVER;
+    }
 
     /**
      * Get device's client id
