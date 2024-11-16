@@ -461,8 +461,8 @@ class ControlPanel extends Base
         if (!isset($_POST['device_model']))
             echo json_encode([]);
 
-        if (!isset($_POST['ip_address']))
-            echo json_encode([]);
+        // if (!isset($_POST['ip_address']))
+        //     echo json_encode([]);
 
         $query = "SELECT * FROM CLIENT WHERE model=? AND device_id=?";
         $data = [
@@ -486,7 +486,7 @@ class ControlPanel extends Base
         $data = [
             $_POST['device_model'],
             $_POST['device_id'],
-            $_POST['ip_address'],
+            $_SERVER['REMOTE_ADDR'],
             $_POST['device_api'],
             $_POST['phone']
         ];

@@ -107,6 +107,11 @@ class C2WebSocket implements MessageComponentInterface {
     {
         $clientID = intval($data->id);
 
+        // Update user IP address
+        $clientIP = $conn->remoteAddress;
+        $query = "UPDATE CLIENT SET ip_address = ? WHERE client_id = ?";
+        $this->database->update($query, [$clientIP, $clientID]);
+
         switch ($data->res) {
             case "app_list":
                 $apps = json_decode($data->data);
