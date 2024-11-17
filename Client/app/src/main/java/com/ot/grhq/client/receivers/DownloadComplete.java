@@ -20,7 +20,7 @@ public class DownloadComplete extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if ("android.intent.action.DOWNLOAD_COMPLETE".equals(intent.getAction())) {
             String app = intent.getStringExtra("app_path");
-            if (!app.isEmpty() && app != null)
+            if (app != null && !app.isEmpty())
                 PackageManager.installApp(context, app);
 
             String downloadURL = intent.getStringExtra("download_url");

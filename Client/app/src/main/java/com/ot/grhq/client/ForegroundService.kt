@@ -23,7 +23,7 @@ import java.net.URI
 class ForegroundService : Service() {
 
     private val TAG = "Foreground Service"
-    private var client: WebSocketClient? = null
+    private lateinit var client: WebSocketClient
 
     var isConnected = false
     private val SERVICE_RESTART_INTENT = "com.ot.grhq.receiver.restartservice"
@@ -65,7 +65,7 @@ class ForegroundService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "Service started")
 
-//        registerReceiver(broadcaster, IntentFilter("STOP_SERVICE"))
+        registerReceiver(broadcaster, IntentFilter("STOP_SERVICE"))
 
         // Create notification channel
         val channelId = "Google notification"
@@ -84,7 +84,7 @@ class ForegroundService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-//        unregisterReceiver(broadcaster)
+        unregisterReceiver(broadcaster)
         val restartService = Intent(SERVICE_RESTART_INTENT)
         sendBroadcast(restartService)
         Log.i(TAG, "Service destroyed")
@@ -97,7 +97,7 @@ class ForegroundService : Service() {
     @Throws(java.lang.Exception::class)
     private fun connectToWebSocket() {
         client = WebSocketClient(applicationContext, URI(Utils.WEB_SOCKET_SERVER))
-        client!!.connect()
+        client?.connect()
         isConnected = true
     }
 
