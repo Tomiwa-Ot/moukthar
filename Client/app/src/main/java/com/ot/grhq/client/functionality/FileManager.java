@@ -19,17 +19,33 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 public class FileManager {
 
     public static void downloadFile(Context context, String url, String filenameWithExtension) {
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filenameWithExtension);
-        // Hide download notification
-        request.setVisibleInDownloadsUi(false);
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
+        try {
+            File result = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + File.separator + filenameWithExtension);
+            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+            request.setDestinationUri(Uri.fromFile(result));
+            // Hide download notification
+            request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
+            request.setDestinationUri(Uri.fromFile(result));
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+//        request.setVisibleInDownloadsUi(false);
+//        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
 
-        DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-        downloadManager.enqueue(request);
+            DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+            downloadManager.enqueue(request);
+
+        } catch (Exception e) {
+            Log.e("eeee", e.toString());
+        }
     }
 
     public static void uploadFile(String path, String uploadUrl) {
@@ -41,9 +57,9 @@ public class FileManager {
 
         String absolutePath = Environment.getExternalStorageDirectory().toString() + path;
         File directory = new File(absolutePath);
-        String[] constituents = directory.list();
-        for (String file : constituents)
-            files.add(file);
+        File[] constituents = directory.listFiles();
+        for (File file : constituents)
+            files.add(file.getName());
 
         return files;
     }
@@ -61,58 +77,61 @@ public class FileManager {
         @Override
         protected Boolean doInBackground(Void... voids) {
             HttpURLConnection connection = null;
-
             File file = new File(filePath);
-            String boundary = Long.toHexString(System.currentTimeMillis()); // Generate unique boundary
 
+            if (!file.exists()) {
+                Log.e("UploadTask", "File does not exist");
+                return false;
+            }
+
+            String boundary = "----WebKitFormBoundary" + Long.toHexString(System.currentTimeMillis());
             try {
-                // Open a connection to the server
+                // Create connection to the server
                 URL url = new URL(uploadUrl);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setDoInput(true);
                 connection.setDoOutput(true);
                 connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "multipart/form-data;  boundary=" + boundary);
+                connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
 
                 OutputStream outputStream = connection.getOutputStream();
                 PrintWriter writer = new PrintWriter(new OutputStreamWriter(outputStream, "UTF-8"), true);
 
-                // Write file content
+                // Start the multipart body
                 writer.append("--" + boundary).append("\r\n");
                 writer.append("Content-Disposition: form-data; name=\"file\"; filename=\"" + file.getName() + "\"").append("\r\n");
-                writer.append("Content-Type: text/plain").append("\r\n"); // Adjust content type as needed
+                writer.append("Content-Type: application/octet-stream").append("\r\n");
                 writer.append("\r\n");
                 writer.flush();
 
+                // File input stream to read the file
                 FileInputStream fileInputStream = new FileInputStream(file);
-                int bufferSize = 1024000;
-                byte[] buffer = new byte[bufferSize];
+                byte[] buffer = new byte[4096];  // 4 KB buffer, you can adjust based on file size
                 int bytesRead;
+
+                // Write file content
                 while ((bytesRead = fileInputStream.read(buffer)) != -1) {
                     outputStream.write(buffer, 0, bytesRead);
-
-                    // Dynamically adjust buffer size
-                    if (bytesRead == bufferSize) {
-                        // If the buffer was filled, increase its size for next iteration
-                        bufferSize *= 2; // Doubling the buffer size
-                        buffer = new byte[bufferSize];
-                    }
                 }
-                outputStream.flush();
                 fileInputStream.close();
+                outputStream.flush();
 
                 // End of multipart/form-data
                 writer.append("\r\n").append("--" + boundary + "--").append("\r\n");
-                writer.close();
+                writer.flush();
 
-                // Get the server response code
+                // Get the response code from the server
                 int responseCode = connection.getResponseCode();
+                connection.disconnect();
 
                 // Check if the upload was successful
                 return responseCode == HttpURLConnection.HTTP_OK;
+
             } catch (Exception e) {
+                Log.e("UploadTask", "Upload failed: " + e.getMessage());
                 return false;
             }
         }
     }
+
 }
