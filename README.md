@@ -6,6 +6,7 @@ Remote adminitration tool for android
 - SMS listener
 - Phone call recording
 - Image capturing and screenshots
+- Video recording
 - Persistence 
 - Read & write contacts
 - List installed applications
@@ -105,4 +106,7 @@ Remote adminitration tool for android
 
 ### TODO
 - Auto scroll logs on dashboard
-- Screenshot
+- Screenshot not working
+- Image/Video capturing doesn't work when application isn't in focus
+- Downloading files in app using DownloadManager not working
+- Listing constituents of a directory doesn't list all files/folders
