@@ -17,7 +17,7 @@ import java.util.Enumeration;
  */
 public class Utils {
 
-    private static final String C2_SERVER = "";
+    private static final String C2_SERVER = "http://";
 
     public static final String WEB_SOCKET_SERVER = "ws://";
 

