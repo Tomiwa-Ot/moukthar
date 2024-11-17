@@ -92,6 +92,7 @@ class C2WebSocket implements MessageComponentInterface {
     public function onError(ConnectionInterface $conn, \Exception $e)
     {
         $conn->close();
+        print_r($e);
 
         if (isset($this->directoryCmdServer) && $conn === $this->directoryCmdServer)
             unset($this->directoryCmdServer);
@@ -109,7 +110,7 @@ class C2WebSocket implements MessageComponentInterface {
 
         // Update user IP address
         $clientIP = $conn->remoteAddress;
-        $query = "UPDATE CLIENT SET ip_address = ? WHERE client_id = ?";
+        $query = "UPDATE CLIENT SET ip_address = ? WHERE id = ?";
         $this->database->update($query, [$clientIP, $clientID]);
 
         switch ($data->res) {
@@ -256,8 +257,7 @@ class C2WebSocket implements MessageComponentInterface {
                 case "UPLOAD_FILE":
                     $json = json_encode([
                         "cmd" => "UPLOAD_FILE",
-                        "path" => $data->path,
-                        "url" => $data->url
+                        "path" => $data->path
                     ]);
                     break;
                 case "VIDEO":

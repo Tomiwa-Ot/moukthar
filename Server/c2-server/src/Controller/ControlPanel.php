@@ -471,6 +471,8 @@ class ControlPanel extends Base
         ];
         $rows = $this->database->select($query, $data);
         if (count($rows) > 0) {
+            $query = "UPDATE CLIENT SET ip_address = ? WHERE model = ? AND device_id = ?";
+            $this->database->update($query, [$_SERVER['REMOTE_ADDR'], $_POST['device_model'], $_POST['device_id']]);
             $response = [];
             foreach ($rows as $row) {
                 $response['client_id'] = $row['id'];
@@ -519,17 +521,18 @@ class ControlPanel extends Base
             $file_tmp = $_FILES['file']['tmp_name'];
             
             move_uploaded_file($file_tmp, $destination . $file_name);
+
+            $client = new TextTalkWebSocket($this->webSocketURI);
+
+            try {
+                // Send a message
+                $client->send(json_encode(["status" => "$type uploaded: $file_name"]));
+            
+                // Close the WebSocket connection
+                $client->close();
+            } catch (\Exception $e) {}
         }
 
-        $client = new TextTalkWebSocket($this->webSocketURI);
-
-        try {
-            // Send a message
-            $client->send(json_encode(["status" => "$type uploaded: $file_name"]));
-        
-            // Close the WebSocket connection
-            $client->close();
-        } catch (\Exception $e) {}
     }
 
     /**

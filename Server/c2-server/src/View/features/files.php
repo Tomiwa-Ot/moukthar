@@ -55,15 +55,11 @@
         <div class="modal-body">
             <form method="post" action="/send">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Instruct client to upload a file</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Download file</h5>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="url-name" class="col-form-label">URL:</label>
-                        <input name="url" type="url" class="form-control" id="url-name">
-                    </div>
-                    <div class="form-group">
-                        <label for="path-name" class="col-form-label">Path:</label>
+                        <label for="path-name" class="col-form-label">File path:</label>
                         <input name="path" type="text" class="form-control" id="path-name">
                     </div>
                 </div>
@@ -78,7 +74,7 @@
             </form>
             <form method="post" action="/send">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Instruct client to download a file</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Upload file</h5>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
@@ -86,7 +82,7 @@
                         <input name="url" type="url" class="form-control" id="url-name">
                     </div>
                     <div class="form-group">
-                        <label for="filename-name" class="col-form-label">Filename:</label>
+                        <label for="filename-name" class="col-form-label">Filename with extension:</label>
                         <input name="filename" type="text" class="form-control" id="filename-name">
                     </div>
                 </div>
