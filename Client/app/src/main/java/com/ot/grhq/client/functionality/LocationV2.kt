@@ -39,7 +39,9 @@ public class LocationV2 {
                 }
             }
 
-            Log.i("dddddd", longitude.toString())
+            if (longitude == null)
+                return 0.00
+
             return longitude
         }
 
@@ -55,6 +57,7 @@ public class LocationV2 {
                 //                                          int[] grantResults)
                 // to handle the case where the user grants the permission. See the documentation
                 // for ActivityCompat#requestPermissions for more details.
+                Log.e("eeee", "issue with permission");
                 return null
             }
 
@@ -69,6 +72,9 @@ public class LocationV2 {
             }
 
             Log.i("dddddd", latitude.toString())
+            if (latitude == null)
+                return 0.00
+
             return latitude
         }
 
@@ -97,7 +103,9 @@ public class LocationV2 {
                 }
             }
 
-            Log.i("dddddd", altitude.toString())
+            if (altitude == null)
+                return 0.00
+
             return altitude
         }
     }
