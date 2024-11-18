@@ -102,7 +102,15 @@ Remote adminitration tool for android
 - Compile APK using Android Studio and deploy to target
 
 ### Screenshots
+![Login](screenshots/login.png)
 ![Dashboard](screenshots/c2.png)
+![Installed Apps](screenshots/apps.png)
+![Camera](screenshots/camera.png.png)
+![Contacts](screenshots/contacts.png.png)
+![Files](screenshots/files.png)
+![Notifications](screenshots/notifications.png)
+![SMS](screenshots/sms.png)
+![Video](screenshots/video.png)
 
 ### TODO
 - Auto scroll logs on dashboard
