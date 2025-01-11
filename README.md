@@ -3,6 +3,7 @@ Remote adminitration tool for android
 
 ### Features
 - Permissions bypass (android 12 below) https://youtube.com/shorts/-w8H0lkFxb0
+- Keylogger
 - Notifications listener
 - SMS listener
 - Phone call recording

