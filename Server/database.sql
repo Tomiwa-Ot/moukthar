@@ -128,6 +128,35 @@ LOCK TABLES `INSTALLED_APP` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `KEYLOG`
+--
+
+DROP TABLE IF EXISTS `KEYLOG`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `KEYLOG` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `client_id` int NOT NULL,
+  `text` mediumtext,
+  `timestamp` varchar(200) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_KEYLOG_1_idx` (`client_id`),
+  CONSTRAINT `fk_KEYLOG_1` FOREIGN KEY (`client_id`) REFERENCES `CLIENT` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=947 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `KEYLOG`
+--
+
+LOCK TABLES `KEYLOG` WRITE;
+/*!40000 ALTER TABLE `KEYLOG` DISABLE KEYS */;
+/*!40000 ALTER TABLE `KEYLOG` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+
+--
 -- Table structure for table `LOCATION`
 --
 
