@@ -29,7 +29,7 @@
                               <a target="_blank" href="/messages?client=<?= $client->getID(); ?>" id="btn-sms" class="btn btn-outline-danger btn-rounded"><i class="fas fa-sms"></i></a>
                               <a target="_blank" href="/contacts?client=<?= $client->getID(); ?>" id="btn-phone" class="btn btn-outline-success btn-rounded"><i class="fas fa-phone"></i></a>
                               <a target="_blank" href="/images?client=<?= $client->getID(); ?>" id="btn-camera" class="btn btn-outline-primary btn-rounded"><i class="fas fa-camera"></i></a>
-                              <a target="_blank" href="/recordings?client=<?= $client->getID(); ?>" id="btn-mic" class="btn btn-outline-info btn-rounded"><i class="fas fa-microphone"></i></a>
+                              <a target="_blank" href="/keylogs?client=<?= $client->getID(); ?>" id="btn-mic" class="btn btn-outline-info btn-rounded"><i class="fas fa-keyboard"></i></a>
                               <a target="_blank" href="/location?client=<?= $client->getID(); ?>" id="btn-location" class="btn btn-outline-dark btn-rounded"><i class="fas fa-map-marker-alt"></i></a>
                               <a target="_blank" href="/installed-apps?client=<?= $client->getID(); ?>" id="btn-application" class="btn btn-outline-dark btn-rounded"><i class="fab fa-google-play"></i></a>
                               <a target="_blank" href="/files?client=<?= $client->getID(); ?>" id="btn-files" class="btn btn-outline-dark btn-rounded"><i class="fas fa-file"></i></a>
